@@ -26,10 +26,8 @@
   command: "{{ rustup_path }} target add x86_64-unknown-linux-musl"
   become: yes
   become_user: "{{ build_user }}"
-  when: rust_path_result.stat.exists == False
 
 - name: 'install cargo script'
   command: "{{ cargo_path }} install cargo-script"
   become: yes
   become_user: "{{ build_user }}"
-  when: rust_path_result.stat.exists == False
