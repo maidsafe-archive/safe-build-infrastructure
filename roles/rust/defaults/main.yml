@@ -1,7 +1,8 @@
 ---
 build_user: jenkins
+build_user_home_path: "/home/{{ jenkins }}"
 rust_version: 1.29.2
-cargo_bin_path: "{{ build_user }}/.cargo/bin"
+cargo_bin_path: "{{ build_user_home_path }}/.cargo/bin"
 cargo_path: "{{ cargo_bin_path }}/cargo"
 rustup_path: "{{ cargo_bin_path }}/rustup"
 rustc_path: "{{ cargo_bin_path }}/rustc"
