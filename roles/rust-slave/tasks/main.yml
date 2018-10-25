@@ -18,22 +18,6 @@
     name: "{{ jenkins_user }}"
     shell: /bin/bash
 
-- name: 'create .ansible directory for vault password file'
-  file:
-    path: "{{ jenkins_home_path }}/.ansible"
-    state: directory
-    mode: 0700
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
-
-- name: 'copy vault password file'
-  copy:
-    src: vault-pass
-    dest: "{{ jenkins_home_path }}/.ansible/vault-pass"
-    mode: 0400
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
-
 - name: 'create ssh directory'
   file:
     path: "{{ jenkins_home_path }}/.ssh"
@@ -48,11 +32,3 @@
     state: present
     key: "{{ lookup('file', '../files/id_rsa.pub')}}"
     manage_dir: false
-
-- name: 'copy safe vault deploy key'
-  copy:
-    src: safe_vault_deploy_private_key
-    dest: "{{ jenkins_home_path }}/.ssh/safe_vault_deploy_private_key"
-    mode: 0400
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
