@@ -2,10 +2,13 @@
 - stat: path="{{ rustc_path }}"
   register: rust_path_result
 
-- name: 'install gcc for building dependencies'
+- name: 'install dependencies for crust'
   yum:
-    name: gcc
+    name: "{{ item }}"
     state: installed
+  with_items:
+    - gcc
+    - openssl-devel
   
 - name: 'get the rustup installer'
   get_url:
