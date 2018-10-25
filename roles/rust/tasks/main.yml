@@ -7,26 +7,25 @@
     name: gcc
     state: installed
   
-- name: 'create rust install path'
-  file:
-    path: "{{ rust_install_path }}"
-    state: directory
-    mode: 0755
-    owner: root
-    group: root
+- name: 'get the rustup installer'
+  get_url:
+    url: "{{ rustup_installer_url }}"
+    dest: "{{ rustup_installer_path }}"
+    mode: 0775
   when: rust_path_result.stat.exists == False
 
-- name: 'unpack rust distribution'
-  unarchive:
-    src: "{{ rust_installer_url }}"
-    dest: "{{ rust_install_path }}"
-    owner: root
-    group: root
-    remote_src: yes
-  when: rust_path_result.stat.exists == False
-
-- name: 'run the installer'
-  command: "./install.sh"
+- name: 'run the rustup installer'
+  command: "{{ rustup_installer_path }} --default-toolchain 1.29.2 --no-modify-path -y"
   args:
     chdir: "{{ rust_path }}"
+  become: yes
+  become_user: "{{ build_user }}"
+  when: rust_path_result.stat.exists == False
+
+- name: 'add musl target'
+  command: "{{ rustup_path }} target add x86_64-unknown-linux-musl"
+  when: rust_path_result.stat.exists == False
+
+- name: 'install cargo script'
+  command: "{{ cargo_path }} install cargo-script"
   when: rust_path_result.stat.exists == False
