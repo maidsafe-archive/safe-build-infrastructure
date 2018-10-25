@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "rust-slave" do |rust_slave|
     rust_slave.vm.box = "centos/7"
     rust_slave.vm.network :private_network, :ip => '192.168.100.100'
-    rust_slave.vm.provision "shell", path: "sh/setup_ansible.sh"
+    rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
     rust_slave.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "rust-slave.yml"
       ansible.raw_arguments = "--vault-pass ~/.ansible/vault-pass"
