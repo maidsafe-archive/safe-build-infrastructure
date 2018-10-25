@@ -1,0 +1,31 @@
+---
+- stat: path="{{ rust_path }}"
+  register: rust_path_result
+
+- name: 'install gcc for building dependencies'
+  yum:
+    name: gcc
+    state: installed
+  
+- name: 'create rust install path'
+  file:
+    path: "{{ rust_install_path }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  when: rust_path_result.stat.exists == False
+
+- name: 'unpack rust distribution'
+  unarchive:
+    src: "{{ rust_installer_url }}"
+    dest: "{{ rust_install_path }}"
+    owner: root
+    group: root
+  when: rust_path_result.stat.exists == False
+
+- name: 'run the installer'
+  command: "./install.sh"
+  args:
+    chdir: "{{ rust_path }}"
+  when: rust_path_result.stat.exists == False
