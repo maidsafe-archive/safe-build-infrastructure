@@ -1,0 +1,4 @@
+---
+jenkins_user: jenkins
+jenkins_home_path: "/home/{{ jenkins_user }}"
+safe_vault_config_path: "{{ jenkins_home_path }}/safe_vault_config"
