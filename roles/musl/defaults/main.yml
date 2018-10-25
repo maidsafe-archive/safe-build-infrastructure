@@ -1,0 +1,5 @@
+---
+musl_git_url: git://git.musl-libc.org/musl
+musl_src_path: /tmp/musl
+musl_path: /usr/local/musl/bin/musl-gcc
+musl_link_path: /usr/bin/musl

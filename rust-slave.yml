@@ -3,5 +3,6 @@
   become: True
   roles:
     - java
+    - musl
     - rust-slave
     - rust

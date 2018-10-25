@@ -1,0 +1,25 @@
+---
+- name: 'clone musl source'
+  git:
+    repo: "{{ musl_git_url }}"
+    dest: "{{ musl_src_path }}"
+
+- name: 'configure musl'
+  command: "./configure"
+  args:
+    chdir: "{{ musl_src_path }}"
+
+- name: 'build musl'
+  make:
+    chdir: "{{ musl_src_path }}"
+
+- name: 'install musl'
+  make:
+    target: install
+    chdir: "{{ musl_src_path }}"
+
+- name: 'symlink musl to location on path'
+  file:
+    src: "{{ musl_path }}"
+    dest: "{{ musl_link_path }}"
+    state: link
