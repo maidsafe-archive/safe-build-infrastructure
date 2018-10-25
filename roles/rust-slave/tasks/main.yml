@@ -1,8 +1,11 @@
 ---
-- name: 'install git'
+- name: 'install build tools'
   yum:
     name: git
     state: installed
+  with_items:
+    - gcc
+    - git
 
 - name: 'install useful debugging tools'
   yum:
