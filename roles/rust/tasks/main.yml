@@ -1,5 +1,5 @@
 ---
-- stat: path="{{ rust_path }}"
+- stat: path="{{ rustc_path }}"
   register: rust_path_result
 
 - name: 'install gcc for building dependencies'
