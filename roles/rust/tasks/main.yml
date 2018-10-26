@@ -23,6 +23,7 @@
     url: "{{ rustup_installer_url }}"
     dest: "{{ rustup_installer_path }}"
     mode: 0775
+    validate_certs: no
   when: rust_path_result.stat.exists == False
 
 - name: 'run the rustup installer'
