@@ -1,14 +1,14 @@
 ---
 - name: 'install build tools'
-  yum:
-    name: git
+  package:
+    name: "{{ item }}"
     state: installed
   with_items:
     - gcc
     - git
 
 - name: 'install useful debugging tools'
-  yum:
+  package:
     name: "{{ item }}"
     state: installed
   with_items:

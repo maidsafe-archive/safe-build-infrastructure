@@ -3,7 +3,7 @@
   register: rust_path_result
 
 - name: 'install dependencies for crust'
-  yum:
+  package:
     name: "{{ item }}"
     state: installed
   with_items:

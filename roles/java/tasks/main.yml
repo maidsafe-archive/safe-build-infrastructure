@@ -1,6 +1,6 @@
 ---
 - name: 'install openjdk'
-  yum:
+  package:
     name: "{{ item }}"
     state: installed
   with_items:
