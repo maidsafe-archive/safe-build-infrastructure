@@ -1,4 +1,9 @@
 ---
+- name: 'install gcc for building musl'
+  package:
+    name: gcc
+    state: present
+
 - name: 'clone musl source'
   git:
     repo: "{{ musl_git_url }}"
