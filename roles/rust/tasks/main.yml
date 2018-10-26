@@ -18,8 +18,6 @@
 
 - name: 'run the rustup installer'
   command: "{{ rustup_installer_path }} --default-toolchain 1.29.2 --no-modify-path -y"
-  args:
-    chdir: "{{ rust_path }}"
   become: yes
   become_user: "{{ build_user }}"
   when: rust_path_result.stat.exists == False
