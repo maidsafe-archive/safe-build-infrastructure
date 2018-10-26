@@ -6,11 +6,11 @@ function install_pip() {
 }
 
 function install_ansible() {
-    yum install -y libffi-devel openssl-devel python-devel
     pip install -U cffi
     pip install ansible
 }
 
-yum update -y
+[[ -f "/etc/debian_version" ]] && apt-get update -y 
+[[ -f "/etc/redhat-release" ]] && yum update -y
 install_pip
 install_ansible
