@@ -18,13 +18,28 @@
     - libssl-dev
   when: ansible_distribution == 'Ubuntu'
   
-- name: 'get the rustup installer'
+- name: 'get the rustup installer (CentOS)'
   get_url:
     url: "{{ rustup_installer_url }}"
     dest: "{{ rustup_installer_path }}"
     mode: 0775
-    validate_certs: no
-  when: rust_path_result.stat.exists == False
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'CentOS'
+
+- name: 'get the rustup installer (Ubuntu)'
+  shell: "curl {{ rustup_installer_url }} >> {{ rustup_installer_path }}"
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'Ubuntu'
+
+- name: 'set rustup script executable (Ubuntu)'
+  file:
+    path: "{{ rustup_installer_path }}"
+    mode: 0775
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'Ubuntu'
 
 - name: 'run the rustup installer'
   command: "{{ rustup_installer_path }} --default-toolchain 1.29.2 --no-modify-path -y"
