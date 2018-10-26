@@ -30,7 +30,7 @@
 
 - name: 'create ssh directory'
   file:
-    path: "{{ jenkins_home_path }}/.ssh"
+    path: "{{ build_user_home_path }}/.ssh"
     state: directory
     mode: 0700
     owner: "{{ build_user }}"
