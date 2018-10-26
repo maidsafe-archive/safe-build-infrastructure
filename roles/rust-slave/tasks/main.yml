@@ -21,6 +21,13 @@
     name: "{{ jenkins_user }}"
     shell: /bin/bash
 
+- name: 'add basic .bashrc for jenkins user that sets up cargo env'
+  file:
+    path: "{{ build_user_home_path }}/.bashrc"
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
+    mode: 0644
+
 - name: 'create ssh directory'
   file:
     path: "{{ jenkins_home_path }}/.ssh"
