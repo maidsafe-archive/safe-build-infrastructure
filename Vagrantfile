@@ -4,16 +4,16 @@
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
 
-  config.vm.define "rust-slave" do |rust_slave|
-    rust_slave.vm.box = "centos/7"
-    rust_slave.vm.network :private_network, :ip => '192.168.100.100'
-    rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
-    rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
-    rust_slave.vm.provision "ansible_local" do |ansible|
+  config.vm.define "centos-7-rust-slave" do |centos_7_rust_slave|
+    centos_7_rust_slave.vm.box = "centos/7"
+    centos_7_rust_slave.vm.network :private_network, :ip => '192.168.100.100'
+    centos_7_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
+    centos_7_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
+    centos_7_rust_slave.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
-    rust_slave.vm.provider "virtualbox" do |vb|
+    centos_7_rust_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
     end
   end
