@@ -2,12 +2,21 @@
 - stat: path="{{ rustc_path }}"
   register: rust_path_result
 
-- name: 'install dependencies for crust'
+- name: 'install dependencies for crust (CentOS)'
   package:
     name: "{{ item }}"
     state: installed
   with_items:
     - openssl-devel
+  when: ansible_distribution == 'CentOS'
+
+- name: 'install dependencies for crust (Ubuntu)'
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - libssl-dev
+  when: ansible_distribution == 'Ubuntu'
   
 - name: 'get the rustup installer'
   get_url:
