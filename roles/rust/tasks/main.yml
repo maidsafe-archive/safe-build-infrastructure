@@ -16,6 +16,7 @@
     state: installed
   with_items:
     - libssl-dev
+    - pkg-config
   when: ansible_distribution == 'Ubuntu'
   
 - name: 'get the rustup installer (CentOS)'
@@ -27,6 +28,8 @@
     - rust_path_result.stat.exists == False
     - ansible_distribution == 'CentOS'
 
+  # There is some problem with the get_url module and SSL on Ubuntu 14.04.
+  # If you run curl manually it works just fine.
 - name: 'get the rustup installer (Ubuntu)'
   shell: "curl {{ rustup_installer_url }} >> {{ rustup_installer_path }}"
   when:
