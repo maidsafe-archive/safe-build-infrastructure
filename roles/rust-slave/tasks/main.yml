@@ -18,7 +18,7 @@
 
 - name: 'add jenkins user'
   user:
-    name: "{{ jenkins_user }}"
+    name: "{{ build_user }}"
     shell: /bin/bash
 
 - name: 'add basic .bashrc for jenkins user that sets up cargo env'
@@ -33,12 +33,12 @@
     path: "{{ jenkins_home_path }}/.ssh"
     state: directory
     mode: 0700
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
 
 - name: 'add authorized key'
   authorized_key:
-    user: "{{ jenkins_user }}"
+    user: "{{ build_user }}"
     state: present
     key: "{{ lookup('file', '../files/id_rsa.pub')}}"
     manage_dir: false
