@@ -55,7 +55,11 @@
   become: yes
   become_user: "{{ build_user }}"
 
+- stat: path="{{ cargo_script_path }}"
+  register: cargo_script_result
+
 - name: 'install cargo script'
   command: "{{ cargo_path }} install cargo-script"
   become: yes
   become_user: "{{ build_user }}"
+  when: cargo_script_result.stat.exists == False
