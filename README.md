@@ -1,6 +1,15 @@
 # Build Infrastructure
 
-This repository houses automated build infrastructure for various Maidsafe projects.
+This repository houses automated build infrastructure for various Maidsafe projects. The purpose is to provide reproducible build environments for a Jenkins-based system or for developers who need a known configuration for debugging build problems; doing our builds from known configurations reduces the 'it works on my machine' effect.
+
+Right now there are only some VMs available, but hopefully shortly we can provide some Docker containers for running builds in.
+
+## VMs
+
+| Name                     | OS           | Description                                                                                                                                       | Installed Contents                                                                                                                              |
+| ----                     | --           | -----------                                                                                                                                       | --------                                                                                                                                        |
+| ubuntu-trusty-rust-slave | Ubuntu 14.04 | Use for building Crust on Ubuntu. This version of Ubuntu matches the version in use on Travis, so it should be very similar to their environment. | gcc, libssl-dev, pkg-config, musl-dev, musl-tools, rust 1.29.2, x86_64-unknown-linux-musl target, cargo-script                                  |
+| centos-7-rust-slave      | CentOS 7.5   | Use for building Crust on CentOS. Currently it won't build due to a weird issue with openssl.                                                     | gcc, openssl-devel, musl compiled from source (no packages on available on CentOS), rust 1.29.2, x86_64-unknown-linux-musl target, cargo-script |
 
 ## Building Crust
 
