@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
     centos_7_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     centos_7_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
     centos_7_rust_slave.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "rust-slave.yml"
+      ansible.playbook = "ansible/rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     centos_7_rust_slave.vm.provider "virtualbox" do |vb|
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     ubuntu_trusty_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     ubuntu_trusty_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
     ubuntu_trusty_rust_slave.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "rust-slave.yml"
+      ansible.playbook = "ansible/rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     ubuntu_trusty_rust_slave.vm.provider "virtualbox" do |vb|
