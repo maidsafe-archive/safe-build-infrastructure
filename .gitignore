@@ -1,2 +1,5 @@
+iso/
+packer_output/
 .vagrant
 *.retry
+*.box
