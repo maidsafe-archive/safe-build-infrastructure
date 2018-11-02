@@ -25,6 +25,12 @@
       ]
     }
   ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/ps/install_choco.ps1"
+    }
+  ],
   "post-processors": [
     {
       "type": "vagrant",
