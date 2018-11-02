@@ -32,8 +32,22 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "windows2012_r2-rust-slave" do |windows_slave|
+    windows_slave.vm.box = "windows2012_r2"
+    windows_slave.vm.guest = :windows
+    windows_slave.vm.communicator = "winrm"
+    windows_slave.winrm.username = "vagrant"
+    windows_slave.winrm.password = "vagrant"
+    windows_slave.vm.network :private_network, :ip => '192.168.100.102'
+    windows_slave.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.gui = true
+    end
+  end
+
   config.vm.provision :hosts do |hosts|
     hosts.add_host '192.168.100.100', ['centos-rust-slave.vagrantup.internal']
-    hosts.add_host '192.168.100.100', ['ubuntu-rust-slave.vagrantup.internal']
+    hosts.add_host '192.168.100.101', ['ubuntu-rust-slave.vagrantup.internal']
+    hosts.add_host '192.168.100.102', ['windows-slave.vagrantup.internal']
   end
 end
