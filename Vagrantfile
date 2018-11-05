@@ -40,6 +40,7 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.network :private_network, :ip => '192.168.100.102'
     windows_slave.vm.provision "shell", path: "scripts/bat/setup_mingw.bat"
+    windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 4096
       vb.gui = true
