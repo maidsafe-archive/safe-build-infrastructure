@@ -14,6 +14,19 @@ Right now there are only some VMs available, but hopefully shortly we can provid
 
 The Linux boxes here use the official, publicly available Vagrant base boxes. There aren't really any reliable base boxes available for Windows, so this repo contains a [Packer](https://www.packer.io/intro/) template for building the Windows box.
 
+## Building Vagrant Boxes
+
+The Linux Vagrant boxes are based on [publicly available](https://app.vagrantup.com/boxes/search) official base boxes (e.g. [Ubuntu's official boxes](https://app.vagrantup.com/ubuntu)), but there aren't really any official, reliable base boxes for Windows. For that reason, in this repository we construct our own.
+
+Here are the instructions for building the Windows 2012 R2 server box:
+
+* Install [Packer](https://packer.io/) (the latest version should do) on your host.
+* Get an evaluation ISO of Windows 2012 R2 from [here](https://www.microsoft.com/en-gb/evalcenter/evaluate-windows-server-2012-r2).
+* Clone this repo.
+* Put the file in the `iso` directory in this repo (create it if it doesn't exist - it's in the .gitignore to prevent large ISO files being committed).
+* Run `make build-windows-slave`.
+* After that's completed, you can add the resulting box for use with Vagrant using `vagrant box add packer_output/windows2012r2min-virtualbox.box`.
+
 ## Building Crust
 
 ### Build on a VM
