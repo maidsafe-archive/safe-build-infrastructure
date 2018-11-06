@@ -7,7 +7,7 @@
         [ "modifyvm", "{{.Name}}", "--vram", "48" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ],
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_additions_path": "VBoxGuestAdditions.iso",
       "guest_os_type": "Windows2012_64",
       "headless": "false",
       "iso_url": "iso/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO",
@@ -29,6 +29,12 @@
     {
       "type": "powershell",
       "script": "scripts/ps/install_choco.ps1"
+    },
+    {
+      "type": "shell",
+      "remote_path": "/tmp/vm-guest-tools.bat",
+      "execute_command": "{{ .Vars }} cmd /c C:/Windows/Temp/vm-guest-tools.bat",
+      "script": "scripts/bat/vm-guest-tools.bat"
     }
   ],
   "post-processors": [
