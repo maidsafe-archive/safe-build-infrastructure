@@ -1,0 +1,42 @@
+---
+- name: 'install build tools'
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - gcc
+    - git
+
+- name: 'install useful debugging tools'
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - tree
+    - unzip
+    - vim
+
+- name: 'add jenkins user'
+  user:
+    name: "{{ build_user }}"
+    shell: /bin/bash
+
+- name: 'source ~/.cargo/env in bashrc for build user'
+  lineinfile:
+    path: "{{ build_user_home_path }}/.bashrc"
+    line: "source ~/.cargo/env"
+
+- name: 'create ssh directory'
+  file:
+    path: "{{ build_user_home_path }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
+
+- name: 'add authorized key'
+  authorized_key:
+    user: "{{ build_user }}"
+    state: present
+    key: "{{ lookup('file', '../files/id_rsa.pub')}}"
+    manage_dir: false

@@ -1,0 +1,46 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "4096" ],
+        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+      ],
+      "guest_additions_path": "VBoxGuestAdditions.iso",
+      "guest_os_type": "Windows2012_64",
+      "headless": "false",
+      "iso_url": "iso/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO",
+      "iso_checksum": "5b5e08c490ad16b59b1d9fab0def883a",
+      "iso_checksum_type": "md5",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "15m",
+      "floppy_files": [
+        "templates/answer_files/2012_r2/Autounattend.xml",
+        "./scripts/ps/fixnetwork.ps1",
+        "./scripts/ps/openssh.ps1"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/ps/install_choco.ps1"
+    },
+    {
+      "type": "shell",
+      "remote_path": "/tmp/vm-guest-tools.bat",
+      "execute_command": "{{ .Vars }} cmd /c C:/Windows/Temp/vm-guest-tools.bat",
+      "script": "scripts/bat/vm-guest-tools.bat"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "packer_output/windows2012r2min-{{.Provider}}.box"
+    }
+  ]
+}

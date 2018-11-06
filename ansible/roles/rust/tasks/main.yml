@@ -1,0 +1,65 @@
+---
+- stat: path="{{ rustc_path }}"
+  register: rust_path_result
+
+- name: 'install dependencies for crust (CentOS)'
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - openssl-devel
+  when: ansible_distribution == 'CentOS'
+
+- name: 'install dependencies for crust (Ubuntu)'
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - libssl-dev
+    - pkg-config
+  when: ansible_distribution == 'Ubuntu'
+  
+- name: 'get the rustup installer (CentOS)'
+  get_url:
+    url: "{{ rustup_installer_url }}"
+    dest: "{{ rustup_installer_path }}"
+    mode: 0775
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'CentOS'
+
+  # There is some problem with the get_url module and SSL on Ubuntu 14.04.
+  # If you run curl manually it works just fine.
+- name: 'get the rustup installer (Ubuntu)'
+  shell: "curl {{ rustup_installer_url }} >> {{ rustup_installer_path }}"
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'Ubuntu'
+
+- name: 'set rustup script executable (Ubuntu)'
+  file:
+    path: "{{ rustup_installer_path }}"
+    mode: 0775
+  when:
+    - rust_path_result.stat.exists == False
+    - ansible_distribution == 'Ubuntu'
+
+- name: 'run the rustup installer'
+  command: "{{ rustup_installer_path }} --default-toolchain {{ rust_version }} --no-modify-path -y"
+  become: yes
+  become_user: "{{ build_user }}"
+  when: rust_path_result.stat.exists == False
+
+- name: 'add musl target'
+  command: "{{ rustup_path }} target add x86_64-unknown-linux-musl"
+  become: yes
+  become_user: "{{ build_user }}"
+
+- stat: path="{{ cargo_script_path }}"
+  register: cargo_script_result
+
+- name: 'install cargo script'
+  command: "{{ cargo_path }} install cargo-script"
+  become: yes
+  become_user: "{{ build_user }}"
+  when: cargo_script_result.stat.exists == False
