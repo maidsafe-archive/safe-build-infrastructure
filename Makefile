@@ -10,6 +10,9 @@ centos-7-rust-slave:
 ubuntu-trusty-rust-slave:
 	vagrant up ubuntu-trusty-rust-slave --provision
 
+windows-2012_r2-base:
+	vagrant up windows2012_r2-base --provision
+
 windows-2012_r2-rust-slave:
 	vagrant up windows2012_r2-rust-slave --provision
 

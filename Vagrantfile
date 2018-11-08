@@ -30,6 +30,19 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "windows2012_r2-base" do |windows_slave|
+    windows_slave.vm.box = "windows2012_r2"
+    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
+    windows_slave.vm.guest = :windows
+    windows_slave.vm.communicator = "winrm"
+    windows_slave.winrm.username = "vagrant"
+    windows_slave.winrm.password = "vagrant"
+    windows_slave.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.gui = true
+    end
+  end
+
   config.vm.define "windows2012_r2-rust-slave" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
