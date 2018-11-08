@@ -16,7 +16,7 @@ To get the VMs up and running, you need some things installed on your developmen
 * The easiest way to get machines running are via the convenience targets in the Makefile. Most Linux distros will probably have `make` installed via other packages like `build-essentials`. Google for how to install it on your distro. On Windows you can get access to `make` by installing [MSYS2](http://www.msys2.org/) then running `pacman -S make`; after this add `c:\msys64\usr\bin` to your `PATH` variable to have `make` accessible via `cmd.exe`. On OSX you can install via the [Apple Developer Tools](http://developer.apple.com/) and there's also a package available for [Homebrew](https://formulae.brew.sh/formula/make).
 * Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
 
-If you want to build the Windows boxes you will need a [Packer](https://packer.io/) installation, though this is not necessary, as the boxes will be hosted on S3.
+If you want to build the Windows boxes you will need a [Packer](https://packer.io/) installation; however this isn't necessary for running the Vagrant boxes, as the boxes will be hosted on S3.
 
 ## VMs
 
