@@ -13,6 +13,9 @@ ubuntu-trusty-rust-slave:
 windows-2012_r2-base:
 	vagrant up windows2012_r2-base --provision
 
+windows-2012_r2-git_bash:
+	vagrant up windows2012_r2-git_bash --provision
+
 windows-2012_r2-rust-slave:
 	vagrant up windows2012_r2-rust-slave --provision
 
