@@ -4,7 +4,7 @@
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
 
-  config.vm.define "centos-7-rust-slave" do |centos_7_rust_slave|
+  config.vm.define "centos-7-rust_slave" do |centos_7_rust_slave|
     centos_7_rust_slave.vm.box = "centos/7"
     centos_7_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     centos_7_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "ubuntu-trusty-rust-slave" do |ubuntu_trusty_rust_slave|
+  config.vm.define "ubuntu-trusty-rust_slave" do |ubuntu_trusty_rust_slave|
     ubuntu_trusty_rust_slave.vm.box = "ubuntu/trusty64"
     ubuntu_trusty_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     ubuntu_trusty_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "windows2012_r2-git_bash" do |windows_slave|
+  config.vm.define "windows2012_r2-git_bash-rust_slave" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "windows2012_r2-rust-slave" do |windows_slave|
+  config.vm.define "windows2012_r2-msys2-rust_slave" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
