@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "windows2012_r2-base" do |windows_slave|
+  config.vm.define "windows-2012_r2-base" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "windows2012_r2-git_bash-rust_slave" do |windows_slave|
+  config.vm.define "windows-2012_r2-git_bash-rust_slave" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "windows2012_r2-msys2-rust_slave" do |windows_slave|
+  config.vm.define "windows-2012_r2-msys2-rust_slave" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows

@@ -11,13 +11,13 @@ ubuntu-trusty-rust_slave:
 	vagrant up ubuntu-trusty-rust_slave --provision
 
 windows-2012_r2-base:
-	vagrant up windows2012_r2-base --provision
+	vagrant up windows-2012_r2-base --provision
 
-windows2012_r2-git_bash-rust_slave:
-	vagrant up windows2012_r2-git_bash-rust_slave --provision
+windows-2012_r2-git_bash-rust_slave:
+	vagrant up windows-2012_r2-git_bash-rust_slave --provision
 
 windows2012_r2-msys2-rust_slave:
-	vagrant up windows2012_r2-msys2-rust_slave --provision
+	vagrant up windows-2012_r2-msys2-rust_slave --provision
 
 clean:
 	vagrant destroy -f
