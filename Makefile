@@ -4,6 +4,9 @@ build-windows-slave:
 	packer validate templates/vbox-win2012r2.json
 	packer build templates/vbox-win2012r2.json
 
+jenkins_master-centos_7:
+	vagrant up jenkins_master --provision
+
 centos-7-rust_slave:
 	vagrant up centos-7-rust_slave --provision
 

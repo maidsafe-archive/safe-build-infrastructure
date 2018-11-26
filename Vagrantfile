@@ -4,6 +4,20 @@
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
 
+  config.vm.define "jenkins_master" do |jenkins_master|
+    jenkins_master.vm.box = "centos/7"
+    jenkins_master.vm.network :private_network, :ip => '192.168.10.100'
+    jenkins_master.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
+    jenkins_master.vm.provision "shell", path: "scripts/setup_ansible.sh"
+    jenkins_master.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/jenkins-master.yml"
+      ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
+    end
+    jenkins_master.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+    end
+  end
+
   config.vm.define "centos-7-rust_slave" do |centos_7_rust_slave|
     centos_7_rust_slave.vm.box = "centos/7"
     centos_7_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
@@ -73,5 +87,9 @@ Vagrant.configure("2") do |config|
       vb.memory = 4096
       vb.gui = true
     end
+  end
+
+  config.vm.provision :hosts do |hosts_config|
+    hosts_config.add_host '192.168.10.100', ['jenkins.vagrantup.internal']
   end
 end
