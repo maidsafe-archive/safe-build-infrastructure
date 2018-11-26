@@ -1,0 +1,6 @@
+docker_source: epel
+docker_storage_driver: devicemapper
+docker_version: 1.13.1
+docker_block_device: False
+docker_compose_version: 1.23.1
+docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}"

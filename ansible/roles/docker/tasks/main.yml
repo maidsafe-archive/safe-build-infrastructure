@@ -1,0 +1,47 @@
+---
+- name: 'copy docker configuration to /etc/sysconfig/docker'
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.destination }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { destination: '/etc/sysconfig/docker', src: 'docker.centos7.j2' }
+  notify:
+    - restart docker
+  register: docker_config
+  when: ansible_distribution == 'CentOS'
+
+- name: 'install docker'
+  package:
+    name: docker
+
+- name: 'create docker group'
+  group:
+    name: docker
+  notify:
+    - restart docker
+
+- name: 'start docker'
+  service:
+    name: docker
+    state: started
+
+- name: 'install docker-compose'
+  get_url:
+    url: "{{docker_compose_url}}"
+    dest: "/usr/bin/docker-compose-{{ docker_compose_version }}"
+    owner: root
+    group: docker
+    mode: '0755'
+
+- name: 'symlink docker-compose'
+  file:
+    src: "/usr/bin/docker-compose-{{ docker_compose_version }}"
+    dest: /usr/bin/docker-compose
+    state: link
+    owner: root
+    group: docker
+    mode: '0755'
+    force: yes
