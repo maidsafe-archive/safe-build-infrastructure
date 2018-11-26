@@ -1,0 +1,70 @@
+---
+- name: 'pull docker images'
+  command: "docker pull {{ item }}"
+  with_items:
+    - "{{ jenkins_image_name }}:{{ jenkins_image_tag }}"
+    - "{{ postfix_image_name }}:{{ postfix_image_tag }}"
+
+- name: 'jenkins mount directory'
+  file:
+    path: "{{ jenkins_data_mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  
+- name: 'jenkins home directory'
+  file:
+    path: "{{ jenkins_data_mount_path }}/jenkins_home"
+    state: directory
+    mode: 0755
+
+# The Ansible file module doesn't allow assigning by IDs.
+# These are the permissions necessary for the container to work correctly.
+- name: 'jenkins home ownership'
+  command: "chown 1000:1000 '{{ jenkins_data_mount_path }}/jenkins_home'"
+  args:
+    warn: false
+
+- name: 'copy jenkins service file'
+  template:
+    src: jenkins.service.j2
+    dest:  "/etc/systemd/system/{{ jenkins_service_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  register: service_file_result
+
+- name: 'create directory for docker-compose definition'
+  file:
+    path: "/opt/dockerapps/{{ jenkins_service_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0744
+
+- name: 'copy docker compose file'
+  template:
+    src: docker-compose.yml.j2
+    dest: "/opt/dockerapps/{{ jenkins_service_name }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+  register: compose_file_result
+
+- name: 'refresh systemd to load jenkins service file'
+  command: systemctl daemon-reload
+  when: service_file_result.changed
+
+- name: 'restart {{ jenkins_service_name }} service'
+  service:
+    name: "{{ jenkins_service_name }}"
+    state: restarted
+  when:
+    - service_file_result.changed or compose_file_result.changed
+    
+- name: 'start {{ jenkins_service_name }} service'
+  service:
+    name: "{{ jenkins_service_name }}"
+    state: started
+    enabled: True

@@ -1,0 +1,17 @@
+version: '2'
+services:
+  jenkins:
+    image: {{ jenkins_image_name }}:{{ jenkins_image_tag }}
+    restart: always
+    ports:
+      - {{ jenkins_web_port }}:8080
+      - {{ jenkins_slave_port }}:50000
+    volumes:
+      - {{ jenkins_data_mount_path }}/jenkins_home:/var/jenkins_home:z
+    links:
+      - postfix:postfix
+  postfix:
+    image: {{ postfix_image_name }}:{{ postfix_image_tag }}
+    restart: always
+    expose:
+      - "25"

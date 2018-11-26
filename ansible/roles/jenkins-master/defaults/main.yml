@@ -1,0 +1,9 @@
+---
+jenkins_service_name: jenkins
+jenkins_data_mount_path: "/mnt/{{ jenkins_service_name }}"
+jenkins_image_name: jenkins
+jenkins_image_tag: 2.60.3
+jenkins_slave_port: 50000
+jenkins_web_port: 8080
+postfix_image_name: tozd/postfix
+postfix_image_tag: alpine-38
