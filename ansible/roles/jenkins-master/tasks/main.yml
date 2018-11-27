@@ -35,19 +35,25 @@
     path: "{{ customised_jenkins_build_path }}"
     name: "{{ customised_jenkins_image_name }}"
 
-- name: 'create jenkins mount directory'
+- name: 'create jenkins host directories to be mounted into container'
   file:
-    path: "{{ jenkins_data_mount_path }}"
+    path: "{{ jenkins_casc_path }}"
     state: directory
     owner: root
     group: root
     mode: 0755
-  
-- name: 'create jenkins home directory'
-  file:
-    path: "{{ jenkins_data_mount_path }}/jenkins_home"
-    state: directory
-    mode: 0755
+  with_items:
+    - "{{ jenkins_data_mount_path }}"
+    - "{{ jenkins_home_path }}"
+    - "{{ jenkins_casc_path }}"
+
+- name: 'copy casc file'
+  template:
+    src: jenkins.yml
+    dest: "{{ jenkins_casc_path }}/jenkins.yml"
+    owner: root
+    group: root
+    mode: 0644
 
 # The Ansible file module doesn't allow assigning by IDs.
 # These are the permissions necessary for the container to work correctly.

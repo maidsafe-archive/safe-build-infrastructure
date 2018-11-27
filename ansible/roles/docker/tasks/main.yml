@@ -1,4 +1,8 @@
 ---
+- name: 'install python docker library for ansible docker modules'
+  pip:
+    name: docker
+
 - name: 'copy docker configuration to /etc/sysconfig/docker'
   template:
     src: "{{ item.src }}"

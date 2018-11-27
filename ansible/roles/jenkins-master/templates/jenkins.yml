@@ -1,0 +1,47 @@
+plugins:
+  sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    globalMatrix:
+      grantedPermissions:
+        - "Overall/Read:authenticated"
+        - "Overall/Read:Administrators"
+        - "Overall/Administer:chris"
+        - "Overall/Administer:Administrators"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  mode: NORMAL
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  quietPeriod: 5
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "chris"
+          password: "passw0rd"
+  slaveAgentPort: 50000
+  views:
+    - all:
+        name: "all"
+  remotingSecurity:
+    enabled: true
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+security:
+  remotingCLI:
+    enabled: false
