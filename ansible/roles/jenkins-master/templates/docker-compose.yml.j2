@@ -1,7 +1,7 @@
 version: '2'
 services:
   jenkins:
-    image: {{ jenkins_image_name }}:{{ jenkins_image_tag }}
+    image: {{ customised_jenkins_image_name }}
     restart: always
     ports:
       - {{ jenkins_web_port }}:8080

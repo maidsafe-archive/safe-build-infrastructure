@@ -7,3 +7,5 @@ jenkins_slave_port: 50000
 jenkins_web_port: 8080
 postfix_image_name: tozd/postfix
 postfix_image_tag: alpine-38
+customised_jenkins_build_path: /tmp/jenkins_docker_image
+customised_jenkins_image_name: "maidsafe/jenkins:{{ jenkins_image_tag }}"

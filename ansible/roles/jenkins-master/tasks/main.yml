@@ -1,11 +1,41 @@
 ---
 - name: 'pull docker images'
-  command: "docker pull {{ item }}"
+  docker_image:
+    name: "{{ item }}"
   with_items:
     - "{{ jenkins_image_name }}:{{ jenkins_image_tag }}"
     - "{{ postfix_image_name }}:{{ postfix_image_tag }}"
 
-- name: 'jenkins mount directory'
+- name: 'make temporary directory for custom Jenkins container build'
+  file:
+    path: "{{ customised_jenkins_build_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: 'copy custom Jenkins Dockerfile'
+  template:
+    src: Dockerfile.j2
+    dest: "{{ customised_jenkins_build_path }}/Dockerfile"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'copy plugins list'
+  copy:
+    src: plugins.txt
+    dest: "{{ customised_jenkins_build_path }}/plugins.txt"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'build the customised container for plugin installations'
+  docker_image:
+    path: "{{ customised_jenkins_build_path }}"
+    name: "{{ customised_jenkins_image_name }}"
+
+- name: 'create jenkins mount directory'
   file:
     path: "{{ jenkins_data_mount_path }}"
     state: directory
@@ -13,7 +43,7 @@
     group: root
     mode: 0755
   
-- name: 'jenkins home directory'
+- name: 'create jenkins home directory'
   file:
     path: "{{ jenkins_data_mount_path }}/jenkins_home"
     state: directory
