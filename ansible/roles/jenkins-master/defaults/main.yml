@@ -1,5 +1,6 @@
 ---
 jenkins_service_name: jenkins
+docker_compose_path: "/opt/dockerapps/{{ jenkins_service_name }}"
 jenkins_data_mount_path: "/mnt/{{ jenkins_service_name }}"
 jenkins_home_path: "{{ jenkins_data_mount_path }}/jenkins_home"
 jenkins_image_name: jenkins/jenkins
@@ -13,3 +14,4 @@ postfix_image_name: tozd/postfix
 postfix_image_tag: alpine-38
 customised_jenkins_build_path: /tmp/jenkins_docker_image
 customised_jenkins_image_name: "maidsafe/jenkins:{{ jenkins_image_tag }}"
+secret_chriso_jenkins_password_path: "{{ docker_compose_path }}/secret_chriso_jenkins_password"

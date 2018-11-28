@@ -1,4 +1,4 @@
-version: '2'
+version: '3.3'
 services:
   jenkins:
     image: {{ customised_jenkins_image_name }}
@@ -12,8 +12,13 @@ services:
       - postfix:postfix
     environment:
       - CASC_JENKINS_CONFIG={{ jenkins_container_casc_path }}
+    secrets:
+      - secret_chriso_jenkins_password
   postfix:
     image: {{ postfix_image_name }}:{{ postfix_image_tag }}
     restart: always
     expose:
       - "25"
+secrets:
+  secret_chriso_jenkins_password:
+    file: {{ secret_chriso_jenkins_password_path }}

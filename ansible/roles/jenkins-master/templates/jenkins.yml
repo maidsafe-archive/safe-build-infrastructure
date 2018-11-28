@@ -11,7 +11,7 @@ jenkins:
       grantedPermissions:
         - "Overall/Read:authenticated"
         - "Overall/Read:Administrators"
-        - "Overall/Administer:chris"
+        - "Overall/Administer:chriso"
         - "Overall/Administer:Administrators"
   crumbIssuer:
     standard:
@@ -29,8 +29,8 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-        - id: "chris"
-          password: "passw0rd"
+        - id: "chriso"
+          password: ${secret_chriso_jenkins_password}
   slaveAgentPort: 50000
   views:
     - all:
