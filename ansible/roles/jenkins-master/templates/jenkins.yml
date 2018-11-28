@@ -45,3 +45,14 @@ tool:
 security:
   remotingCLI:
     enabled: false
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - basicSSHUserPrivateKey:
+            id: "docker_slave_jenkins_user_ssh_key"
+            privateKeySource:
+              directEntry:
+                privateKey: ${secret_docker_slave_ssh_key}
+            scope: GLOBAL
+            username: "jenkins"

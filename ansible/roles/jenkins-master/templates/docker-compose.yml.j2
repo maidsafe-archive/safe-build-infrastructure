@@ -14,6 +14,7 @@ services:
       - CASC_JENKINS_CONFIG={{ jenkins_container_casc_path }}
     secrets:
       - secret_chriso_jenkins_password
+      - secret_docker_slave_ssh_key
   postfix:
     image: {{ postfix_image_name }}:{{ postfix_image_tag }}
     restart: always
@@ -22,3 +23,5 @@ services:
 secrets:
   secret_chriso_jenkins_password:
     file: {{ secret_chriso_jenkins_password_path }}
+  secret_docker_slave_ssh_key:
+    file: {{ secret_docker_slave_ssh_key_path }}
