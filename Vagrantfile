@@ -54,6 +54,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 4096
       vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
     end
   end
 
@@ -70,6 +71,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 4096
       vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
     end
   end
 
@@ -86,6 +88,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 4096
       vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
     end
   end
 
