@@ -34,7 +34,7 @@
 
 - name: 'install docker-compose'
   get_url:
-    url: "{{docker_compose_url}}"
+    url: "{{ docker_compose_url }}"
     dest: "/usr/bin/docker-compose-{{ docker_compose_version }}"
     owner: root
     group: docker
