@@ -37,6 +37,19 @@ jenkins:
         name: "all"
   remotingSecurity:
     enabled: true
+  nodes:
+    - permanent:
+        launcher:
+          sSHLauncher:
+            credentialsId: "docker_slave_jenkins_user_ssh_key"
+            host: "192.168.10.101"
+            launchTimeoutSeconds: 210
+            maxNumRetries: 10
+            port: 22
+            retryWaitTime: 15
+        name: "docker_slave-centos-7.5"
+        numExecutors: 1
+        remoteFS: "/home/jenkins"
 tool:
   git:
     installations:

@@ -20,14 +20,33 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "centos-7-rust_slave" do |centos_7_rust_slave|
     centos_7_rust_slave.vm.box = "centos/7"
+    centos_7_rust_slave.vm.network :private_network, :ip => '192.168.10.101'
     centos_7_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     centos_7_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
+    centos_7_rust_slave.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
     centos_7_rust_slave.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     centos_7_rust_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+  end
+
+  config.vm.define "docker_slave-centos-7" do |docker_slave_centos_7|
+    docker_slave_centos_7.vm.box = "centos/7"
+    docker_slave_centos_7.vm.network :private_network, :ip => '192.168.10.101'
+    docker_slave_centos_7.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
+    docker_slave_centos_7.vm.provision "shell", path: "scripts/setup_ansible.sh"
+    docker_slave_centos_7.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
+    docker_slave_centos_7.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/docker-slave.yml"
+      ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
+    end
+    docker_slave_centos_7.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.customize ["modifyvm", :id, "--audio", "none"]
     end
   end
 
@@ -35,6 +54,7 @@ Vagrant.configure("2") do |config|
     ubuntu_trusty_rust_slave.vm.box = "ubuntu/trusty64"
     ubuntu_trusty_rust_slave.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     ubuntu_trusty_rust_slave.vm.provision "shell", path: "scripts/setup_ansible.sh"
+    ubuntu_trusty_rust_slave.vm.provision "shell", path: "scripts/install_ansible_galaxy_requirements.sh", privileged: false
     ubuntu_trusty_rust_slave.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
@@ -94,5 +114,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :hosts do |hosts_config|
     hosts_config.add_host '192.168.10.100', ['jenkins.vagrantup.internal']
+    hosts_config.add_host '192.168.10.101', ['rust-slave.vagrantup.internal']
   end
 end

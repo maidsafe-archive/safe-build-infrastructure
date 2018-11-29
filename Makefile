@@ -10,6 +10,11 @@ jenkins_master-centos_7:
 centos-7-rust_slave:
 	vagrant up centos-7-rust_slave --provision
 
+docker_slave-centos-7:
+	vagrant up docker_slave-centos-7 --provision
+
+jenkins-environment: docker_slave-centos-7 jenkins_master-centos_7
+
 ubuntu-trusty-rust_slave:
 	vagrant up ubuntu-trusty-rust_slave --provision
 
