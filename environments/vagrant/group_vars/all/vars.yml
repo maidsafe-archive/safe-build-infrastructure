@@ -1,0 +1,7 @@
+---
+jenkins_master_ip_address: 192.168.10.100
+jenkins_master_full_name: jenkins_master-centos-7.5-x86_64
+jenkins_master_host_url: jenkins_master.centos.local
+docker_slave_ip_address: 192.168.10.101
+docker_slave_full_name: docker_slave-centos-7.5-x86_64
+docker_slave_host_url: docker-slave.centos.local

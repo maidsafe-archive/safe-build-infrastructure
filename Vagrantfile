@@ -6,21 +6,22 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "jenkins_master-centos-7.5-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"
-    jenkins_master.vm.network :private_network, :ip => '192.168.10.100'
+    jenkins_master.vm.network :private_network, :ip => "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
     jenkins_master.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     jenkins_master.vm.provision "shell", path: "scripts/setup_ansible.sh"
     jenkins_master.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/jenkins-master.yml"
+      ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     jenkins_master.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
+      vb.customize ["modifyvm", :id, "--audio", "none"]
     end
   end
 
   config.vm.define "rust_slave-centos-7.5-x86_64" do |rust_slave_centos|
     rust_slave_centos.vm.box = "centos/7"
-    rust_slave_centos.vm.network :private_network, :ip => '192.168.10.101'
     rust_slave_centos.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     rust_slave_centos.vm.provision "shell", path: "scripts/setup_ansible.sh"
     rust_slave_centos.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
@@ -36,12 +37,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "docker_slave-centos-7.5-x86_64" do |docker_slave_centos|
     docker_slave_centos.vm.box = "centos/7"
-    docker_slave_centos.vm.network :private_network, :ip => '192.168.10.101'
+    docker_slave_centos.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"
     docker_slave_centos.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     docker_slave_centos.vm.provision "shell", path: "scripts/setup_ansible.sh"
     docker_slave_centos.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
     docker_slave_centos.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/docker-slave.yml"
+      ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     docker_slave_centos.vm.provider "virtualbox" do |vb|
@@ -113,7 +115,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision :hosts do |hosts_config|
-    hosts_config.add_host '192.168.10.100', ['jenkins.vagrantup.internal']
-    hosts_config.add_host '192.168.10.101', ['rust-slave.vagrantup.internal']
+    hosts_config.add_host "#{ENV['JENKINS_MASTER_IP_ADDRESS']}", ["#{ENV['JENKINS_MASTER_URL']}"]
+    hosts_config.add_host "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}", ["#{ENV['DOCKER_SLAVE_URL']}"]
   end
 end
