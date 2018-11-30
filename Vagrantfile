@@ -56,7 +56,7 @@ Vagrant.configure("2") do |config|
     rust_slave_ubuntu.vm.box = "ubuntu/trusty64"
     rust_slave_ubuntu.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     rust_slave_ubuntu.vm.provision "shell", path: "scripts/setup_ansible.sh"
-    rust_slave_ubuntu.vm.provision "shell", path: "scripts/install_ansible_galaxy_requirements.sh", privileged: false
+    rust_slave_ubuntu.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
     rust_slave_ubuntu.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/rust-slave.yml"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
