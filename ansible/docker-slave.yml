@@ -5,3 +5,4 @@
     - java
     - docker
     - jenkins-slave
+    - docker-slave-images
