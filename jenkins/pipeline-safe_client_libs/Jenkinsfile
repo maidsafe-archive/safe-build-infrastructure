@@ -1,0 +1,6 @@
+stage('build safe core') {
+    node('docker_slave-centos-7.5-x86_64') {
+        git([url: 'https://github.com/maidsafe/safe_client_libs.git'])
+        sh('docker run -v "$PWD":/usr/src/crust maidsafe/safe-client-libs-build:0.9.0 scripts/build-real')
+    }
+}
