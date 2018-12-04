@@ -3,6 +3,7 @@
   user:
     name: "{{ build_user }}"
     shell: /bin/bash
+    groups: 'docker'
 
 - name: 'create ssh directory'
   file:
