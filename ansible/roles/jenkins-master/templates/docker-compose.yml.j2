@@ -1,0 +1,27 @@
+version: '3.3'
+services:
+  jenkins:
+    image: {{ customised_jenkins_image_name }}
+    restart: always
+    ports:
+      - {{ jenkins_web_port }}:8080
+      - {{ jenkins_slave_port }}:50000
+    volumes:
+      - {{ jenkins_data_mount_path }}/jenkins_home:{{ jenkins_container_home_path }}:z
+    links:
+      - postfix:postfix
+    environment:
+      - CASC_JENKINS_CONFIG={{ jenkins_container_casc_path }}
+    secrets:
+      - secret_chriso_jenkins_password
+      - secret_docker_slave_ssh_key
+  postfix:
+    image: {{ postfix_image_name }}:{{ postfix_image_tag }}
+    restart: always
+    expose:
+      - "25"
+secrets:
+  secret_chriso_jenkins_password:
+    file: {{ secret_chriso_jenkins_password_path }}
+  secret_docker_slave_ssh_key:
+    file: {{ secret_docker_slave_ssh_key_path }}

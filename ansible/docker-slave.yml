@@ -3,6 +3,5 @@
   become: True
   roles:
     - java
-    - rust-slave
-    - musl
-    - rust
+    - jenkins-slave
+    - docker

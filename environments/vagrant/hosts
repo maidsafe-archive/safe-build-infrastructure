@@ -1,0 +1,5 @@
+[jenkins-masters]
+jenkins_master-centos-7.5-x86_64 ansible_connection=local
+
+[slaves]
+docker_slave-centos-7.5-x86_64 ansible_connection=local

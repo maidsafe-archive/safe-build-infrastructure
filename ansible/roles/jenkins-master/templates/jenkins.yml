@@ -1,0 +1,71 @@
+plugins:
+  sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    globalMatrix:
+      grantedPermissions:
+        - "Overall/Read:authenticated"
+        - "Overall/Read:Administrators"
+        - "Overall/Administer:chriso"
+        - "Overall/Administer:Administrators"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  mode: NORMAL
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  quietPeriod: 5
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "chriso"
+          password: ${secret_chriso_jenkins_password}
+  slaveAgentPort: 50000
+  views:
+    - all:
+        name: "all"
+  remotingSecurity:
+    enabled: true
+  nodes:
+    - permanent:
+        launcher:
+          sSHLauncher:
+            credentialsId: "docker_slave_jenkins_user_ssh_key"
+            host: "{{ docker_slave_ip_address }}"
+            launchTimeoutSeconds: 210
+            maxNumRetries: 10
+            port: 22
+            retryWaitTime: 15
+        name: "{{ docker_slave_full_name }}"
+        numExecutors: 1
+        remoteFS: "/home/jenkins"
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+security:
+  remotingCLI:
+    enabled: false
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - basicSSHUserPrivateKey:
+            id: "docker_slave_jenkins_user_ssh_key"
+            privateKeySource:
+              directEntry:
+                privateKey: ${secret_docker_slave_ssh_key}
+            scope: GLOBAL
+            username: "jenkins"

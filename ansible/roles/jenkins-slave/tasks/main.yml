@@ -1,0 +1,20 @@
+---
+- name: 'add jenkins user'
+  user:
+    name: "{{ build_user }}"
+    shell: /bin/bash
+
+- name: 'create ssh directory'
+  file:
+    path: "{{ build_user_home_path }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
+
+- name: 'add authorized key'
+  authorized_key:
+    user: "{{ build_user }}"
+    state: present
+    key: "{{ lookup('file', '../../../../ssh_keys/docker_build_slave_key.pub')}}"
+    manage_dir: false

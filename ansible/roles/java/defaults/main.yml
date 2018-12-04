@@ -1,4 +1,0 @@
----
-java_version: 1.8.0
-java_home: "/usr/lib/jvm/java-{{ java_version }}"
-jre_home: "{{ java_home }}/jre/"

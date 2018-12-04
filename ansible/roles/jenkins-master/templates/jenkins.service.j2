@@ -1,0 +1,14 @@
+[Unit]
+Description={{ jenkins_service_name }} container service
+Requires=docker.service
+After=network.service docker.service
+
+[Service]
+WorkingDirectory={{ docker_compose_path }}
+ExecStartPre=-/bin/docker-compose rm -f
+ExecStart=/bin/docker-compose up
+ExecStop=/bin/docker-compose down
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target

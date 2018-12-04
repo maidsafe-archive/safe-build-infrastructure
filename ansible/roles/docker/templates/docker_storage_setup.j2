@@ -1,0 +1,5 @@
+{% if docker_block_device != False %}
+DEVS={{ docker_block_device }}
+VG=docker-vg
+SETUP_LVM_THIN_POOL=yes
+{% endif %}

@@ -1,0 +1,122 @@
+---
+- name: 'pull docker images'
+  docker_image:
+    name: "{{ item }}"
+  with_items:
+    - "{{ jenkins_image_name }}:{{ jenkins_image_tag }}"
+    - "{{ postfix_image_name }}:{{ postfix_image_tag }}"
+
+- name: 'make temporary directory for custom Jenkins container build'
+  file:
+    path: "{{ customised_jenkins_build_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: 'copy custom Jenkins Dockerfile'
+  template:
+    src: Dockerfile.j2
+    dest: "{{ customised_jenkins_build_path }}/Dockerfile"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'copy plugins list'
+  copy:
+    src: plugins.txt
+    dest: "{{ customised_jenkins_build_path }}/plugins.txt"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'build the customised container for plugin installations'
+  docker_image:
+    path: "{{ customised_jenkins_build_path }}"
+    name: "{{ customised_jenkins_image_name }}"
+
+- name: 'create jenkins host directories to be mounted into container'
+  file:
+    path: "{{ jenkins_casc_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ jenkins_data_mount_path }}"
+    - "{{ jenkins_home_path }}"
+    - "{{ jenkins_casc_path }}"
+
+- name: 'copy casc file'
+  template:
+    src: jenkins.yml
+    dest: "{{ jenkins_casc_path }}/jenkins.yml"
+    owner: root
+    group: root
+    mode: 0644
+
+# The Ansible file module doesn't allow assigning by IDs.
+# These are the permissions necessary for the container to work correctly.
+- name: 'jenkins home ownership'
+  command: "chown 1000:1000 '{{ jenkins_data_mount_path }}/jenkins_home'"
+  args:
+    warn: false
+
+- name: 'copy jenkins service file'
+  template:
+    src: jenkins.service.j2
+    dest:  "/etc/systemd/system/{{ jenkins_service_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  register: service_file_result
+
+- name: 'create directory for docker-compose definition'
+  file:
+    path: "/opt/dockerapps/{{ jenkins_service_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0744
+
+- name: 'copy docker compose file'
+  template:
+    src: docker-compose.yml.j2
+    dest: "/opt/dockerapps/{{ jenkins_service_name }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+  register: compose_file_result
+
+- name: 'copy chriso user password secret'
+  copy:
+    src: secret_chriso_jenkins_password
+    dest: "{{ secret_chriso_jenkins_password_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'copy ssh key for docker build slave'
+  copy:
+    src: ../../../../ssh_keys/docker_build_slave_key
+    dest: "{{ secret_docker_slave_ssh_key_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'refresh systemd to load jenkins service file'
+  command: systemctl daemon-reload
+  when: service_file_result.changed
+
+- name: 'restart {{ jenkins_service_name }} service'
+  service:
+    name: "{{ jenkins_service_name }}"
+    state: restarted
+  when:
+    - service_file_result.changed or compose_file_result.changed
+
+- name: 'start {{ jenkins_service_name }} service'
+  service:
+    name: "{{ jenkins_service_name }}"
+    state: started
+    enabled: True
