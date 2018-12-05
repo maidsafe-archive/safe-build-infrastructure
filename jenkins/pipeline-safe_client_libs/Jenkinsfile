@@ -1,6 +1,9 @@
-stage('build safe core') {
+stage('build authenticator and app') {
     node('docker_slave-centos-7.5-x86_64') {
         git([url: 'https://github.com/maidsafe/safe_client_libs.git'])
-        sh('docker run -v "$PWD":/usr/src/crust maidsafe/safe-client-libs-build:0.9.0 scripts/build-real')
+
+        def user_id = sh('echo $UID', returnStdout: true).trim()
+        def group_id = sh("getent group $USER | awk -F: '{ printf \"%d\n\", $3 }'", returnStdout: true).trim()
+        sh('docker run -v "$PWD":/usr/src/crust -u ${user_id}:${group_id} maidsafe/safe-client-libs-build:0.9.0 scripts/build-real')
     }
 }
