@@ -1,8 +1,15 @@
-stage('build authenticator and app') {
-    node('docker_slave-centos-7.5-x86_64') {
-        git([url: 'https://github.com/jacderida/safe_client_libs.git', branch: 'docker_build'])
-        build_safe_client_libs('real')
-        build_safe_client_libs('mock')
+stage('build') {
+    parallel real: {
+        node('docker_slave-centos-7.5-x86_64') {
+            git([url: 'https://github.com/jacderida/safe_client_libs.git', branch: 'docker_build'])
+            build_safe_client_libs('real')
+        }
+    },
+    mock: {
+        node('docker_slave-centos-7.5-x86_64') {
+            git([url: 'https://github.com/jacderida/safe_client_libs.git', branch: 'docker_build'])
+            build_safe_client_libs('mock')
+        }
     }
 }
 
