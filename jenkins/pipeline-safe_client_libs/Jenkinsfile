@@ -1,7 +1,7 @@
 // These will be replaced with job parameters.
-def IMAGE_NAME = 'maidsafe/safe-client-libs-build:0.9.0'
-def IMAGE_TAG = '0.9.0'
-def REPO_URL = 'https://github.com/jacderida/safe_client_libs.git'
+IMAGE_NAME = 'maidsafe/safe-client-libs-build'
+IMAGE_TAG = '0.9.0'
+REPO_URL = 'https://github.com/jacderida/safe_client_libs.git'
 
 stage('build') {
     parallel real: {
@@ -29,7 +29,7 @@ stage('test mocked libs') {
 def get_user_details() {
     def user_id = sh(returnStdout: true, script: 'echo $UID').trim()
     def group_id = sh(returnStdout: true, script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
-    return Tuple(user_id, group_id)
+    return [user_id, group_id]
 }
 
 def get_committed_build_image_name() {
@@ -38,7 +38,9 @@ def get_committed_build_image_name() {
 }
 
 def build_safe_client_libs(mode) {
-    def (String user_id, String group_id) = get_user_details()
+    def user_details = get_user_details()
+    def user_id = user_details[0]
+    def group_id = user_details[1]
     def image_name = "${IMAGE_NAME}:${IMAGE_TAG}"
     sh("docker run --name safe_client_libs_${mode} " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
@@ -48,14 +50,16 @@ def build_safe_client_libs(mode) {
 
 def commit_container_artifacts(mode) {
     def container_name = "safe_client_libs_${mode}"
-    def container_id = sh($/eval'docker ps -a | grep "${container_name}" | awk "{ print \$1 }"'$/)
+    def container_id = sh(returnStdout: true, script: $/eval "docker ps -a | grep '${container_name}' | awk '{ print \$1 }'" /$).trim()
     def image_name = get_committed_build_image_name()
     sh("docker commit ${container_id} ${image_name}")
     sh("docker rm ${container_name}")
 }
 
 def run_mocked_tests() {
-    def (String user_id, String group_id) = get_user_details()
+    def user_details = get_user_details()
+    def user_id = user_details[0]
+    def group_id = user_details[1]
     def image_name = get_committed_build_image_name()
     sh("docker run --name safe_client_libs_mock_test_run " +
        "-v ${env.WORKSPACE}:usr/src/crust:Z " +
