@@ -1,4 +1,4 @@
-# These will be replaced with job parameters.
+// These will be replaced with job parameters.
 def IMAGE_NAME = 'maidsafe/safe-client-libs-build:0.9.0'
 def IMAGE_TAG = '0.9.0'
 def REPO_URL = 'https://github.com/jacderida/safe_client_libs.git'
