@@ -60,7 +60,7 @@ def run_mocked_tests() {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
-    def image_name = get_committed_build_image_name(mode)
+    def image_name = get_committed_build_image_name('mock')
     sh("docker run --name safe_client_libs_mock_test_run " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
