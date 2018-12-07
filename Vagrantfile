@@ -47,6 +47,7 @@ Vagrant.configure("2") do |config|
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     docker_slave_centos.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
       vb.memory = 2048
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
