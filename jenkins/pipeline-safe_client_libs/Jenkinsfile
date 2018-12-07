@@ -26,6 +26,17 @@ stage('test mocked libs') {
     }
 }
 
+def get_user_details() {
+    def user_id = sh(returnStdout: true, script: 'echo $UID').trim()
+    def group_id = sh(returnStdout: true, script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
+    return Tuple(user_id, group_id)
+}
+
+def get_committed_build_image_name() {
+    def tag = "build-${env.BUILD_NUMBER}"
+    return "${IMAGE_NAME}:${tag}"
+}
+
 def build_safe_client_libs(mode) {
     def (String user_id, String group_id) = get_user_details()
     def image_name = "${IMAGE_NAME}:${IMAGE_TAG}"
@@ -50,15 +61,4 @@ def run_mocked_tests() {
        "-v ${env.WORKSPACE}:usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/test-mock /target")
-}
-
-def get_user_details() {
-    def user_id = sh(returnStdout: true, script: 'echo $UID').trim()
-    def group_id = sh(returnStdout: true, script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
-    return Tuple(user_id, group_id)
-}
-
-def get_committed_build_image_name() {
-    def tag = "build-${env.BUILD_NUMBER}"
-    return "${IMAGE_NAME}:${tag}"
 }
