@@ -32,8 +32,8 @@ def get_user_details() {
     return [user_id, group_id]
 }
 
-def get_committed_build_image_name() {
-    def tag = "build-${env.BUILD_NUMBER}"
+def get_committed_build_image_name(mode) {
+    def tag = "build-${mode}-${env.BUILD_NUMBER}"
     return "${IMAGE_NAME}:${tag}"
 }
 
@@ -51,7 +51,7 @@ def build_safe_client_libs(mode) {
 def commit_container_artifacts(mode) {
     def container_name = "safe_client_libs_${mode}"
     def container_id = sh(returnStdout: true, script: $/eval "docker ps -a | grep '${container_name}' | awk '{ print \$1 }'" /$).trim()
-    def image_name = get_committed_build_image_name()
+    def image_name = get_committed_build_image_name(mode)
     sh("docker commit ${container_id} ${image_name}")
     sh("docker rm ${container_name}")
 }
@@ -60,9 +60,9 @@ def run_mocked_tests() {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
-    def image_name = get_committed_build_image_name()
+    def image_name = get_committed_build_image_name(mode)
     sh("docker run --name safe_client_libs_mock_test_run " +
-       "-v ${env.WORKSPACE}:usr/src/crust:Z " +
+       "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/test-mock /target")
 }
