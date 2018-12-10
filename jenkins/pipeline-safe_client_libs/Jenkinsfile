@@ -29,7 +29,7 @@ stage('test mocked libs') {
 stage('packaging') {
     node('docker_slave-centos-7.5-x86_64') {
         for (app in ['safe_app', 'safe_authenticator']) {
-            package(app)
+            run_packaging(app)
         }
     }
 }
@@ -75,7 +75,7 @@ def run_mocked_tests() {
        "${image_name} scripts/test-mock /target")
 }
 
-def package(app) {
+def run_packaging(app) {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
