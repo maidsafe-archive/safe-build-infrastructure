@@ -28,7 +28,7 @@ stage('test mocked libs') {
 
 stage('packaging') {
     node('docker_slave-centos-7.5-x86_64') {
-        for (app : ['safe_app', 'safe_authenticator']) {
+        for (app in ['safe_app', 'safe_authenticator']) {
             package(app)
         }
     }
@@ -79,7 +79,7 @@ def package(app) {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
-    for (mode : ['real', 'mock']) {
+    for (mode in ['real', 'mock']) {
         def image_name = get_committed_build_image_name(mode)
         sh("docker run --name safe_client_libs_${mode}_package " +
            "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
