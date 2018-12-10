@@ -31,6 +31,7 @@ stage('packaging') {
         for (app in ['safe_app', 'safe_authenticator']) {
             run_packaging(app)
         }
+        move_packages_to_deploy()
     }
 }
 
@@ -81,9 +82,18 @@ def run_packaging(app) {
     def group_id = user_details[1]
     for (mode in ['real', 'mock']) {
         def image_name = get_committed_build_image_name(mode)
-        sh("docker run --name safe_client_libs_${mode}_package " +
-           "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
-           "-u ${user_id}:${group_id} " +
-           "${image_name} scripts/package.rs --lib --name ${app} --commit")
+        def command = "docker run --rm --name safe_${app}_${mode}_package " +
+            "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
+            "-u ${user_id}:${group_id} " +
+            "${image_name} scripts/package.rs --lib --name ${app} --commit"
+        if (mode == 'mock') {
+            command += " --mock"
+        }
+        sh(command)
     }
+}
+
+def move_packages_to_deploy() {
+    sh('mkdir deploy')
+    sh('mv *.zip deploy')
 }
