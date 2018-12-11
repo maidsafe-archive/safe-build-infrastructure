@@ -16,3 +16,4 @@ customised_jenkins_build_path: /tmp/jenkins_docker_image
 customised_jenkins_image_name: "maidsafe/jenkins:{{ jenkins_image_tag }}"
 secret_chriso_jenkins_password_path: "{{ docker_compose_path }}/secret_chriso_jenkins_password"
 secret_docker_slave_ssh_key_path: "{{ docker_compose_path }}/secret_docker_slave_ssh_key"
+secret_aws_jenkins_secret_access_key_path: "{{ docker_compose_path }}/secret_aws_jenkins_secret_access_key"

@@ -69,3 +69,8 @@ credentials:
                 privateKey: ${secret_docker_slave_ssh_key}
             scope: GLOBAL
             username: "jenkins"
+        - usernamePassword:
+            id: "aws_jenkins_user_credentials"
+            password: ${secret_aws_jenkins_secret_key}
+            scope: GLOBAL
+            username: "AKIAJJLLBHBG3MTRVSXA"

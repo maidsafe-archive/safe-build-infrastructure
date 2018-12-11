@@ -15,6 +15,7 @@ services:
     secrets:
       - secret_chriso_jenkins_password
       - secret_docker_slave_ssh_key
+      - secret_aws_jenkins_secret_key
   postfix:
     image: {{ postfix_image_name }}:{{ postfix_image_tag }}
     restart: always
@@ -25,3 +26,5 @@ secrets:
     file: {{ secret_chriso_jenkins_password_path }}
   secret_docker_slave_ssh_key:
     file: {{ secret_docker_slave_ssh_key_path }}
+  secret_aws_jenkins_secret_key
+    file: {{ secret_aws_jenkins_secret_access_key_path }}
