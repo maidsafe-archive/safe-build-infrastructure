@@ -40,12 +40,14 @@ stage('packaging') {
 stage('deployment') {
     node('docker_slave-centos-7.5-x86_64') {
         withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
-            s3Upload(
-                bucket: 'safe-client-libs-jenkins',
-                path: 'deploy/',
-                includePathPattern: '**/*.zip',
-                workDir: "${env.WORKSPACE}",
-                acl: 'PublicRead')
+            def artifacts = sh(returnStdout: true, script: 'ls -1 deploy').trim().split("\\r?\\n")
+            for (artifact in artifacts) {
+                s3Upload(
+                    bucket: 'safe-client-libs-jenkins',
+                    file: artifact,
+                    workingDir: "${env.WORKSPACE}/deploy",
+                    acl: 'PublicRead')
+            }
         }
     }
 }
