@@ -35,6 +35,18 @@ stage('packaging') {
     }
 }
 
+stage('deployment') {
+    node('docker_slave-centos-7.5-x86_64') {
+        withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
+            s3Upload(
+                bucket: 'safe-client-libs-jenkins',
+                path: 'deploy/',
+                includePathPattern: '*.zip',
+                acl: 'PublicRead')
+        }
+    }
+}
+
 def get_user_details() {
     def user_id = sh(returnStdout: true, script: 'echo $UID').trim()
     def group_id = sh(returnStdout: true, script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
