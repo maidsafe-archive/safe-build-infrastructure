@@ -7,6 +7,7 @@ stage('build') {
     parallel real: {
         node('docker_slave-centos-7.5-x86_64') {
             git([url: REPO_URL, branch: 'docker_build'])
+            clean()
             build_safe_client_libs('real')
             commit_container_artifacts('real')
         }
@@ -14,6 +15,7 @@ stage('build') {
     mock: {
         node('docker_slave-centos-7.5-x86_64') {
             git([url: REPO_URL, branch: 'docker_build'])
+            clean()
             build_safe_client_libs('mock')
             commit_container_artifacts('mock')
         }
@@ -45,6 +47,11 @@ stage('deployment') {
                 acl: 'PublicRead')
         }
     }
+}
+
+def clean() {
+    sh("rm -f *.zip")
+    sh("rm -rf deploy")
 }
 
 def get_user_details() {
