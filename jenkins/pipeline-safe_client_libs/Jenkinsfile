@@ -43,7 +43,8 @@ stage('deployment') {
             s3Upload(
                 bucket: 'safe-client-libs-jenkins',
                 path: 'deploy/',
-                includePathPattern: '*.zip',
+                includePathPattern: '**/*.zip',
+                workDir: "${env.WORKSPACE}",
                 acl: 'PublicRead')
         }
     }
