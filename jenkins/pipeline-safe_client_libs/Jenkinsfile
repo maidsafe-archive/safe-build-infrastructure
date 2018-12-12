@@ -56,8 +56,8 @@ def clean() {
     // The next 2 commands will fail if there are currently no containers (because it's the first build or
     // because they had been cleaned out manually), as they will pass an empty list to xargs. The reason for
     // the '|| true' at the end is to prevent the build failing in this case.
-    sh($/eval "docker ps -a | grep 'safe_client_libs_*' | awk '{ print $1 }' | xargs docker rm || true"/$)
-    sh($/eval "docker images | grep -E 'build-real|build-mock' | awk '{ print $3 }' | xargs docker rmi || true"/$)
+    sh($/eval "docker ps -a | grep 'safe_client_libs_*' | awk '{ print \$1 }' | xargs docker rm || true"/$)
+    sh($/eval "docker images | grep -E 'build-real|build-mock' | awk '{ print \$3 }' | xargs docker rmi || true"/$)
     sh("rm -f *.zip")
     sh("rm -rf deploy")
 }
