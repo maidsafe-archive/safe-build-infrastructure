@@ -1,5 +1,6 @@
 ---
 jenkins_service_name: jenkins
+jenkins_alternate_update_center_url: http://ftp-nyc.osuosl.org/pub/jenkins
 docker_compose_path: "/opt/dockerapps/{{ jenkins_service_name }}"
 jenkins_data_mount_path: "/mnt/{{ jenkins_service_name }}"
 jenkins_home_path: "{{ jenkins_data_mount_path }}/jenkins_home"

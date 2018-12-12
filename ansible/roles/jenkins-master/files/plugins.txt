@@ -42,7 +42,8 @@ docker-workflow:1.17
 durable-task:1.28
 email-ext:2.63
 favorite:2.3.2
-git:3.9.1 git-client:2.7.4
+git:3.9.1
+git-client:2.7.4
 github:1.29.3
 github-api:1.92
 github-branch-source:2.4.1
