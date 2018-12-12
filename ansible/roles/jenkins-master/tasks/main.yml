@@ -90,7 +90,7 @@
 
 - name: 'copy chriso user password secret'
   copy:
-    src: secret_chriso_jenkins_password
+    content: "{{ secret_chriso_jenkins_password }}"
     dest: "{{ secret_chriso_jenkins_password_path }}"
     owner: root
     group: root
@@ -98,7 +98,7 @@
 
 - name: 'copy jenkins user aws secret key'
   copy:
-    src: secret_aws_jenkins_secret_key
+    content: "{{ secret_aws_jenkins_secret_access_key }}"
     dest: "{{ secret_aws_jenkins_secret_access_key_path }}"
     owner: root
     group: root
