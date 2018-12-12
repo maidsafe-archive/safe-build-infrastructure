@@ -53,6 +53,8 @@ stage('deployment') {
 }
 
 def clean() {
+    sh($/eval "docker ps -a | grep 'safe_client_libs_*' | awk '{ print $1 }' | xargs docker rm"/$).trim()
+    sh($/eval "docker images | grep -E 'build-real|build-mock' | awk '{ print $3 }' | xargs docker rmi"/$).trim()
     sh("rm -f *.zip")
     sh("rm -rf deploy")
 }
@@ -81,7 +83,7 @@ def build_safe_client_libs(mode) {
 
 def commit_container_artifacts(mode) {
     def container_name = "safe_client_libs_${mode}"
-    def container_id = sh(returnStdout: true, script: $/eval "docker ps -a | grep '${container_name}' | awk '{ print \$1 }'" /$).trim()
+    def container_id = sh(returnStdout: true, script: $/eval "docker ps -a | grep -w '${container_name}' | awk '{ print \$1 }'" /$).trim()
     def image_name = get_committed_build_image_name(mode)
     sh("docker commit ${container_id} ${image_name}")
     sh("docker rm ${container_name}")
@@ -92,7 +94,7 @@ def run_mocked_tests() {
     def user_id = user_details[0]
     def group_id = user_details[1]
     def image_name = get_committed_build_image_name('mock')
-    sh("docker run --name safe_client_libs_mock_test_run " +
+    sh("docker run --rm --name safe_client_libs_mock_test_run " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/test-mock /target")
