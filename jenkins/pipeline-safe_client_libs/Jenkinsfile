@@ -76,7 +76,11 @@ def get_user_details() {
 }
 
 def get_committed_build_image_name(mode) {
-    def tag = "build-${mode}-${env.BUILD_NUMBER}"
+    // There will only be 2 images created, 'real' and 'mock'.
+    // The binary and integration tests will both use the mock image, since all the builds
+    // they need will be committed in the mock image.
+    m = mode == 'integration' || mode == 'binary' ? 'mock' : mode
+    def tag = "build-${m}-${env.BUILD_NUMBER}"
     return "${IMAGE_NAME}:${tag}"
 }
 
