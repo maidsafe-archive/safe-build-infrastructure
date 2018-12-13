@@ -22,7 +22,7 @@ stage('build') {
     }
 }
 
-stage('test mocked libs') {
+stage('test') {
     parallel mocked: {
         node('docker_slave-centos-7.5-x86_64') {
             run_mocked_tests()
@@ -59,12 +59,19 @@ stage('deployment') {
     }
 }
 
+stage('clean') {
+    node('docker_slave-centos-7.5-x86_64') {
+        clean()
+    }
+}
+
 def clean() {
-    // The next 2 commands will fail if there are currently no containers (because it's the first build or
-    // because they had been cleaned out manually), as they will pass an empty list to xargs. The reason for
-    // the '|| true' at the end is to prevent the build failing in this case.
-    sh($/eval "docker ps -a | grep 'safe_client_libs_*' | awk '{ print \$1 }' | xargs docker rm || true"/$)
-    sh($/eval "docker images | grep -E 'build-real|build-mock' | awk '{ print \$3 }' | xargs docker rmi || true"/$)
+    mock_image_name = get_committed_build_image_name('mock')
+    real_image_name = get_committed_build_image_name('real')
+    remove_images_command = "docker images | " +
+        "grep -E '${mock_container_name}|${real_container_name}' | " +
+        "awk '{ print \$3 }' | xargs docker rmi"
+    sh($/eval remove_images_command /$)
     sh("rm -f *.zip")
     sh("rm -rf deploy")
 }
@@ -89,15 +96,25 @@ def build_safe_client_libs(mode) {
     def user_id = user_details[0]
     def group_id = user_details[1]
     def image_name = "${IMAGE_NAME}:${IMAGE_TAG}"
-    sh("docker run --name safe_client_libs_${mode} " +
+    def container_name = get_container_name(mode, 'build')
+    sh("docker run --name ${container_name} " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/build-${mode} /target")
 }
 
+def get_container_name(mode, type, app='') {
+    if (app?.trim()) {
+        return "safe_client_libs_${app}_${mode}_${type}_${env.BUILD_NUMBER}"
+    }
+    return "safe_client_libs_${mode}_${type}_${env.BUILD_NUMBER}"
+}
+
 def commit_container_artifacts(mode) {
-    def container_name = "safe_client_libs_${mode}"
-    def container_id = sh(returnStdout: true, script: $/eval "docker ps -a | grep -w '${container_name}' | awk '{ print \$1 }'" /$).trim()
+    def container_name = get_container_name(mode, 'build')
+    def container_id = sh(
+        returnStdout: true,
+        script: $/eval "docker ps -a | grep -w '${container_name}' | awk '{ print \$1 }'" /$).trim()
     def image_name = get_committed_build_image_name(mode)
     sh("docker commit ${container_id} ${image_name}")
     sh("docker rm ${container_name}")
@@ -116,7 +133,8 @@ def run_tests(mode) {
     def user_id = user_details[0]
     def group_id = user_details[1]
     def image_name = get_committed_build_image_name(mode)
-    sh("docker run --rm --name safe_client_libs_${mode}_test_run " +
+    def container_name = get_container_name(mode, 'test_run')
+    sh("docker run --rm --name ${container_name} " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/test-${mode} /target")
@@ -128,7 +146,8 @@ def run_packaging(app) {
     def group_id = user_details[1]
     for (mode in ['real', 'mock']) {
         def image_name = get_committed_build_image_name(mode)
-        def command = "docker run --rm --name safe_${app}_${mode}_package " +
+        def container_name = get_container_name(mode, 'package', app)
+        def command = "docker run --rm --name ${container_name} " +
             "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
             "-u ${user_id}:${group_id} " +
             "${image_name} scripts/package.rs --lib --name ${app} --commit"
