@@ -100,22 +100,19 @@ def commit_container_artifacts(mode) {
 }
 
 def run_mocked_tests() {
-    def user_details = get_user_details()
-    def user_id = user_details[0]
-    def group_id = user_details[1]
-    run_tests(user_id, group_id, 'mock')
+    run_tests('mock')
 }
 
 def run_integration_tests() {
+    run_tests('integration')
+}
+
+def run_tests(mode) {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
-    run_tests(user_id, group_id, 'integration')
-}
-
-def run_tests(user_id, group_id, mode) {
-    def image_name = get_committed_build_image_name(mock)
-    sh("docker run --rm --name safe_client_libs_mock_test_run " +
+    def image_name = get_committed_build_image_name(mode)
+    sh("docker run --rm --name safe_client_libs_${mode}_test_run " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
        "-u ${user_id}:${group_id} " +
        "${image_name} scripts/test-${mode} /target")
