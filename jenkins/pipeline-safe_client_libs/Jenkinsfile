@@ -66,27 +66,31 @@ stage('clean') {
 }
 
 def clean() {
-    mock_image_name = get_committed_build_image_name('mock')
-    real_image_name = get_committed_build_image_name('real')
-    remove_images_command = "docker images | " +
-        "grep -E '${mock_container_name}|${real_container_name}' | " +
-        "awk '{ print \$3 }' | xargs docker rmi"
-    sh($/eval remove_images_command /$)
+    def mock_tag = get_tag_from_full_image_name(get_committed_build_image_name('mock'))
+    def real_tag = get_tag_from_full_image_name(get_committed_build_image_name('real'))
+    // Unfortunately you can't seem to split this long string over multiple lines.
+    sh($/eval "docker images | grep -E '${mock_tag}|${real_tag}' | awk '{ print \$3 }' | xargs docker rmi || true" /$)
     sh("rm -f *.zip")
     sh("rm -rf deploy")
 }
 
 def get_user_details() {
     def user_id = sh(returnStdout: true, script: 'echo $UID').trim()
-    def group_id = sh(returnStdout: true, script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
+    def group_id = sh(
+        returnStdout: true,
+        script: $/eval 'getent group $USER | awk -F : "{ print \$3 }"'/$).trim()
     return [user_id, group_id]
+}
+
+def get_tag_from_full_image_name(image_name) {
+    return image_name.drop(image_name.indexOf(':') + 1)
 }
 
 def get_committed_build_image_name(mode) {
     // There will only be 2 images created, 'real' and 'mock'.
     // The binary and integration tests will both use the mock image, since all the builds
     // they need will be committed in the mock image.
-    m = mode == 'integration' || mode == 'binary' ? 'mock' : mode
+    def m = mode == 'integration' || mode == 'binary' ? 'mock' : mode
     def tag = "build-${m}-${env.BUILD_NUMBER}"
     return "${IMAGE_NAME}:${tag}"
 }
