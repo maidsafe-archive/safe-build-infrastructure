@@ -18,6 +18,7 @@ stage('build') {
             clean()
             build_safe_client_libs('mock')
             commit_container_artifacts('mock')
+            upload_binary_compatibility_test()
         }
     }
 }
@@ -31,6 +32,11 @@ stage('test') {
     integration: {
         node('docker_slave-centos-7.5-x86_64') {
             run_integration_tests()
+        }
+    },
+    binary: {
+        node('docker_slave-centos-7.5-x86_64') {
+            run_binary_compatibility_tests()
         }
     }
 }
@@ -107,6 +113,22 @@ def build_safe_client_libs(mode) {
        "${image_name} scripts/build-${mode} /target")
 }
 
+def upload_binary_compatibility_test() {
+    def container_name = get_container_name('mock', 'build')
+    sh("mkdir -p bct/${env.BUILD_NUMBER}")
+    sh("docker cp ${container_name}:/target/release .")
+    sh("cp target/release/tests-* bct/${env.BUILD_NUMBER}/tests")
+    sh("rm -rf release")
+    withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
+        s3Upload(
+            bucket: 'safe-client-libs-jenkins',
+            file: "bct/${env.BUILD_NUMBER}/tests",
+            path: "bct/${env.BUILD_NUMBER}/tests",
+            workingDir: "${env.WORKSPACE}/deploy",
+            acl: 'PublicRead')
+    }
+}
+
 def get_container_name(mode, type, app='') {
     if (app?.trim()) {
         return "safe_client_libs_${app}_${mode}_${type}_${env.BUILD_NUMBER}"
@@ -130,6 +152,10 @@ def run_mocked_tests() {
 
 def run_integration_tests() {
     run_tests('integration')
+}
+
+def run_binary_compatibility_tests() {
+    run_tests('binary')
 }
 
 def run_tests(mode) {
