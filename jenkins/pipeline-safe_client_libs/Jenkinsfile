@@ -84,7 +84,7 @@ def clean() {
 def clean_build_containers() {
     for (mode in ['mock', 'real']) {
         def container_name = get_container_name(mode, 'build')
-        sh("docker rm ${container_name}")
+        sh("docker rm ${container_name} || true")
     }
 }
 
