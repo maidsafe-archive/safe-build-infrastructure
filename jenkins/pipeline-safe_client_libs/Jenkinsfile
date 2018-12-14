@@ -72,12 +72,20 @@ stage('clean') {
 }
 
 def clean() {
+    clean_build_containers()
     def mock_tag = get_tag_from_full_image_name(get_committed_build_image_name('mock'))
     def real_tag = get_tag_from_full_image_name(get_committed_build_image_name('real'))
     // Unfortunately you can't seem to split this long string over multiple lines.
     sh($/eval "docker images | grep -E '${mock_tag}|${real_tag}' | awk '{ print \$3 }' | xargs docker rmi || true" /$)
     sh("rm -f *.zip")
     sh("rm -rf deploy")
+}
+
+def clean_build_containers() {
+    for (mode in ['mock', 'real']) {
+        def container_name = get_container_name(mode, 'build')
+        sh("docker rm ${container_name}")
+    }
 }
 
 def get_user_details() {
@@ -143,7 +151,6 @@ def commit_container_artifacts(mode) {
         script: $/eval "docker ps -a | grep -w '${container_name}' | awk '{ print \$1 }'" /$).trim()
     def image_name = get_committed_build_image_name(mode)
     sh("docker commit ${container_id} ${image_name}")
-    sh("docker rm ${container_name}")
 }
 
 def run_mocked_tests() {
