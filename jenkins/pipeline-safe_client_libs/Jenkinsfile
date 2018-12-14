@@ -123,7 +123,7 @@ def build_safe_client_libs(mode) {
 
 def upload_binary_compatibility_test() {
     def container_name = get_container_name('mock', 'build')
-    sh("mkdir -p bct/${env.BUILD_NUMBER}")
+    sh("mkdir -p ${env.WORKSPACE}/bct/${env.BUILD_NUMBER}")
     sh("docker cp ${container_name}:/target/release .")
     sh("cp target/release/tests-* bct/${env.BUILD_NUMBER}/tests")
     sh("rm -rf release")
