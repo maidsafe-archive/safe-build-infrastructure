@@ -124,7 +124,7 @@ def upload_binary_compatibility_test() {
             bucket: 'safe-client-libs-jenkins',
             file: "bct/${env.BUILD_NUMBER}/tests",
             path: "bct/${env.BUILD_NUMBER}/tests",
-            workingDir: "${env.WORKSPACE}/deploy",
+            workingDir: "${env.WORKSPACE}",
             acl: 'PublicRead')
     }
 }
