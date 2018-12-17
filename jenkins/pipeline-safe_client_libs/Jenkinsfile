@@ -171,7 +171,8 @@ def run_binary_compatibility_tests() {
         s3Download(
             file: "${bct_test_path}",
             bucket: 'safe-client-libs-jenkins',
-            path: "bct/${build_number}/tests")
+            path: "bct/${build_number}/tests",
+            force: true)
     }
     run_tests('binary', bct_test_path)
 }
