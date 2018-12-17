@@ -186,7 +186,7 @@ def run_tests(mode, bct_test_path='') {
         "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
         "-u ${user_id}:${group_id} "
     if (mode == 'binary') {
-        command += "-v ${bct_test_path}:/bct/tests "
+        command += "-v ${bct_test_path}:/bct/tests:Z "
         command += "-e COMPAT_TESTS=/bct/tests "
     }
     command += "${image_name} scripts/test-${mode} /target"
@@ -220,7 +220,7 @@ def get_last_successful_build_number(build) {
     if (build == null) {
         return -1
     }
-    if (build.result != 'Failure') {
+    if (build.result == 'SUCCESS') {
         return build.number as Integer
     }
     return get_last_successful_build_number(build.getPreviousBuild())
