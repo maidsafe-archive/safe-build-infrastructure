@@ -166,15 +166,20 @@ def run_integration_tests() {
 
 def run_binary_compatibility_tests() {
     build_number = get_last_successful_build_number(currentBuild)
-    bct_test_path = "bct-${build_number}"
-    withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
-        s3Download(
-            file: "${bct_test_path}",
-            bucket: 'safe-client-libs-jenkins',
-            path: "bct/${build_number}/tests",
-            force: true)
+    if (build_number != -1) {
+        echo("Running binary compatibility tests: build ${build_number} being used as previous set")
+        bct_test_path = "bct-${build_number}"
+        withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
+            s3Download(
+                file: "${bct_test_path}",
+                bucket: 'safe-client-libs-jenkins',
+                path: "bct/${build_number}/tests",
+                force: true)
+        }
+        run_tests('binary', bct_test_path)
+    } else {
+        echo("Not running binary compatibility tests:  no previously successful builds found")
     }
-    run_tests('binary', bct_test_path)
 }
 
 def run_tests(mode, bct_test_path='') {
