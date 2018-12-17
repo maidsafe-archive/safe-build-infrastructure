@@ -165,19 +165,32 @@ def run_integration_tests() {
 }
 
 def run_binary_compatibility_tests() {
-    run_tests('binary')
+    build_number = get_last_successful_build_number(currentBuild)
+    bct_test_path = "bct-${build_number}"
+    withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
+        s3Download(
+            file: "${bct_test_path}",
+            bucket: 'safe-client-libs-jenkins',
+            path: "bct/${build_number}/tests")
+    }
+    run_tests('binary', bct_test_path)
 }
 
-def run_tests(mode) {
+def run_tests(mode, bct_test_path='') {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
     def image_name = get_committed_build_image_name(mode)
     def container_name = get_container_name(mode, 'test_run')
-    sh("docker run --rm --name ${container_name} " +
-       "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
-       "-u ${user_id}:${group_id} " +
-       "${image_name} scripts/test-${mode} /target")
+    def command = "docker run --rm --name ${container_name} " +
+        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
+        "-u ${user_id}:${group_id} "
+    if (mode == 'binary') {
+        command += "-v ${bct_test_path}:/bct/tests "
+        command += "-e COMPAT_TESTS=/bct/tests "
+    }
+    command += "${image_name} scripts/test-${mode} /target"
+    sh(command)
 }
 
 def run_packaging(app) {
@@ -201,4 +214,14 @@ def run_packaging(app) {
 def move_packages_to_deploy() {
     sh('mkdir deploy')
     sh('mv *.zip deploy')
+}
+
+def get_last_successful_build_number(build) {
+    if (build == null) {
+        return -1
+    }
+    if (build.result != 'Failure') {
+        return build.number as Integer
+    }
+    return get_last_successful_build_number(build.getPreviousBuild())
 }
