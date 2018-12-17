@@ -125,7 +125,10 @@ def upload_binary_compatibility_test() {
     def container_name = get_container_name('mock', 'build')
     sh("mkdir -p ${env.WORKSPACE}/bct/${env.BUILD_NUMBER}")
     sh("docker cp ${container_name}:/target/release .")
-    sh("cp release/tests-* ${env.WORKSPACE}/bct/${env.BUILD_NUMBER}/tests")
+    def test_executable = sh(
+        returnStdout: true,
+        script: $/eval "find release -maxdepth 1 -mindepth 1 -name 'tests-*' ! -name '*.d'" /$).trim()
+    sh("cp ${test_executable} ${env.WORKSPACE}/bct/${env.BUILD_NUMBER}/tests")
     sh("rm -rf release")
     withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
         s3Upload(
