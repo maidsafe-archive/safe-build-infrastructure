@@ -168,7 +168,7 @@ def run_binary_compatibility_tests() {
     build_number = get_last_successful_build_number(currentBuild)
     if (build_number != -1) {
         echo("Running binary compatibility tests: build ${build_number} being used as previous set")
-        bct_test_path = "bct-${build_number}"
+        bct_test_path = "${env.WORKSPACE}/bct-${build_number}"
         withAWS(credentials: 'aws_jenkins_user_credentials', region: 'eu-west-2') {
             s3Download(
                 file: "${bct_test_path}",
