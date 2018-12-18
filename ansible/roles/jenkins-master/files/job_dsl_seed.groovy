@@ -1,4 +1,9 @@
 pipelineJob('pipeline-safe_client_libs') {
+    parameters {
+        stringParam('IMAGE_NAME', 'maidsafe/safe-client-libs-build')
+        stringParam('IMAGE_TAG', '0.9.0')
+        stringParam('REPO_URL', 'https://github.com/jacderida/safe_client_libs.git')
+    }
     triggers {
         scm('H/5 * * * *')
     }

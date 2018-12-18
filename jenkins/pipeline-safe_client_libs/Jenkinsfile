@@ -1,12 +1,7 @@
-// These will be replaced with job parameters.
-IMAGE_NAME = 'maidsafe/safe-client-libs-build'
-IMAGE_TAG = '0.9.0'
-REPO_URL = 'https://github.com/jacderida/safe_client_libs.git'
-
 stage('build') {
     parallel real: {
         node('docker_slave-centos-7.5-x86_64') {
-            git([url: REPO_URL, branch: 'docker_build'])
+            git([url: env.REPO_URL, branch: 'docker_build'])
             clean()
             build_safe_client_libs('real')
             commit_container_artifacts('real')
@@ -14,7 +9,7 @@ stage('build') {
     },
     mock: {
         node('docker_slave-centos-7.5-x86_64') {
-            git([url: REPO_URL, branch: 'docker_build'])
+            git([url: env.REPO_URL, branch: 'docker_build'])
             clean()
             build_safe_client_libs('mock')
             commit_container_artifacts('mock')
@@ -106,14 +101,14 @@ def get_committed_build_image_name(mode) {
     // they need will be committed in the mock image.
     def m = mode == 'integration' || mode == 'binary' ? 'mock' : mode
     def tag = "build-${m}-${env.BUILD_NUMBER}"
-    return "${IMAGE_NAME}:${tag}"
+    return "${env.IMAGE_NAME}:${tag}"
 }
 
 def build_safe_client_libs(mode) {
     def user_details = get_user_details()
     def user_id = user_details[0]
     def group_id = user_details[1]
-    def image_name = "${IMAGE_NAME}:${IMAGE_TAG}"
+    def image_name = "${env.IMAGE_NAME}:${env.IMAGE_TAG}"
     def container_name = get_container_name(mode, 'build')
     sh("docker run --name ${container_name} " +
        "-v ${env.WORKSPACE}:/usr/src/crust:Z " +
