@@ -3,6 +3,7 @@ pipelineJob('pipeline-safe_client_libs') {
         stringParam('IMAGE_NAME', 'maidsafe/safe-client-libs-build')
         stringParam('IMAGE_TAG', '0.9.0')
         stringParam('REPO_URL', 'https://github.com/jacderida/safe_client_libs.git')
+        stringParam('MOUNT_POINT', '/usr/src/safe_client_libs')
     }
     triggers {
         scm('H/5 * * * *')
@@ -14,10 +15,10 @@ pipelineJob('pipeline-safe_client_libs') {
         cpsScm {
             scm {
                 git {
-                    remote { url('https://github.com/jacderida/safe-build-infrastructure.git') }
-                    branches('safe_core_build')
-                        scriptPath('jenkins/pipeline-safe_client_libs/Jenkinsfile')
-                        extensions { }
+                    remote { url('https://github.com/jacderida/safe_client_libs.git') }
+                    branches('docker_build')
+                    scriptPath('scripts/Jenkinsfile')
+                    extensions { }
                 }
             }
         }
