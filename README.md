@@ -38,6 +38,18 @@ A Jenkins environment is declared in this repository. To get a local copy, simpl
 
 Jenkins itself runs in a Docker container. The container is slightly customised to provide a list of plugins to install, but that custom definition bases from the [official container image](https://hub.docker.com/r/jenkins/jenkins/). There's also a [postfix container](https://hub.docker.com/r/tozd/postfix/) in the setup to use as an SMTP server. To make the link between these containers easier to manage, we are making use of [Docker Compose](https://docs.docker.com/compose/). Finally, the Compose definition is managed as a systemd service, allowing simple management of the containers. For example, to restart Jenkins, you can simply run `systemctl restart jenkins`.
 
+### Setup
+
+The intention for this Jenkins instance is to use the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-plugin) to define all the jobs in code. This requires a 'seed' job to be created manually. After that's created, all the other job definitions will be created from the seed. When Jenkins is up and running you need to create this seed job. After logging in, perform the following steps:
+
+* Create a new 'freestyle' job to function as the seed (I usually call it 'freestyle-job_seed')
+* Add a build step by selecting 'Process Job DSL' from the drop down
+* Select 'Use the provided DSL script'
+* Paste the contents of the 'ansible/roles/jenkins-master/files/job_dsl_seed.groovy' file in this repository into the textbox
+* Save the job then run it
+
+After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). Now, if you run the SCL pipeline, the first time it runs it will fail, because some of the Groovy methods being called in the pipeline need approval from a Jenkins administrator. You can do that by going to 'Manage Jenkins' -> 'In-process Script Approval' and click on the 'Approve' button for any methods listed. This should allow the SCL pipeline to run through. After this I would also recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
+
 ## Building Vagrant Boxes
 
 The Linux Vagrant boxes are based on [publicly available](https://app.vagrantup.com/boxes/search) official base boxes (e.g. [Ubuntu's official boxes](https://app.vagrantup.com/ubuntu)), but there aren't really any official, reliable base boxes for Windows. For that reason, in this repository we construct our own.

@@ -3,5 +3,6 @@
   become: True
   roles:
     - java
-    - jenkins-slave
     - docker
+    - jenkins-slave
+    - docker-slave-images

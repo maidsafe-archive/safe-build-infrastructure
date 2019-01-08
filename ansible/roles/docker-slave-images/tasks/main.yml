@@ -1,0 +1,6 @@
+---
+- name: 'pull docker images for slave'
+  docker_image:
+    name: "{{ item }}"
+  with_items:
+    - "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
