@@ -45,10 +45,10 @@ The intention for this Jenkins instance is to use the [Job DSL plugin](https://g
 * Create a new 'freestyle' job to function as the seed (I usually call it 'freestyle-job_seed')
 * Add a build step by selecting 'Process Job DSL' from the drop down
 * Select 'Use the provided DSL script'
-* Paste the contents of the 'job_dsl_seed.groovy' file in this repository into the textbox
+* Paste the contents of the 'ansible/roles/jenkins-master/files/job_dsl_seed.groovy' file in this repository into the textbox
 * Save the job then run it
 
-At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). The first time you run it the job will fail, because some of the Groovy methods being called in the pipeline need approval from a Jenkins administrator. You can do that by going to 'Manage Jenkins' -> 'In-process Script Approval'. This should allow the SCL pipeline to run through. After this I would also recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
+After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). Now, if you run the SCL pipeline, the first time it runs it will fail, because some of the Groovy methods being called in the pipeline need approval from a Jenkins administrator. You can do that by going to 'Manage Jenkins' -> 'In-process Script Approval' and click on the 'Approve' button for any methods listed. This should allow the SCL pipeline to run through. After this I would also recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
 
 ## Building Vagrant Boxes
 
