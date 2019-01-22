@@ -1,0 +1,4 @@
+---
+- hosts: jenkins-windows-slaves
+  roles:
+    - jenkins-slave-windows

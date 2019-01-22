@@ -1,0 +1,3 @@
+---
+jenkins_slave_working_path: c:\jenkins
+jenkins_slave_agent_path: c:\jenkins\agent.jar

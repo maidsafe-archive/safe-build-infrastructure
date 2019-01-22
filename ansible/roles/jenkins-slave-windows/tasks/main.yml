@@ -1,0 +1,15 @@
+---
+- name: 'install java'
+  win_chocolatey:
+    name: jre8
+    state: present
+
+- name: 'create the agent working directory'
+  win_file:
+    path: "{{ jenkins_slave_working_path }}"
+    state: directory
+
+- name: 'copy the jenkins agent jar'
+  win_copy:
+    src: agent.jar
+    dest: "{{ jenkins_slave_agent_path }}"
