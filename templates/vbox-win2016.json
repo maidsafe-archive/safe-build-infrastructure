@@ -1,0 +1,52 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "4096" ],
+        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+      ],
+      "guest_additions_path": "VBoxGuestAdditions.iso",
+      "guest_os_type": "Windows2016_64",
+      "headless": "false",
+      "iso_url": "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+      "iso_checksum": "70721288bbcdfe3239d8f8c0fae55f1f",
+      "iso_checksum_type": "md5",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "15m",
+      "floppy_files": [
+        "templates/answer_files/2016/Autounattend.xml",
+        "./scripts/ps/winrm.ps1",
+        "./scripts/ps/fixnetwork.ps1",
+        "./scripts/ps/openssh.ps1",
+        "./scripts/ps/configure_winrm_for_ansible.ps1"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/ps/install_choco.ps1"
+    },
+    {
+      "type": "shell",
+      "remote_path": "/tmp/vm-guest-tools.bat",
+      "execute_command": "{{ .Vars }} cmd /c C:/Windows/Temp/vm-guest-tools.bat",
+      "script": "scripts/bat/vm-guest-tools.bat"
+    },
+    {
+      "type": "powershell",
+      "script": "scripts/ps/configure_winrm_for_ansible.ps1"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "packer_output/windows2016-{{.Provider}}.box"
+    }
+  ]
+}
