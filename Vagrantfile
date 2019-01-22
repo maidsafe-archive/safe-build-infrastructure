@@ -81,6 +81,20 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "base-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.box = "windows2016"
+    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2016-virtualbox.box"
+    windows_slave.vm.guest = :windows
+    windows_slave.vm.communicator = "winrm"
+    windows_slave.winrm.username = "vagrant"
+    windows_slave.winrm.password = "vagrant"
+    windows_slave.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+  end
+
   config.vm.define "rust_slave_git_bash-windows-2012_r2-x86_64" do |windows_slave|
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
@@ -91,6 +105,28 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provision "shell", inline: "choco install -y git"
     windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
+    windows_slave.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+  end
+
+  config.vm.define "rust_travis_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.box = "windows2016"
+    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2016-virtualbox.box"
+    windows_slave.vm.guest = :windows
+    windows_slave.vm.communicator = "winrm"
+    windows_slave.winrm.username = "vagrant"
+    windows_slave.winrm.password = "vagrant"
+    windows_slave.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/jenkins-slave-windows.yml"
+      ansible.inventory_path = "environments/vagrant/hosts"
+      ansible.vault_password_file = "~/.ansible/vault-pass"
+    end
+    windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
+    windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
+    windows_slave.vm.provision "shell", path: "scripts/bat/travis_slave.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 4096
       vb.gui = true

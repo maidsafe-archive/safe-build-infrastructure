@@ -5,3 +5,6 @@ jenkins_master_host_url: jenkins_master.centos.local
 docker_slave_ip_address: 192.168.10.101
 docker_slave_full_name: docker_slave-centos-7.5-x86_64
 docker_slave_host_url: docker-slave.centos.local
+windows_rust_slave_slave_ip_address: 192.168.10.102
+windows_rust_slave_slave_full_name: travis_rust_slave-windows-2016-x86_64
+windows_rust_slave_slave_host_url: travis_rust_slave.centos.local
