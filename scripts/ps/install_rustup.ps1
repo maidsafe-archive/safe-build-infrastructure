@@ -5,7 +5,7 @@ $installer = $env:TEMP + "\rustup-init.exe"
 
 $installer = $installer.Replace("\", "/")
 Try {
-  Invoke-Expression "$installer -y --default-host x86_64-pc-windows-gnu --default-toolchain 1.29.2" -ErrorVariable error_var 2>$null
+  Invoke-Expression "$installer -y --default-host x86_64-pc-windows-gnu --default-toolchain stable" -ErrorVariable error_var 2>$null
 } Finally {
   if ($LastExitCode -ne 0) {
     $error_var
