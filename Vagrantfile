@@ -123,6 +123,9 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/jenkins-slave-windows.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.vault_password_file = "~/.ansible/vault-pass"
+      ansible.extra_vars = {
+        jenkins_master_url: "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
+      }
     end
     windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
