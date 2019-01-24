@@ -3,5 +3,4 @@ ansible_user: vagrant
 ansible_password: vagrant
 ansible_connection: psrp
 ansible_port: 55986
-ansible_psrp_transport: basic
 ansible_psrp_cert_validation: ignore
