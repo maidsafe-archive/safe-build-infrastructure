@@ -49,7 +49,8 @@ jenkins-environment: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADD
 jenkins-environment: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 jenkins-environment: \
 	docker_slave-centos-7.5-x86_64 \
-	jenkins_master-centos-7.5-x86_64
+	jenkins_master-centos-7.5-x86_64 \
+	travis_rust_slave-windows-2016-x86_64
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
@@ -60,12 +61,12 @@ rust_slave_git_bash-windows-2012_r2-x86_64:
 rust_slave_msys2-windows-2012_r2-x86_64:
 	vagrant up rust_slave_msys2-windows-2012_r2-x86_64 --provision
 
-rust_travis_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
-rust_travis_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
-rust_travis_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
-rust_travis_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
-rust_travis_slave-windows-2016-x86_64:
-	vagrant up rust_travis_slave-windows-2016-x86_64 --provision
+travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
+travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
+travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
+travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
+travis_rust_slave-windows-2016-x86_64:
+	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
 
 clean:
 	vagrant destroy -f

@@ -112,9 +112,9 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "rust_travis_slave-windows-2016-x86_64" do |windows_slave|
-    windows_slave.vm.box = "windows2016"
-    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2016-virtualbox.box"
+  config.vm.define "travis_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
+    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
     windows_slave.vm.communicator = "winrm"
     windows_slave.winrm.username = "vagrant"
@@ -129,7 +129,6 @@ Vagrant.configure("2") do |config|
     end
     windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
-    windows_slave.vm.provision "shell", path: "scripts/bat/travis_slave.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
       vb.gui = true
