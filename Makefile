@@ -12,13 +12,20 @@ build-windows2012_r2-slave:
 	packer validate templates/vbox-win2012r2.json
 	packer build templates/vbox-win2012r2.json
 
-build-windows2016-slave:
+build-base-windows-2016-x86_64:
 	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
 	if [ -f "packer_output/windows2016-virtualbox.box" ]; then rm packer_output/windows2016-virtualbox.box; fi
 	packer validate templates/vbox-win2016.json
 	packer build templates/vbox-win2016.json
 	vagrant box remove windows2016
 	vagrant box add packer_output/windows2016-virtualbox.box --name windows2016
+
+build-travis_slave-windows-2016-x86_64:
+	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
+	if [ -f "packer_output/travis_slave-windows-2016-vbox-x86_64.box" ]; then rm packer_output/travis_slave-windows-2016-vbox-x86_64.box; fi
+	packer validate templates/vbox-travis_slave-windows-2016-x86_64.json
+	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
+	vagrant box add packer_output/travis_slave-windows-2016-virtualbox-x86_64.box --name travis_slave-windows-2016-virtualbox-x86_64
 
 jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
@@ -40,7 +47,9 @@ jenkins-environment: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS
 jenkins-environment: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
 jenkins-environment: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 jenkins-environment: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
-jenkins-environment: docker_slave-centos-7.5-x86_64 jenkins_master-centos-7.5-x86_64
+jenkins-environment: \
+	docker_slave-centos-7.5-x86_64 \
+	jenkins_master-centos-7.5-x86_64
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
@@ -51,6 +60,8 @@ rust_slave_git_bash-windows-2012_r2-x86_64:
 rust_slave_msys2-windows-2012_r2-x86_64:
 	vagrant up rust_slave_msys2-windows-2012_r2-x86_64 --provision
 
+rust_travis_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
+rust_travis_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 rust_travis_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
 rust_travis_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
 rust_travis_slave-windows-2016-x86_64:
