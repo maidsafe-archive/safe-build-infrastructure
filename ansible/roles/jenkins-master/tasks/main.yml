@@ -88,10 +88,10 @@
     mode: 0644
   register: compose_file_result
 
-- name: 'copy chriso user password secret'
+- name: 'copy admin user password secret'
   copy:
-    content: "{{ secret_chriso_jenkins_password }}"
-    dest: "{{ secret_chriso_jenkins_password_path }}"
+    content: "{{ secret_jenkins_admin_user_password }}"
+    dest: "{{ secret_jenkins_admin_user_password_path }}"
     owner: root
     group: root
     mode: 0644

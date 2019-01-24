@@ -53,8 +53,8 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-        - id: "chriso"
-          password: ${secret_chriso_jenkins_password}
+        - id: "{{ jenkins_admin_user }}"
+          password: ${secret_jenkins_admin_user_password}
   slaveAgentPort: 50000
   views:
     - all:
