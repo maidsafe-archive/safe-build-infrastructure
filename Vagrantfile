@@ -75,7 +75,7 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.username = "vagrant"
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
+      vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
@@ -89,7 +89,7 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.username = "vagrant"
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
+      vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
@@ -106,7 +106,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
+      vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
@@ -131,7 +131,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
     windows_slave.vm.provision "shell", path: "scripts/bat/travis_slave.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
+      vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
@@ -148,7 +148,7 @@ Vagrant.configure("2") do |config|
     windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
+      vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
     end
