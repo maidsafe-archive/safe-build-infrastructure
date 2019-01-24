@@ -1,15 +1,62 @@
 ---
-- name: 'install java'
+- name: 'install packages'
   win_chocolatey:
-    name: jre8
+    name: "{{ item }}"
     state: present
+  with_items:
+    - curl
+    - jre8
+    - wget
 
-- name: 'create the agent working directory'
+- name: 'create the agent directories'
   win_file:
-    path: "{{ jenkins_slave_working_path }}"
+    path: "{{ item }}"
     state: directory
+  with_items:
+    - "{{ jenkins_slave_config_path }}"
+    - "{{ windows_rust_slave_working_path }}"
 
 - name: 'copy the jenkins agent jar'
   win_copy:
     src: agent.jar
     dest: "{{ jenkins_slave_agent_path }}"
+
+- name: 'copy the jenkins service config'
+  win_template:
+    src: jenkins-service.xml
+    dest: "{{ jenkins_slave_service_config_path }}"
+
+- name: 'download the winsw binary'
+  win_get_url:
+    url: "{{ winsw_url }}"
+    dest: "{{ jenkins_slave_service_winsw_path }}"
+
+- name: 'copy get agent secret key script'
+  win_template:
+    src: get-agent-key.ps1
+    dest: "{{ jenkins_slave_config_path }}\\get-agent-key.ps1"
+
+- name: 'run get agent secret key script'
+  win_command: "powershell.exe {{ jenkins_slave_config_path }}\\get-agent-key.ps1"
+  args:
+    chdir: "{{ jenkins_slave_config_path }}"
+  register: agent_secret_key
+
+# There is no win_replace module yet, so doing this with Powershell.
+- name: 'insert agent secret key into service configuration'
+  win_shell: >
+    (Get-Content jenkins-slave.xml).replace('SECRET_PLACEHOLDER', '{{ agent_secret_key.stdout_lines[0] }}') | `
+    Set-Content jenkins-slave.xml 
+  args:
+    chdir: "{{ jenkins_slave_config_path }}"
+
+- name: 'create jenkins slave service'
+  win_command: "jenkins-slave.exe install"
+  args:
+    chdir: "{{ jenkins_slave_config_path }}"
+
+- name: 'start jenkins slave service and enable auto start'
+  win_service:
+    name: jenkins-slave
+    start_mode: auto
+    state: started

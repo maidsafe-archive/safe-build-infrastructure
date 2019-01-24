@@ -1,3 +1,7 @@
 ---
-jenkins_slave_working_path: c:\jenkins
-jenkins_slave_agent_path: c:\jenkins\agent.jar
+jenkins_slave_config_path: c:\jenkins-slave-config
+jenkins_slave_agent_path: "{{ jenkins_slave_config_path }}\\agent.jar"
+jenkins_slave_service_config_path: "{{ jenkins_slave_config_path }}\\jenkins-slave.xml"
+jenkins_slave_service_winsw_path: "{{ jenkins_slave_config_path }}\\jenkins-slave.exe"
+winsw_version: "2.2.0"
+winsw_url: "https://github.com/kohsuke/winsw/releases/download/winsw-v{{ winsw_version }}/WinSW.NET4.exe"
