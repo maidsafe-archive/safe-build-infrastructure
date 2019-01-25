@@ -30,7 +30,7 @@ If you want to build the Windows boxes you will need a [Packer](https://packer.i
 | base-windows-2012_r2-x86_64                | Windows 2012 R2 | Use as a base box when you need a completely clean machine.                                                                                                                                          | Only the base operating system.                                                                                                                                      |
 | rust_slave_git_bash-windows-2012_r2-x86_64 | Windows 2012 R2 | Use for building Crust on Windows. This is setup to use MinGW rather than MSVC.                                                                                                                      | MSYS2, mingw-w64-x86_64-gcc, rust 1.29.2, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                  |
 | rust_slave_msys2-windows-2012_r2-x86_64    | Windows 2012 R2 | Use for debugging issues running Windows builds on Travis, which uses Git Bash as a shell. The reason why it's a separate box is because sometimes Git Bash and MSYS2 can interfere with each other. | Git Bash, rust 1.29.2, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                     |
-| travis_rust_slave-windows-2016-x86_64      | Windows 2016    | Use for building SCL on Windows with an environment closely matching Travis.                                                                                                                         | Everything in the Travis Windows environment, rust 1.29.2, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows). |
+| travis_rust_slave-windows-2016-x86_64      | Windows 2016    | Use for building SCL on Windows with an environment closely matching Travis.                                                                                                                         | All the packages in the Travis Windows environment, rust 1.29.2, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows). |
 
 The Linux boxes here use the official, publicly available Vagrant base boxes. There aren't really any reliable base boxes available for Windows, so this repo contains a [Packer](https://www.packer.io/intro/) template for building the Windows box.
 
@@ -62,7 +62,7 @@ Here are the instructions for building the Windows 2012 R2 server box:
 * Get an evaluation ISO of Windows 2012 R2 from [here](https://www.microsoft.com/en-gb/evalcenter/evaluate-windows-server-2012-r2).
 * Clone this repo.
 * Put the file in the `iso` directory in this repo (create it if it doesn't exist - it's in the .gitignore to prevent large ISO files being committed).
-* Run `make build-windows-slave`.
+* Run `make build-base-windows-2012_r2-box`.
 * After that's completed, you can add the resulting box for use with Vagrant using `vagrant box add packer_output/windows2012r2min-virtualbox.box`.
 
 ## Building Crust

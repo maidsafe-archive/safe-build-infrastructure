@@ -40,7 +40,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "packer_output/windows2012r2min-{{.Provider}}.box"
+      "output": "packer_output/base-windows-2012_r2-{{.Provider}}-x86_64.box"
     }
   ]
 }

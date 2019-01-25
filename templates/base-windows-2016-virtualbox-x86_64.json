@@ -46,7 +46,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "packer_output/windows2016-{{.Provider}}.box"
+      "output": "packer_output/base-windows-2016-{{.Provider}}-x86_64.box"
     }
   ]
 }
