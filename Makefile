@@ -63,7 +63,11 @@ travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MA
 travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
 travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
 travis_rust_slave-windows-2016-x86_64:
+ifeq ($(UNAME_S),Darwin)
+	OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES vagrant up travis_rust_slave-windows-2016-x86_64 --provision
+else
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
+endif
 
 clean:
 	vagrant destroy -f
