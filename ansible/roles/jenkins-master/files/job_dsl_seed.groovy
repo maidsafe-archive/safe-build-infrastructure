@@ -25,7 +25,7 @@ pipelineJob('pipeline-safe_client_libs') {
     }
 }
 
-freestyleJob('windows-shell-test') {
+freeStyleJob('windows-shell-test') {
     steps {
         shell('env')
     }
