@@ -78,6 +78,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
   end
 
@@ -92,6 +93,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
   end
 
@@ -109,6 +111,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
   end
 
@@ -133,6 +136,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
   end
 
@@ -150,6 +154,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 2048
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
   end
 
