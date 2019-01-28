@@ -58,16 +58,13 @@ rust_slave_git_bash-windows-2012_r2-x86_64:
 rust_slave_msys2-windows-2012_r2-x86_64:
 	vagrant up rust_slave_msys2-windows-2012_r2-x86_64 --provision
 
+travis_rust_slave-windows-2016-x86_64: export OBJC_DISABLE_INITIALIZE_FORK_SAFETY := YES
 travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
 travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
 travis_rust_slave-windows-2016-x86_64:
-ifeq ($(UNAME_S),Darwin)
-	OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES vagrant up travis_rust_slave-windows-2016-x86_64 --provision
-else
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
-endif
 
 clean:
 	vagrant destroy -f
