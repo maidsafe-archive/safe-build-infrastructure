@@ -86,4 +86,4 @@ credentials:
             id: "aws_jenkins_user_credentials"
             password: ${secret_aws_jenkins_secret_key}
             scope: GLOBAL
-            username: "AKIAJPLVS3FOYI57G4XA"
+            username: "${aws_jenkins_access_key}"
