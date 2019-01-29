@@ -29,6 +29,7 @@ jenkins:
             port: 22
             retryWaitTime: 15
         name: "{{ docker_slave_full_name }}"
+        labelString: "docker"
         numExecutors: 2
         remoteFS: "/home/jenkins"
     - permanent:
@@ -39,6 +40,7 @@ jenkins:
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
         name: "{{ windows_rust_slave_full_name }}"
+        labelString: "windows"
         numExecutors: 1
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}

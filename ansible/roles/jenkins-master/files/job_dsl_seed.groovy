@@ -16,7 +16,7 @@ pipelineJob('pipeline-safe_client_libs') {
             scm {
                 git {
                     remote { url('https://github.com/jacderida/safe_client_libs.git') }
-                    branches('docker_build')
+                    branches('scl_windows_jenkins_build')
                     scriptPath('scripts/Jenkinsfile')
                     extensions { }
                 }
