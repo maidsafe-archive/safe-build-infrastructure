@@ -5,3 +5,4 @@ jenkins_slave_service_config_path: "{{ jenkins_slave_config_path }}\\jenkins-sla
 jenkins_slave_service_winsw_path: "{{ jenkins_slave_config_path }}\\jenkins-slave.exe"
 winsw_version: "2.2.0"
 winsw_url: "https://github.com/kohsuke/winsw/releases/download/winsw-v{{ winsw_version }}/WinSW.NET4.exe"
+git_bash_shell_path: "C:\\Program Files\\Git\\usr\\bin"
