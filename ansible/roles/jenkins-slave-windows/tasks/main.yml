@@ -16,31 +16,46 @@
     - "{{ jenkins_slave_config_path }}"
     - "{{ windows_rust_slave_working_path }}"
 
+- name: 'check if jenkins-slave service is installed'
+  win_service:
+    name: jenkins-slave
+  register: jenkins_slave_service_result
+
 - name: 'copy the jenkins agent jar'
   win_copy:
     src: agent.jar
     dest: "{{ jenkins_slave_agent_path }}"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'copy the jenkins service config'
   win_template:
     src: jenkins-service.xml
     dest: "{{ jenkins_slave_service_config_path }}"
+  when: jenkins_slave_service_result.exists == False
+
+- name: 'check if winsw binary has been downloaded'
+  win_stat:
+    path: "{{ jenkins_slave_service_winsw_path }}"
+  register: jenkins_slave_service_winsw_path_result
 
 - name: 'download the winsw binary'
   win_get_url:
     url: "{{ winsw_url }}"
     dest: "{{ jenkins_slave_service_winsw_path }}"
+  when: jenkins_slave_service_winsw_path_result.stat.exists == False
 
 - name: 'copy get agent secret key script'
   win_template:
     src: get-agent-key.ps1
     dest: "{{ jenkins_slave_config_path }}\\get-agent-key.ps1"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'run get agent secret key script'
   win_command: "powershell.exe {{ jenkins_slave_config_path }}\\get-agent-key.ps1"
   args:
     chdir: "{{ jenkins_slave_config_path }}"
   register: agent_secret_key
+  when: jenkins_slave_service_result.exists == False
 
 # There is no win_replace module yet, so doing this with Powershell.
 - name: 'insert agent secret key into service configuration'
@@ -49,11 +64,13 @@
     Set-Content jenkins-slave.xml 
   args:
     chdir: "{{ jenkins_slave_config_path }}"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'create jenkins slave service'
   win_command: "jenkins-slave.exe install"
   args:
     chdir: "{{ jenkins_slave_config_path }}"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'start jenkins slave service and enable auto start'
   win_service:
