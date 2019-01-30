@@ -1,0 +1,27 @@
+---
+- name: 'install psexec'
+  win_chocolatey:
+    name: "psexec"
+    state: present
+
+- name: 'create temp directory for installer script'
+  win_tempfile:
+    state: directory
+  register: temp_installer_directory
+
+- name: 'copy the rust installer'
+  win_template:
+    src: install_rustup.ps1
+    dest: "{{ temp_installer_directory.path }}\\install_rustup.ps1"
+
+- name: 'run the rust installer as the build user'
+  win_psexec:
+    command: "powershell.exe -File {{ temp_installer_directory.path }}\\install_rustup.ps1"
+    elevated: yes
+    username: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"
+  when: jenkins_service_account_user is defined
+
+- name: 'run the rust installer as the admin user'
+  win_command: "{{ temp_installer_directory.path }}\\install_rustup.ps1"
+  when: jenkins_service_account_user is not defined

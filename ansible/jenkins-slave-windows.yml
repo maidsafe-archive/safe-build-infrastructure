@@ -2,3 +2,4 @@
 - hosts: jenkins-windows-slaves
   roles:
     - jenkins-slave-windows
+    - win-rust-slave
