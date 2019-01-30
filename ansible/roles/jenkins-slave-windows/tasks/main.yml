@@ -9,6 +9,20 @@
     - make
     - wget
 
+- name: 'create jenkins service account user'
+  win_user:
+    name: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"
+    state: present
+    groups:
+      - Users
+
+- name: 'give the jenkins user permission to start services'
+  win_user_right:
+    name: SeServiceLogonRight
+    users:
+      - "{{ jenkins_service_account_user }}"
+
 # The way to set this as the shell is to put the binary location at the beginning
 # of system wide PATH variable. You can only use the shell tool location settings
 # in Jenkins if all the slaves are Windows.
