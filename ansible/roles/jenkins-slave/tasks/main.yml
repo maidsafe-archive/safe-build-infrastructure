@@ -1,4 +1,8 @@
 ---
+- name: 'install aws cli for retrieving build artifacts from S3'
+  pip:
+    name: "awscli"
+
 - name: 'add jenkins user'
   user:
     name: "{{ build_user }}"
