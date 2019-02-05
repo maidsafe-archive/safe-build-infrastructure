@@ -4,9 +4,31 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - awscli
     - curl
     - jre8
+    - make
     - wget
+
+- name: 'create jenkins service account user'
+  win_user:
+    name: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"
+    state: present
+    groups:
+      - Users
+
+- name: 'give the jenkins user permission to start services'
+  win_user_right:
+    name: SeServiceLogonRight
+    users:
+      - "{{ jenkins_service_account_user }}"
+
+# The way to set this as the shell is to put the binary location at the beginning
+# of system wide PATH variable. You can only use the shell tool location settings
+# in Jenkins if all the slaves are Windows.
+- name: 'set git bash as shell'
+  win_command: 'cmd.exe /c setx /M path "{{ git_bash_shell_path }};%path%"'
 
 - name: 'create the agent directories'
   win_file:
@@ -16,47 +38,65 @@
     - "{{ jenkins_slave_config_path }}"
     - "{{ windows_rust_slave_working_path }}"
 
+- name: 'check if jenkins-slave service is installed'
+  win_service:
+    name: jenkins-slave
+  register: jenkins_slave_service_result
+
 - name: 'copy the jenkins agent jar'
   win_copy:
     src: agent.jar
     dest: "{{ jenkins_slave_agent_path }}"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'copy the jenkins service config'
   win_template:
     src: jenkins-service.xml
     dest: "{{ jenkins_slave_service_config_path }}"
+  when: jenkins_slave_service_result.exists == False
+
+- name: 'check if winsw binary has been downloaded'
+  win_stat:
+    path: "{{ jenkins_slave_service_winsw_path }}"
+  register: jenkins_slave_service_winsw_path_result
 
 - name: 'download the winsw binary'
   win_get_url:
     url: "{{ winsw_url }}"
     dest: "{{ jenkins_slave_service_winsw_path }}"
+  when: jenkins_slave_service_winsw_path_result.stat.exists == False
 
 - name: 'copy get agent secret key script'
   win_template:
     src: get-agent-key.ps1
     dest: "{{ jenkins_slave_config_path }}\\get-agent-key.ps1"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'run get agent secret key script'
   win_command: "powershell.exe {{ jenkins_slave_config_path }}\\get-agent-key.ps1"
   args:
     chdir: "{{ jenkins_slave_config_path }}"
   register: agent_secret_key
+  when: jenkins_slave_service_result.exists == False
 
 # There is no win_replace module yet, so doing this with Powershell.
 - name: 'insert agent secret key into service configuration'
   win_shell: >
     (Get-Content jenkins-slave.xml).replace('SECRET_PLACEHOLDER', '{{ agent_secret_key.stdout_lines[0] }}') | `
-    Set-Content jenkins-slave.xml 
+    Set-Content jenkins-slave.xml
   args:
     chdir: "{{ jenkins_slave_config_path }}"
+  when: jenkins_slave_service_result.exists == False
 
 - name: 'create jenkins slave service'
   win_command: "jenkins-slave.exe install"
   args:
     chdir: "{{ jenkins_slave_config_path }}"
+  when: jenkins_slave_service_result.exists == False
 
+# This gets restarted (as opposed to just started) to take into account changes in the PATH variable.
 - name: 'start jenkins slave service and enable auto start'
   win_service:
     name: jenkins-slave
     start_mode: auto
-    state: started
+    state: restarted

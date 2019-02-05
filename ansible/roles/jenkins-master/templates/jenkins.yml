@@ -29,6 +29,7 @@ jenkins:
             port: 22
             retryWaitTime: 15
         name: "{{ docker_slave_full_name }}"
+        labelString: "docker"
         numExecutors: 2
         remoteFS: "/home/jenkins"
     - permanent:
@@ -39,7 +40,8 @@ jenkins:
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
         name: "{{ windows_rust_slave_full_name }}"
-        numExecutors: 1
+        labelString: "windows"
+        numExecutors: 2
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
   numExecutors: 2
@@ -84,4 +86,4 @@ credentials:
             id: "aws_jenkins_user_credentials"
             password: ${secret_aws_jenkins_secret_key}
             scope: GLOBAL
-            username: "AKIAJPLVS3FOYI57G4XA"
+            username: "{{ aws_jenkins_access_key }}"

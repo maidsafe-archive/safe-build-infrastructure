@@ -5,4 +5,10 @@
     <executable>java</executable>
     <arguments>-jar {{ jenkins_slave_agent_path }} -jnlpUrl http://{{ jenkins_master_url }}:8080/computer/{{ windows_rust_slave_full_name }}/slave-agent.jnlp -secret SECRET_PLACEHOLDER -workDir {{ windows_rust_slave_working_path }}</arguments>
     <logmode>rotate</logmode>
+    <serviceaccount>
+        <domain>.</domain>
+        <user>{{ jenkins_service_account_user }}</user>
+        <password>{{ jenkins_service_account_password }}</password>
+        <allowservicelogon>true</allowservicelogon>
+    </serviceaccount>
 </service>

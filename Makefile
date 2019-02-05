@@ -48,6 +48,7 @@ jenkins-environment: \
 	docker_slave-centos-7.5-x86_64 \
 	jenkins_master-centos-7.5-x86_64 \
 	travis_rust_slave-windows-2016-x86_64
+	vagrant reload travis_rust_slave-windows-2016-x86_64
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision

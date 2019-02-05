@@ -130,7 +130,6 @@ Vagrant.configure("2") do |config|
         jenkins_master_url: "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
       }
     end
-    windows_slave.vm.provision "shell", path: "scripts/ps/install_rustup.ps1"
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
     windows_slave.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
