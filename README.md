@@ -53,6 +53,37 @@ The intention for this Jenkins instance is to use the [Job DSL plugin](https://g
 
 After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). Now, if you run the SCL pipeline, the first time it runs it will fail, because some of the Groovy methods being called in the pipeline need approval from a Jenkins administrator. You can do that by going to 'Manage Jenkins' -> 'In-process Script Approval' and click on the 'Approve' button for any methods listed. This should allow the SCL pipeline to run through. After this I would also recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
 
+### OSX Slaves
+
+Our environment contains some OSX slaves that we're running on physical hardware. These need to be manually configured for SSH access, then everything else can be done with Ansible. Follow these steps to setup SSH:
+
+* Enable 'Remote Login': System Preferences -> Sharing -> Tick Remote Login Checkbox
+* `xcode-select --install` to install the XCode Developer Tools
+* `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` to install Homebrew
+* `brew tap homebrew/homebrew-core`
+* `brew install openssl`
+* `brew install openssh`
+* Edit `/System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`:
+```
+change:
+<string>/usr/bin/ssh-agent</string>
+<string>-l</string>
+
+to:
+<string>/usr/local/bin/ssh-agent</string>
+<string>-D</string>
+```
+* `launchctl unload /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`
+* `launchctl load -w /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`
+* `launchctl start org.openbsd.ssh-agent.plist`
+* `sudo rm /usr/bin/ssh` (optionally backup before removing)
+* `sudo ln -s /usr/local/bin/ssh /usr/bin/ssh`
+* `launchctl stop com.openssh.sshd`
+* `sudo rm /usr/sbin/sshd` (optionally backup before removing)
+* `sudo ln -s /usr/local/Cellar/openssh/7.9p1/sbin/sshd /usr/sbin/sshd`
+
+After this, reboot the machine, and you should be able to establish an SSH connection.
+
 ## Building Vagrant Boxes
 
 The Linux Vagrant boxes are based on [publicly available](https://app.vagrantup.com/boxes/search) official base boxes (e.g. [Ubuntu's official boxes](https://app.vagrantup.com/ubuntu)), but there aren't really any official, reliable base boxes for Windows. For that reason, in this repository we construct our own.
