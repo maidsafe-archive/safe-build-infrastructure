@@ -1,0 +1,14 @@
+---
+- name: 'install versions tap with homebrew'
+  homebrew_tap:
+    name: caskroom/versions
+    state: present
+  become: yes
+  become_user: "{{ ansible_user }}"
+
+- name: 'install java using homebrew'
+  homebrew_cask:
+    name: java8
+    state: present
+  become: yes
+  become_user: "{{ ansible_user }}"
