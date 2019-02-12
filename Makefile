@@ -70,5 +70,8 @@ travis_rust_slave-windows-2016-x86_64:
 provision-rust_slave-osx-yosemite-x86_64:
 	ansible-playbook -i environments/vagrant/hosts ansible/osx-rust-slave.yml
 
+clean-rust_slave-osx-yosemite-x86_64:
+	ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
+
 clean:
 	vagrant destroy -f
