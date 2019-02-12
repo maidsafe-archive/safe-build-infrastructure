@@ -1,3 +1,2 @@
 ---
 build_user: jenkins
-build_user_home_path: "/home/{{ build_user }}"

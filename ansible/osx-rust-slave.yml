@@ -1,0 +1,7 @@
+---
+- hosts: jenkins-osx-slaves
+  become: True
+  roles:
+    - osx-pip
+    - osx-java
+    - jenkins-slave

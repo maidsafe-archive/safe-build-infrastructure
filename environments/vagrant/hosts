@@ -6,3 +6,6 @@ docker_slave-centos-7.5-x86_64 ansible_connection=local
 
 [jenkins-windows-slaves]
 travis_rust_slave-windows-2016-x86_64
+
+[jenkins-osx-slaves]
+rust_slave-osx-yosemite-x86_64 ansible_host=192.168.1.188 ansible_user=qa

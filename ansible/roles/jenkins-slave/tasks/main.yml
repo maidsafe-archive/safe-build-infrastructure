@@ -1,13 +1,36 @@
 ---
+- name: 'load os specific variables'
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - "default.yml"
+
+# The '--ignore-installed' flag is required for OSX. See here:
+# https://github.com/pypa/pip/issues/3165
 - name: 'install aws cli for retrieving build artifacts from S3'
   pip:
-    name: "awscli"
+    name: 'awscli'
+    extra_args: '--ignore-installed six'
 
-- name: 'add jenkins user'
+- name: 'add jenkins user (linux)'
   user:
     name: "{{ build_user }}"
     shell: /bin/bash
     groups: 'docker'
+  when: ansible_distribution != 'MacOSX'
+
+- name: 'add jenkins group (osx)'
+  group:
+    name: "{{ build_user }}"
+    state: present
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'add jenkins user (osx)'
+  user:
+    name: "{{ build_user }}"
+    groups: "{{ build_user }}"
+    shell: /bin/bash
+  when: ansible_distribution == 'MacOSX'
 
 - name: 'create ssh directory'
   file:
