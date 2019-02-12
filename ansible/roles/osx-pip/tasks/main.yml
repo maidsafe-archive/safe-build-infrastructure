@@ -1,0 +1,19 @@
+---
+- name: 'download get-pip.py'
+  get_url:
+    url: "{{ pip_installer_url }}"
+    dest: 'get-pip.py'
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'install pip'
+  command: 'python get-pip.py'
+  args:
+    creates: /usr/local/bin/pip
+  when: ansible_distribution == 'MacOSX'
+
+# The OSX slave doesn't have /usr/local/bin on the PATH for remote login shells.
+- name: 'symlink pip to /usr/bin'
+  file:
+    src: /usr/local/bin/pip
+    dest: /usr/bin/pip
+    state: link
