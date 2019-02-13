@@ -5,3 +5,4 @@
     - osx-pip
     - osx-java
     - jenkins-slave
+    - rust
