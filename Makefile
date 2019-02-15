@@ -50,6 +50,12 @@ jenkins-environment: \
 	travis_rust_slave-windows-2016-x86_64
 	vagrant reload travis_rust_slave-windows-2016-x86_64
 
+jenkins-environment-aws: export ANSIBLE_HOSTS := /etc/ansible/ec2.py
+jenkins-environment-aws: export EC2_INI_FILE := /etc/ansible/ec2.ini
+jenkins-environment-aws:
+	vagrant up jenkins_master-centos-7.5-x86_64-aws --provider=aws
+	ansible-playbook -i /etc/ansible/ec2.py -u centos ansible/jenkins-master.yml
+
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
 
