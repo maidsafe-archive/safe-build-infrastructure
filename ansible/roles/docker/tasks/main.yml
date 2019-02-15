@@ -2,6 +2,7 @@
 - name: 'install python docker library for ansible docker modules'
   pip:
     name: docker
+    extra_args: '--ignore-installed requests'
 
 - name: 'copy docker configuration to /etc/sysconfig/docker'
   template:
