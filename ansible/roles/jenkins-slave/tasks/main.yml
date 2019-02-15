@@ -71,6 +71,13 @@
     line: "source ~/.cargo/env"
   when: ansible_distribution == 'MacOSX'
 
+# This is required because the non-login shell on macOS doesn't add this to PATH.
+- name: 'add /usr/local/bin to PATH for build user'
+  lineinfile:
+    path: "{{ build_user_home_path }}/.bashrc"
+    line: "export PATH=/usr/local/bin:$PATH"
+  when: ansible_distribution == 'MacOSX'
+
 - name: 'source ~/.bashrc in bash_profile for build user (osx)'
   lineinfile:
     path: "{{ build_user_home_path }}/.bash_profile"
