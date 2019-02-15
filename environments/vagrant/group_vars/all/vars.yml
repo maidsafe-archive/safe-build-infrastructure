@@ -10,7 +10,7 @@ windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
 windows_rust_slave_host_url: rust_slave.centos.local
 windows_rust_slave_working_path: "c:\\jenkins-work"
 osx_rust_slave_ip_address: 192.168.1.188
-osx_rust_slave_full_name: rust_slave-osx-yosemite-x86_64
+osx_rust_slave_full_name: rust_slave-osx-mojave-x86_64
 osx_rust_slave_host_url: rust_slave.centos.local
 jenkins_admin_user: chriso
 secret_jenkins_admin_user_password: !vault |
