@@ -61,6 +61,8 @@ Our environment contains some macOS slaves that we're running on physical hardwa
 * `xcode-select --install` to install the XCode Developer Tools
 * `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` to install Homebrew
 * `brew tap homebrew/homebrew-core`
+* Disable PAM authentication by editing `/etc/ssh/sshd_config` and changing `UsePAM yes` to `UsePAM no` (jenkins user can't SSH in without this)
+* Give the `qamaidsafe` user passwordless sudo for Ansible with the [2nd answer here](https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux)
 * Create a ~/.bashrc for the `qamaidsafe` user with `export PATH=/usr/local/bin:$PATH`
 
 You should now be able to establish an SSH connection to this slave.
