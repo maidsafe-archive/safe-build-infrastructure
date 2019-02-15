@@ -6,6 +6,13 @@
   become: yes
   become_user: "{{ ansible_user }}"
 
+# Issue here:
+# https://github.com/Homebrew/homebrew-cask-versions/issues/5204
+- name: 'run brew upgrade to resolve downloading issue with installing java8'
+  command: 'brew cask upgrade'
+  become: yes
+  become_user: "{{ ansible_user }}"
+
 - name: 'install java using homebrew'
   homebrew_cask:
     name: java8

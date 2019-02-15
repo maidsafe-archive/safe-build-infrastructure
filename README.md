@@ -61,8 +61,11 @@ Our environment contains some macOS slaves that we're running on physical hardwa
 * `xcode-select --install` to install the XCode Developer Tools
 * `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` to install Homebrew
 * `brew tap homebrew/homebrew-core`
+* Create a ~/.bashrc for the `qamaidsafe` user with `export PATH=/usr/local/bin:$PATH`
 
 You should now be able to establish an SSH connection to this slave.
+
+The last step of those instructions is to make `/usr/local/bin` available for non-login shells, which is what Ansible will have. On macOS the environment is very minimal for non-login shells. Previously I was getting around this by symlinking things into `/usr/bin` (which is on the PATH for non-login shells), but Apple's 'System Integrity Protection' now prevents this directory from being written to, even as root. `/usr/local/bin` is where Homebrew installs most things, so we require this to be on `PATH` for non-login shells.
 
 ## Building Vagrant Boxes
 
