@@ -1,0 +1,34 @@
+---
+- hosts: jenkins-osx-slaves
+  become: True
+  tasks:
+    - name: 'uninstall awscli'
+      pip:
+        name: 'awscli'
+        state: absent
+    - name: 'uninstall pip'
+      pip:
+        name: 'pip'
+        state: absent
+    - name: 'remove jenkins user'
+      user:
+        name: 'jenkins'
+        state: absent
+    - name: 'remove jenkins group'
+      group:
+        name: 'jenkins'
+        state: absent
+    - name: 'remove jenkins user home directory'
+      file:
+        path: /Users/jenkins
+        state: absent
+    - name: 'uninstall java'
+      homebrew_cask:
+        name: java8
+        state: absent
+      become: yes
+      become_user: qa
+    - name: 'uninstall caskroom/versions'
+      homebrew_tap:
+        name: caskroom/versions
+        state: absent

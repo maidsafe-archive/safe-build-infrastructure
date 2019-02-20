@@ -34,6 +34,19 @@ jenkins:
         remoteFS: "/home/jenkins"
     - permanent:
         launcher:
+          sSHLauncher:
+            credentialsId: "docker_slave_jenkins_user_ssh_key"
+            host: "{{ osx_rust_slave_ip_address }}"
+            launchTimeoutSeconds: 210
+            maxNumRetries: 10
+            port: 22
+            retryWaitTime: 15
+        name: "{{ osx_rust_slave_full_name }}"
+        labelString: "osx"
+        numExecutors: 2
+        remoteFS: "/Users/jenkins"
+    - permanent:
+        launcher:
           jnlp:
             workDirSettings:
               disabled: false

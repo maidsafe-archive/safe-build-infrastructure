@@ -1,4 +1,10 @@
 ---
+- name: 'load os specific variables'
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - "default.yml"
+
 - stat: path="{{ rustc_path }}"
   register: rust_path_result
 
@@ -19,7 +25,7 @@
     - pkg-config
   when: ansible_distribution == 'Ubuntu'
   
-- name: 'get the rustup installer (CentOS)'
+- name: 'get the rustup installer'
   get_url:
     url: "{{ rustup_installer_url }}"
     dest: "{{ rustup_installer_path }}"
@@ -28,13 +34,13 @@
     - rust_path_result.stat.exists == False
     - ansible_distribution == 'CentOS'
 
-  # There is some problem with the get_url module and SSL on Ubuntu 14.04.
+  # There is some problem with the get_url module and SSL on Ubuntu 14.04 and OSX.
   # If you run curl manually it works just fine.
 - name: 'get the rustup installer (Ubuntu)'
   shell: "curl {{ rustup_installer_url }} >> {{ rustup_installer_path }}"
   when:
     - rust_path_result.stat.exists == False
-    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'MacOSX'
 
 - name: 'set rustup script executable (Ubuntu)'
   file:
@@ -42,7 +48,7 @@
     mode: 0775
   when:
     - rust_path_result.stat.exists == False
-    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'MacOSX'
 
 - name: 'run the rustup installer'
   command: "{{ rustup_installer_path }} --default-toolchain {{ rust_version }} --no-modify-path -y"
@@ -54,6 +60,7 @@
   command: "{{ rustup_path }} target add x86_64-unknown-linux-musl"
   become: yes
   become_user: "{{ build_user }}"
+  when: ansible_distribution != 'MacOSX'
 
 - stat: path="{{ cargo_script_path }}"
   register: cargo_script_result

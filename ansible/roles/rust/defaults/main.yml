@@ -1,11 +1,8 @@
 ---
 build_user: jenkins
-build_user_home_path: "/home/{{ build_user }}"
 rust_version: 1.32.0
 cargo_bin_path: "{{ build_user_home_path }}/.cargo/bin"
 cargo_path: "{{ cargo_bin_path }}/cargo"
 cargo_script_path: "{{ cargo_bin_path }}/cargo-script"
 rustup_path: "{{ cargo_bin_path }}/rustup"
 rustc_path: "{{ cargo_bin_path }}/rustc"
-rustup_installer_url: "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init"
-rustup_installer_path: "/tmp/rustup-init"
