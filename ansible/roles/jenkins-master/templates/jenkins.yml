@@ -19,19 +19,21 @@ jenkins:
   disableRememberMe: false
   mode: NORMAL
   nodes:
+{% for slave in groups['slaves'] %}
     - permanent:
         launcher:
           sSHLauncher:
             credentialsId: "docker_slave_jenkins_user_ssh_key"
-            host: "{{ docker_slave_ip_address }}"
+            host: "{{ hostvars[slave]['ec2_public_dns_name'] }}"
             launchTimeoutSeconds: 210
             maxNumRetries: 10
             port: 22
             retryWaitTime: 15
-        name: "{{ docker_slave_full_name }}"
+        name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
         labelString: "docker"
         numExecutors: 2
         remoteFS: "/home/jenkins"
+{% endfor %}
     - permanent:
         launcher:
           jnlp:

@@ -1,0 +1,9 @@
+[slaves]
+docker_slave_01
+docker_slave_02
+
+[masters]
+jenkins_master
+
+[windows_slaves]
+windows_slave_01

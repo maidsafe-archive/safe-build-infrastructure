@@ -50,11 +50,22 @@ jenkins-environment: \
 	travis_rust_slave-windows-2016-x86_64
 	vagrant reload travis_rust_slave-windows-2016-x86_64
 
-jenkins-environment-aws: export ANSIBLE_HOSTS := /etc/ansible/ec2.py
-jenkins-environment-aws: export EC2_INI_FILE := /etc/ansible/ec2.ini
 jenkins-environment-aws:
+	# For some reason Ansible doesn't work with the tradional way of exporting environment
+	# variables as part of the target (see the 'travis_rust_slave-windows-2016-x86_64' target).
+	# Also, the ~/.ansible/tmp directory caches the results from the dynamic inventory provider
+	# and this sometimes prevent hosts from being matched correctly, hence why it gets cleared.
+	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
+	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		-u centos ansible/docker-slave.yml
 	vagrant up jenkins_master-centos-7.5-x86_64-aws --provider=aws
-	ansible-playbook -i /etc/ansible/ec2.py -u centos ansible/jenkins-master.yml
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		-u centos ansible/jenkins-master.yml
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
@@ -75,3 +86,8 @@ travis_rust_slave-windows-2016-x86_64:
 
 clean:
 	vagrant destroy -f
+
+clean-aws:
+	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
+	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
+	vagrant destroy -f jenkins_master-centos-7.5-x86_64-aws

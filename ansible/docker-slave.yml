@@ -1,7 +1,8 @@
 ---
-- hosts: all
+- hosts: slaves
   become: True
   roles:
+    - pip
     - java
     - docker
     - jenkins-slave

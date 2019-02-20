@@ -15,8 +15,52 @@ Vagrant.configure("2") do |config|
       aws.security_groups = ["jenkins"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
-        'Name' => 'jenkins-masters',
-        'environment' => 'vagrant'
+        'Name' => 'jenkins_master',
+        'full_name' => 'jenkins_master-centos-7.5-x86_64',
+        'group' => 'masters',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "~/.ssh/id_rsa"
+    end
+  end
+
+  config.vm.define "docker_slave_01-centos-7.5-x86_64-aws" do |docker_slave_aws|
+    docker_slave_aws.vm.box = "dummy"
+    docker_slave_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["jenkins"]
+      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
+      aws.tags = {
+        'Name' => 'docker_slave_01',
+        'full_name' => 'docker_slave_01-centos-7.5-x86_64',
+        'group' => 'slaves',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "~/.ssh/id_rsa"
+    end
+  end
+
+  config.vm.define "docker_slave_02-centos-7.5-x86_64-aws" do |docker_slave_aws|
+    docker_slave_aws.vm.box = "dummy"
+    docker_slave_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["jenkins"]
+      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
+      aws.tags = {
+        'Name' => 'docker_slave_02',
+        'full_name' => 'docker_slave_02-centos-7.5-x86_64',
+        'group' => 'slaves',
+        'environment' => 'dev'
       }
       override.ssh.username = "centos"
       override.ssh.private_key_path = "~/.ssh/id_rsa"
@@ -30,7 +74,7 @@ Vagrant.configure("2") do |config|
     jenkins_master.vm.provision "shell", path: "scripts/setup_ansible.sh"
     jenkins_master.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/jenkins-master.yml"
-      ansible.inventory_path = "inventories/vagrant/hosts"
+      ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     jenkins_master.vm.provider "virtualbox" do |vb|
@@ -62,7 +106,7 @@ Vagrant.configure("2") do |config|
     docker_slave_centos.vm.provision "shell", path: "scripts/install_external_java_role.sh", privileged: false
     docker_slave_centos.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/docker-slave.yml"
-      ansible.inventory_path = "inventories/vagrant/hosts"
+      ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
     end
     docker_slave_centos.vm.provider "virtualbox" do |vb|
@@ -143,7 +187,7 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/jenkins-slave-windows.yml"
-      ansible.inventory_path = "inventories/vagrant/hosts"
+      ansible.inventory_path = "environments/vagrant/hosts"
       ansible.vault_password_file = "~/.ansible/vault-pass"
       ansible.extra_vars = {
         jenkins_master_url: "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
