@@ -1,0 +1,19 @@
+---
+- name: 'install chocolatey packages to match Travis environment'
+  win_chocolatey:
+    name: "{{ item }}"
+  with_items:
+    - 7zip
+    - cmake
+    - curl
+    - dotnet
+    - git
+    - hashdeep
+    - jq
+    - llvm
+    - microsoft-build-tools
+    - mingw
+    - ruby
+    - visualstudio2017buildtools
+    - wget
+    - winscp
