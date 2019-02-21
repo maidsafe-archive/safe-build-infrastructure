@@ -1,4 +1,8 @@
 ---
+- name: 'install git'
+  package:
+    name: git
+
 - name: 'install aws cli for retrieving build artifacts from S3'
   pip:
     name: "awscli"
