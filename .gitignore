@@ -3,6 +3,7 @@ packer_output/
 .vagrant
 *.retry
 *.box
+*.orig
 ansible/roles/java
 output-virtualbox-iso/
 .aws_provision/

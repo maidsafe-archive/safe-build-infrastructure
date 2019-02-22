@@ -4,7 +4,7 @@ jenkins_master-centos-7.5-x86_64 ansible_connection=local
 [slaves]
 docker_slave-centos-7.5-x86_64 ansible_connection=local
 
-[jenkins-windows-slaves]
+[windows_slaves]
 travis_rust_slave-windows-2016-x86_64
 
 [jenkins-osx-slaves]
