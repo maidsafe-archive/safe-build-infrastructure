@@ -34,6 +34,7 @@ jenkins:
         numExecutors: 2
         remoteFS: "/home/jenkins"
 {% endfor %}
+{% for slave in groups['windows_slaves'] %}
     - permanent:
         launcher:
           jnlp:
@@ -41,11 +42,12 @@ jenkins:
               disabled: false
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
-        name: "{{ windows_rust_slave_full_name }}"
+        name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
         labelString: "windows"
         numExecutors: 2
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
+{% endfor %}
   numExecutors: 2
   primaryView:
     all:
