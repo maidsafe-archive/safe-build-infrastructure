@@ -92,6 +92,14 @@ travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOW
 travis_rust_slave-windows-2016-x86_64:
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
 
+provision-rust_slave-osx-mojave-x86_64:
+	# Pipelining must be enabled to get around a problem with permissions and temporary files on OSX:
+	# https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
+	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-rust-slave.yml
+
+clean-rust_slave-osx-mojave-x86_64:
+	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
+
 clean:
 	vagrant destroy -f
 

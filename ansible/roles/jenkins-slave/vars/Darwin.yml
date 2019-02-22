@@ -1,0 +1,2 @@
+---
+build_user_home_path: "/Users/{{ build_user }}"

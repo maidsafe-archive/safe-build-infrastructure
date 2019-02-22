@@ -8,14 +8,14 @@ Right now there are only some VMs available, but hopefully shortly we can provid
 
 To get the VMs up and running, you need some things installed on your development host:
 
-* [Vagrant](https://www.vagrantup.com/). Generally just get the latest version for your distro. You can run it on a Linux, Windows or OSX host. Please note, there are Windows boxes in this repo and those require WinRM for communication. We seen some problems with this when installing Vagrant from a package manager, so download the latest package from the [Vagrant downloads](https://www.vagrantup.com/downloads.html) section.
+* [Vagrant](https://www.vagrantup.com/). Generally just get the latest version for your distro. You can run it on a Linux, Windows or macOS host. Please note, there are Windows boxes in this repo and those require WinRM for communication. We seen some problems with this when installing Vagrant from a package manager, so download the latest package from the [Vagrant downloads](https://www.vagrantup.com/downloads.html) section.
 * After installing Vagrant, install a couple of plugins for it:
   - [vagrant-hosts](https://github.com/oscar-stack/vagrant-hosts): `vagrant plugin install vagrant-hosts`.
   - [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest): `vagrant plugin install vagrant-vbguest`.
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads). The list of versions supported by Vagrant is [here](https://www.vagrantup.com/docs/virtualbox/). Sometimes the latest versions aren't supported yet, but generally it's OK to just grab the latest version.
-* [Python Powershell Remoting Protocol Client](https://github.com/jborean93/pypsrp). Needed for bringing up the Windows Jenkins slaves if you're on a Linux or OSX host. Even though an SSH server is available for Windows, Ansible doesn't support it, so the communication has to be done via WinRM. This library enables communication from Linux/OSX -> Windows via WinRM. The easiest way to install it is via pip: `pip install pypsrp`. If you don't have it, there are [lots of ways to install pip](https://pip.pypa.io/en/stable/installing/). You can install pip packages system with `sudo`, or if you don't want to do that, you can run it with the `--user` switch.
+* [Python Powershell Remoting Protocol Client](https://github.com/jborean93/pypsrp). Needed for bringing up the Windows Jenkins slaves if you're on a Linux or macOS host. Even though an SSH server is available for Windows, Ansible doesn't support it, so the communication has to be done via WinRM. This library enables communication from Linux/macOS -> Windows via WinRM. The easiest way to install it is via pip: `pip install pypsrp`. If you don't have it, there are [lots of ways to install pip](https://pip.pypa.io/en/stable/installing/). You can install pip packages system with `sudo`, or if you don't want to do that, you can run it with the `--user` switch.
 * [Ansible](https://docs.ansible.com/). Ansible is needed on the host to bring the Windows machines online. The easiest way to install Ansible is via pip. It must be at least version `2.7.2`, so run `sudo pip install ansible==2.7.2`.
-* The easiest way to get machines running are via the convenience targets in the Makefile. Most Linux distros will probably have `make` installed via other packages like `build-essentials`. Google for how to install it on your distro. On Windows you can get access to `make` by installing [MSYS2](http://www.msys2.org/) then running `pacman -S make`; after this add `c:\msys64\usr\bin` to your `PATH` variable to have `make` accessible via `cmd.exe`. On OSX you can install via the [Apple Developer Tools](http://developer.apple.com/) and there's also a package available for [Homebrew](https://formulae.brew.sh/formula/make).
+* The easiest way to get machines running are via the convenience targets in the Makefile. Most Linux distros will probably have `make` installed via other packages like `build-essentials`. Google for how to install it on your distro. On Windows you can get access to `make` by installing [MSYS2](http://www.msys2.org/) then running `pacman -S make`; after this add `c:\msys64\usr\bin` to your `PATH` variable to have `make` accessible via `cmd.exe`. On macOS you can install via the [Apple Developer Tools](http://developer.apple.com/) and there's also a package available for [Homebrew](https://formulae.brew.sh/formula/make).
 * Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
 
 If you want to build the Windows boxes you will need a [Packer](https://packer.io/) installation; however this isn't necessary for running the Vagrant boxes, as the boxes will be hosted on S3.
@@ -51,38 +51,23 @@ The intention for this Jenkins instance is to use the [Job DSL plugin](https://g
 * Paste the contents of the 'ansible/roles/jenkins-master/files/job_dsl_seed.groovy' file in this repository into the textbox
 * Save the job then run it
 
-After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). Now, if you run the SCL pipeline, the first time it runs it will fail, because some of the Groovy methods being called in the pipeline need approval from a Jenkins administrator. You can do that by going to 'Manage Jenkins' -> 'In-process Script Approval' and click on the 'Approve' button for any methods listed. This should allow the SCL pipeline to run through. After this I would also recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
+After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). I would recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
 
-### OSX Slaves
+### macOS Slaves
 
-Our environment contains some OSX slaves that we're running on physical hardware. These need to be manually configured for SSH access, then everything else can be done with Ansible. Follow these steps to setup SSH:
+Our environment contains some macOS slaves that we're running on physical hardware. These need to be manually configured to allow remote login, and to install XCode Developer Tools and Homebrew. Everything else can be done with Ansible. Follow these steps to setup - note that these instruction were written for macOS 10.14.3, other versions may vary:
 
 * Enable 'Remote Login': System Preferences -> Sharing -> Tick Remote Login Checkbox
 * `xcode-select --install` to install the XCode Developer Tools
 * `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` to install Homebrew
 * `brew tap homebrew/homebrew-core`
-* `brew install openssl`
-* `brew install openssh`
-* Edit `/System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`:
-```
-change:
-<string>/usr/bin/ssh-agent</string>
-<string>-l</string>
+* Disable PAM authentication by editing `/etc/ssh/sshd_config` and changing `UsePAM yes` to `UsePAM no` (jenkins user can't SSH in without this)
+* Give the `qamaidsafe` user passwordless sudo for Ansible with the [2nd answer here](https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux)
+* Create a ~/.bashrc for the `qamaidsafe` user with `export PATH=/usr/local/bin:$PATH`
 
-to:
-<string>/usr/local/bin/ssh-agent</string>
-<string>-D</string>
-```
-* `launchctl unload /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`
-* `launchctl load -w /System/Library/LaunchAgents/org.openbsd.ssh-agent.plist`
-* `launchctl start org.openbsd.ssh-agent.plist`
-* `sudo rm /usr/bin/ssh` (optionally backup before removing)
-* `sudo ln -s /usr/local/bin/ssh /usr/bin/ssh`
-* `launchctl stop com.openssh.sshd`
-* `sudo rm /usr/sbin/sshd` (optionally backup before removing)
-* `sudo ln -s /usr/local/Cellar/openssh/7.9p1/sbin/sshd /usr/sbin/sshd`
+You should now be able to establish an SSH connection to this slave.
 
-After this, reboot the machine, and you should be able to establish an SSH connection.
+The last step of those instructions is to make `/usr/local/bin` available for non-login shells, which is what Ansible will have. On macOS the environment is very minimal for non-login shells. Previously I was getting around this by symlinking things into `/usr/bin` (which is on the PATH for non-login shells), but Apple's 'System Integrity Protection' now prevents this directory from being written to, even as root. `/usr/local/bin` is where Homebrew installs most things, so we require this to be on `PATH` for non-login shells.
 
 ## Building Vagrant Boxes
 
@@ -101,7 +86,7 @@ Here are the instructions for building the Windows 2012 R2 server box:
 
 ### Build on a VM
 
-These instructions assume a working installation of [Vagrant](https://www.vagrantup.com/). The host could be Windows or OSX, however, on Windows you'd also need an [MSYS2](http://www.msys2.org/) installation to run `make` in a `cmd.exe` environment.
+These instructions assume a working installation of [Vagrant](https://www.vagrantup.com/). The host could be Windows or macOS, however, on Windows you'd also need an [MSYS2](http://www.msys2.org/) installation to run `make` in a `cmd.exe` environment.
 
 #### Linux
 

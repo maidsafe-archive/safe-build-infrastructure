@@ -1,0 +1,4 @@
+---
+rustup_installer_url: "https://static.rust-lang.org/rustup/dist/x86_64-apple-darwin/rustup-init"
+build_user_home_path: "/Users/{{ build_user }}"
+rustup_installer_path: "{{ build_user_home_path }}/rustup-init"

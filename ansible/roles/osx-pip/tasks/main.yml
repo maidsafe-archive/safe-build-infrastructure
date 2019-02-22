@@ -1,0 +1,17 @@
+---
+- name: 'download get-pip.py'
+  get_url:
+    url: "{{ pip_installer_url }}"
+    dest: '/tmp/get-pip.py'
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'install pip'
+  command: 'python /tmp/get-pip.py'
+  args:
+    creates: /usr/local/bin/pip
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'delete temporary script'
+  file:
+    path: /tmp/get-pip.py
+    state: absent
