@@ -18,11 +18,14 @@
     groups:
       - Users
 
-- name: 'give the jenkins user permission to start services'
+- name: 'grant jenkins user permissions'
   win_user_right:
-    name: SeServiceLogonRight
+    name: "{{ item }}"
     users:
       - "{{ jenkins_service_account_user }}"
+  with_items:
+    - SeServiceLogonRight # grants the account login access
+    - SeRemoteInteractiveLogonRight # grants the account RDP access
 
 # The way to set this as the shell is to put the binary location at the beginning
 # of system wide PATH variable. You can only use the shell tool location settings
