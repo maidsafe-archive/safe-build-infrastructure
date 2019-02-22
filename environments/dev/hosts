@@ -6,4 +6,4 @@ docker_slave_02
 jenkins_master
 
 [windows_slaves]
-windows_slave_01
+windows_slave_01 ansible_become_pass="{{ ansible_password }}"

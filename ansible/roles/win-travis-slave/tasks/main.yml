@@ -1,19 +1,36 @@
 ---
+- name: 'use chocolatey module to install chocolatey'
+  win_chocolatey:
+    name: 7zip
+    state: present
+
+# Without doing this it's not possible to install the git package, even with become_user: Administrator.
+- name: 'assign write permissions to chocolatey location'
+  win_acl:
+    path: "C:\\ProgramData\\chocolatey"
+    user: BUILTIN\Users
+    rights: FullControl
+    type: allow
+
 - name: 'install chocolatey packages to match Travis environment'
   win_chocolatey:
     name: "{{ item }}"
+    state: present
   with_items:
     - 7zip
     - cmake
     - curl
-    - dotnet
     - git
     - hashdeep
     - jq
     - llvm
     - microsoft-build-tools
     - mingw
+    - psexec
     - ruby
     - visualstudio2017buildtools
     - wget
     - winscp
+  become: yes
+  become_user: Administrator
+  become_method: runas
