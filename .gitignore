@@ -5,3 +5,4 @@ packer_output/
 *.box
 ansible/roles/java
 output-virtualbox-iso/
+.aws_provision/

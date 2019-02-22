@@ -51,12 +51,19 @@ jenkins-environment: \
 	vagrant reload travis_rust_slave-windows-2016-x86_64
 
 jenkins-environment-aws:
-	# For some reason Ansible doesn't work with the tradional way of exporting environment
+	# For some reason Ansible doesn't work with the traditional way of exporting environment
 	# variables as part of the target (see the 'travis_rust_slave-windows-2016-x86_64' target).
 	# Also, the ~/.ansible/tmp directory caches the results from the dynamic inventory provider
 	# and this sometimes prevent hosts from being matched correctly, hence why it gets cleared.
+	#
+	# The Windows instance is fired up before the Jenkins master, but it's not provisioned with
+	# Ansible until after the Jenkins master. The Jenkins master needs the Windows host to appear
+	# in the inventory because it uses that to populate the Jenkins configuration file. However,
+	# the Ansible run for the Windows slave can only happen *after* the Jenkins master exists,
+	# because you need to specify the URL of the Jenkins master.
 	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
 	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
+	./scripts/sh/run_windows_instance.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
@@ -66,6 +73,7 @@ jenkins-environment-aws:
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
 		-u centos ansible/jenkins-master.yml
+	./scripts/sh/run_ansible_against_windows_instance.sh
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
