@@ -61,17 +61,20 @@ jenkins-environment-aws:
 	# in the inventory because it uses that to populate the Jenkins configuration file. However,
 	# the Ansible run for the Windows slave can only happen *after* the Jenkins master exists,
 	# because you need to specify the URL of the Jenkins master.
+	./scripts/sh/create_dev_security_group.sh
 	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
 	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
 	./scripts/sh/run_windows_instance.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
 		-u centos ansible/docker-slave.yml
 	vagrant up jenkins_master-centos-7.5-x86_64-aws --provider=aws
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
 		-u centos ansible/jenkins-master.yml
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
@@ -101,9 +104,13 @@ clean-rust_slave-osx-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
 
 clean:
-	vagrant destroy -f
+	vagrant destroy -f docker_slave-centos-7.5-x86_64
+	vagrant destroy -f jenkins_master-centos-7.5-x86_64
+	vagrant destroy -f travis_rust_slave-windows-2016-x86_64
 
 clean-aws:
+	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
 	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
 	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
 	vagrant destroy -f jenkins_master-centos-7.5-x86_64-aws
+	rm -rf .aws_provision

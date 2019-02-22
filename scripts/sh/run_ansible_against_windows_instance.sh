@@ -12,6 +12,7 @@ function run_ansible() {
     rm -rf ~/.ansible/tmp
     EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
         --vault-password-file=~/.ansible/vault-pass \
+        -e "cloud_environment=true" \
         -e "ansible_password=$password" \
         -e "jenkins_master_url=$jenkins_master_url" \
         ansible/jenkins-slave-windows.yml
