@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
         'environment' => 'dev'
       }
       override.ssh.username = "centos"
-      override.ssh.private_key_path = "~/.ssh/id_rsa"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
     end
   end
 
@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
         'environment' => 'dev'
       }
       override.ssh.username = "centos"
-      override.ssh.private_key_path = "~/.ssh/id_rsa"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
     end
   end
 
@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
         'environment' => 'dev'
       }
       override.ssh.username = "centos"
-      override.ssh.private_key_path = "~/.ssh/id_rsa"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
     end
   end
 

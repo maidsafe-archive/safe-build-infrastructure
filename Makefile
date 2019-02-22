@@ -68,12 +68,14 @@ jenkins-environment-aws:
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=true" \
 		-u centos ansible/docker-slave.yml
 	vagrant up jenkins_master-centos-7.5-x86_64-aws --provider=aws
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=true" \
 		-u centos ansible/jenkins-master.yml
 	./scripts/sh/run_ansible_against_windows_instance.sh
@@ -113,6 +115,8 @@ clean-aws:
 	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
 	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
 	vagrant destroy -f jenkins_master-centos-7.5-x86_64-aws
+	@echo "sleeping for 1 minute to allow machines to terminate"
+	@sleep 60
 	aws ec2 --region eu-west-2 delete-security-group --group-id $$(cat .aws_provision/jenkins_security_group_id)
 	aws ec2 --region eu-west-2 delete-security-group --group-id $$(cat .aws_provision/windows_slaves_security_group_id)
 	rm -rf .aws_provision

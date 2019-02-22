@@ -23,7 +23,7 @@ function create_instance() {
         --image-id ami-0186531b707ced2ef \
         --count 1 \
         --instance-type t3.small \
-        --key-name personal \
+        --key-name jenkins_env \
         --security-group-ids "$(cat .aws_provision/windows_slaves_security_group_id)" \
         --subnet-id subnet-b3298ac9 \
         --user-data file://scripts/ps/setup_winrm.ps1)
@@ -41,14 +41,14 @@ function wait_for_password_to_become_available() {
     response=$(aws ec2 get-password-data \
         --region eu-west-2 \
         --instance-id "$instance_id" \
-        --priv-launch-key ~/.ssh/jenkins_key)
+        --priv-launch-key ~/.ssh/jenkins_env_key)
     password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
     while [[ $password == "" ]]
     do
         response=$(aws ec2 get-password-data \
             --region eu-west-2 \
             --instance-id "$instance_id" \
-            --priv-launch-key ~/.ssh/jenkins_key)
+            --priv-launch-key ~/.ssh/jenkins_env_key)
         password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
         echo "Password for instance not yet available. Waiting for 5 seconds before retry."
         sleep 5
