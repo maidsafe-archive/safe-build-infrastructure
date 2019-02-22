@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
       aws.region = "eu-west-2"
       aws.ami = "ami-0eab3a90fc693af19"
       aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins"]
+      aws.security_groups = ["jenkins_master-dev"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
         'Name' => 'jenkins_master',
@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
       aws.region = "eu-west-2"
       aws.ami = "ami-0eab3a90fc693af19"
       aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins"]
+      aws.security_groups = ["jenkins_master-dev"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
         'Name' => 'docker_slave_01',
@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
       aws.region = "eu-west-2"
       aws.ami = "ami-0eab3a90fc693af19"
       aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins"]
+      aws.security_groups = ["jenkins_master-dev"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
         'Name' => 'docker_slave_02',

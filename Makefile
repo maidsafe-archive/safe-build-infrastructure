@@ -113,4 +113,6 @@ clean-aws:
 	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
 	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
 	vagrant destroy -f jenkins_master-centos-7.5-x86_64-aws
+	aws ec2 --region eu-west-2 delete-security-group --group-id $$(cat .aws_provision/jenkins_security_group_id)
+	aws ec2 --region eu-west-2 delete-security-group --group-id $$(cat .aws_provision/windows_slaves_security_group_id)
 	rm -rf .aws_provision

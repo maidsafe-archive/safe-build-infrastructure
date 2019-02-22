@@ -24,7 +24,7 @@ function create_instance() {
         --count 1 \
         --instance-type t3.small \
         --key-name personal \
-        --security-group-ids sg-01281f5db1734b698 \
+        --security-group-ids "$(cat .aws_provision/windows_slaves_security_group_id)" \
         --subnet-id subnet-b3298ac9 \
         --user-data file://scripts/ps/setup_winrm.ps1)
     instance_id=$(jq '.Instances | .[0] .InstanceId' <<< "$response" | sed 's/\"//g')
