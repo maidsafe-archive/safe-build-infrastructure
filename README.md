@@ -37,13 +37,47 @@ The Linux boxes here use the official, publicly available Vagrant base boxes. Th
 
 ## Jenkins
 
-A Jenkins environment is declared in this repository. To get a local copy, simply run `make jenkins-environment`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
+A Jenkins environment is declared in this repository. It runs in a Docker container. The container is slightly customised to provide a list of plugins to install, but that custom definition bases from the [official container image](https://hub.docker.com/r/jenkins/jenkins/). There's also a [postfix container](https://hub.docker.com/r/tozd/postfix/) in the setup to use as an SMTP server. To make the link between these containers easier to manage, we are making use of [Docker Compose](https://docs.docker.com/compose/). Finally, the Compose definition is managed as a systemd service, allowing simple management of the containers. For example, to restart Jenkins, you can simply run `systemctl restart jenkins`.
 
-Jenkins itself runs in a Docker container. The container is slightly customised to provide a list of plugins to install, but that custom definition bases from the [official container image](https://hub.docker.com/r/jenkins/jenkins/). There's also a [postfix container](https://hub.docker.com/r/tozd/postfix/) in the setup to use as an SMTP server. To make the link between these containers easier to manage, we are making use of [Docker Compose](https://docs.docker.com/compose/). Finally, the Compose definition is managed as a systemd service, allowing simple management of the containers. For example, to restart Jenkins, you can simply run `systemctl restart jenkins`.
+### Local Provision
 
-### Setup
+To get a local Jenkins environment, simply run `make jenkins-environment`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
 
-The intention for this Jenkins instance is to use the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-plugin) to define all the jobs in code. This requires a 'seed' job to be created manually. After that's created, all the other job definitions will be created from the seed. When Jenkins is up and running you need to create this seed job. After logging in, perform the following steps:
+
+### AWS Development Provision
+
+It's possible to get an environment on AWS, but there is some setup required.
+
+First, do the following:
+
+* Install [jq](https://stedolan.github.io/jq/) on your platform.
+* Install the AWSCLI on your platform. It's very easy to install with pip: `pip install awscli`.
+* Set `AWS_ACCESS_KEY_ID` to the access key ID for your account.
+* Set `AWS_SECRET_ACCESS_KEY` to the secret access key for your account.
+* Set `AWS_KEYPAIR_NAME` to `jenkins_env`.
+* Set `AWS_PRIVATE_KEY_PATH` to `~/.ssh/jenkins_env_key` (get a copy of the key from someone in QA).
+
+For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
+
+After that you can run `make jenkins-environment-aws`. This creates:
+
+* A security group with the necessary ports opened
+* 2 CentOS Linux machines to be used as Docker slaves
+* 1 Windows machine to be used as a slave
+* 1 CentOS Linux machine to be used as the Jenkins master
+* Provisions all the machines using Ansible
+
+This setup is intended *only* for development. The machines are all running on the default VPC and Jenkins doesn't have HTTPS enabled.
+
+At the end the Jenkins URL will be printed to the console. As with the local environment, see someone in QA to get the admin password for Jenkins.
+
+When you're finished, you can tear the environment down by running `make clean-aws`.
+
+### Configure Jenkins
+
+After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running.
+
+The instance is using the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-plugin) to define all the jobs in code. This requires a 'seed' job to be created manually. After that's created, all the other job definitions will be created from the seed. When Jenkins is up and running you need to create this seed job. After logging in, perform the following steps:
 
 * Create a new 'freestyle' job to function as the seed (I usually call it 'freestyle-job_seed')
 * Add a build step by selecting 'Process Job DSL' from the drop down
