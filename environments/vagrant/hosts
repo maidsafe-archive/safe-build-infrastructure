@@ -8,4 +8,4 @@ docker_slave-centos-7.5-x86_64 ansible_connection=local
 travis_rust_slave-windows-2016-x86_64
 
 [jenkins-osx-slaves]
-rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.65 ansible_user=qamaidsafe
+rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
