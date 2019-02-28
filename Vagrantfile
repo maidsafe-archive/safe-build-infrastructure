@@ -3,6 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
+  config.vm.allowed_synced_folder_types = [:rsync]
 
   config.vm.define "jenkins_master-centos-7.5-x86_64-aws" do |jenkins_master_aws|
     jenkins_master_aws.vm.box = "dummy"
