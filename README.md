@@ -51,11 +51,14 @@ It's possible to get an environment on AWS, but there is some setup required.
 First, do the following:
 
 * Install [jq](https://stedolan.github.io/jq/) on your platform.
-* Install the AWSCLI on your platform. It's very easy to install with pip: `pip install awscli`.
-* Set `AWS_ACCESS_KEY_ID` to the access key ID for your account.
-* Set `AWS_SECRET_ACCESS_KEY` to the secret access key for your account.
-* Set `AWS_KEYPAIR_NAME` to `jenkins_env`.
-* Set `AWS_PRIVATE_KEY_PATH` to `~/.ssh/jenkins_env_key` (get a copy of the key from someone in QA).
+* Install the AWSCLI on your platform. It's very easy to install with pip: `sudo pip install awscli`.
+* The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
+* Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
+* Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
+* Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
+* Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
+* Set `export AWS_KEYPAIR_NAME=jenkins_env`.
+* Set `export AWS_PRIVATE_KEY_PATH=~/.ssh/jenkins_env_key` (get a copy of the key from someone in QA).
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
