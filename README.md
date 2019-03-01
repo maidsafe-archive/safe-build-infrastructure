@@ -72,6 +72,8 @@ After that you can run `make jenkins-environment-aws`. This creates:
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
+Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make clean-aws` followed by `make jenkins-environment-aws`.
+
 This setup is intended *only* for development. The machines are all running on the default VPC and Jenkins doesn't have HTTPS enabled.
 
 At the end the Jenkins URL will be printed to the console. As with the local environment, see someone in QA to get the admin password for Jenkins.
