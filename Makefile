@@ -1,6 +1,3 @@
-SHELL:=/bin/bash
-DOCKER_SLAVE_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^docker_slave_host_url" | awk '{ print $$2 }')
-DOCKER_SLAVE_IP_ADDRESS := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^docker_slave_ip_address" | awk '{ print $$2 }')
 JENKINS_MASTER_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^jenkins_master_host_url" | awk '{ print $$2 }')
 JENKINS_MASTER_IP_ADDRESS := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^jenkins_master_ip_address" | awk '{ print $$2 }')
 WINDOWS_RUST_SLAVE_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^windows_rust_slave_host_url" | awk '{ print $$2 }')
@@ -61,6 +58,7 @@ jenkins-environment-aws:
 	# in the inventory because it uses that to populate the Jenkins configuration file. However,
 	# the Ansible run for the Windows slave can only happen *after* the Jenkins master exists,
 	# because you need to specify the URL of the Jenkins master.
+	./scripts/install_external_java_role.sh
 	./scripts/sh/create_dev_security_group.sh
 	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
 	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
