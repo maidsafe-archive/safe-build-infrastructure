@@ -1,11 +1,11 @@
-[jenkins-masters]
+[masters]
 jenkins_master-centos-7.5-x86_64 ansible_connection=local
 
 [slaves]
 docker_slave-centos-7.5-x86_64 ansible_connection=local
 
-[jenkins-windows-slaves]
-travis_rust_slave-windows-2016-x86_64
+[windows_slaves]
+travis_rust_slave-windows-2016-x86_64 ansible_become_pass=vagrant
 
 [jenkins-osx-slaves]
 rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe

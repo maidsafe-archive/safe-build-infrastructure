@@ -3,6 +3,70 @@
 
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
+  config.vm.allowed_synced_folder_types = [:rsync]
+
+  config.vm.define "jenkins_master-centos-7.5-x86_64-aws" do |jenkins_master_aws|
+    jenkins_master_aws.vm.box = "dummy"
+    jenkins_master_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["jenkins_master-dev"]
+      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
+      aws.tags = {
+        'Name' => 'jenkins_master',
+        'full_name' => 'jenkins_master-centos-7.5-x86_64',
+        'group' => 'masters',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
+    end
+  end
+
+  config.vm.define "docker_slave_01-centos-7.5-x86_64-aws" do |docker_slave_aws|
+    docker_slave_aws.vm.box = "dummy"
+    docker_slave_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["jenkins_master-dev"]
+      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
+      aws.tags = {
+        'Name' => 'docker_slave_01',
+        'full_name' => 'docker_slave_01-centos-7.5-x86_64',
+        'group' => 'slaves',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
+    end
+  end
+
+  config.vm.define "docker_slave_02-centos-7.5-x86_64-aws" do |docker_slave_aws|
+    docker_slave_aws.vm.box = "dummy"
+    docker_slave_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["jenkins_master-dev"]
+      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
+      aws.tags = {
+        'Name' => 'docker_slave_02',
+        'full_name' => 'docker_slave_02-centos-7.5-x86_64',
+        'group' => 'slaves',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
+    end
+  end
 
   config.vm.define "jenkins_master-centos-7.5-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"

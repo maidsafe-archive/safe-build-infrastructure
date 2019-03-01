@@ -1,0 +1,13 @@
+---
+- name: 'download get-pip.py'
+  get_url:
+    url: "{{ pip_url }}"
+    dest: /tmp/get-pip.py
+
+- name: 'install pip with get-pip.py'
+  command: 'python /tmp/get-pip.py'
+
+- name: 'delete temporary script file'
+  file:
+    path: /tmp/get-pip.py
+    state: absent

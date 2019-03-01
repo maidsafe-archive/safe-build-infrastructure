@@ -1,4 +1,8 @@
 ---
+- name: 'install git'
+  package:
+    name: git
+
 - name: 'load os specific variables'
   include_vars: "{{ item }}"
   with_first_found:

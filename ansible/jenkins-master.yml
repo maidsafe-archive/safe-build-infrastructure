@@ -1,6 +1,7 @@
 ---
-- hosts: all
+- hosts: masters
   become: True
   roles:
+    - pip
     - docker
     - jenkins-master
