@@ -48,6 +48,8 @@ To get a local Jenkins environment, simply run `make jenkins-environment`. This 
 
 It's possible to get an environment on AWS, but there is some setup required.
 
+**Important note:** at the moment this provision will only run from a Linux host. There is an [issue](https://github.com/ansible/ansible/issues/32499) with Python on macOS that prevents Ansible provisioning the Windows host. Unfortunately, the suggested workaround doesn't seem to work for this particular case (though we did see it working for other cases).
+
 First, do the following:
 
 * Install [jq](https://stedolan.github.io/jq/) on your platform.
