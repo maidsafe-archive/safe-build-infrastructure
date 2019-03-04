@@ -80,6 +80,15 @@ jenkins-environment-aws:
 		-u centos ansible/jenkins-master.yml
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
+wireguard-sandbox-aws:
+	# WireGuard needs to run after a yum update has updated the kernel version.
+	# This is why the machines get spun up, then rebooted, then Ansible runs against them.
+	vagrant up wgserver-centos-7.6-x86_64-aws --provider=aws
+	vagrant reload wgserver-centos-7.6-x86_64-aws
+	vagrant up wgclient-centos-7.6-x86_64
+	vagrant reload wgclient-centos-7.6-x86_64
+	./scripts/sh/run_ansible_against_wireguard_sandbox_servers.sh
+
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
 
