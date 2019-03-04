@@ -1,0 +1,23 @@
+---
+- name: 'get the wireguard repository'
+  get_url:
+    url: "{{ wg_repo_url }}"
+    dest: "/etc/yum.repos.d"
+    mode: 0644
+
+- name: 'install wireguard'
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - epel-release
+    - wireguard-dkms
+    - wireguard-tools
+
+- name: 'create wireguard config directory'
+  file:
+    path: "{{ wg_config_path }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
