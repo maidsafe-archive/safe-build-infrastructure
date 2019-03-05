@@ -1,3 +1,2 @@
 ---
-wg_repo_url: https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
 wg_config_path: /etc/wireguard

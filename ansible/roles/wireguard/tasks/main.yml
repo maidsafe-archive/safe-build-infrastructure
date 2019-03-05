@@ -1,18 +1,27 @@
 ---
-- name: 'get the wireguard repository'
+- name: 'load os specific variables'
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+
+- name: 'setup the wireguard repository (CentOS)'
   get_url:
     url: "{{ wg_repo_url }}"
     dest: "/etc/yum.repos.d"
     mode: 0644
+  when: ansible_distribution == 'CentOS'
+
+- name: 'setup the wireguard repository (Ubuntu)'
+  apt_repository:
+    repo: "{{ wg_repo_url }}"
+    state: present
+  when: ansible_distribution == 'Ubuntu'
 
 - name: 'install wireguard'
   package:
     name: "{{ item }}"
     state: present
-  with_items:
-    - epel-release
-    - wireguard-dkms
-    - wireguard-tools
+  with_items: "{{ wg_packages }}"
 
 - name: 'create wireguard config directory'
   file:

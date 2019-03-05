@@ -1,0 +1,6 @@
+---
+wg_packages:
+  - epel-release
+  - wireguard-dkms
+  - wireguard-tools
+wg_repo_url: https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
