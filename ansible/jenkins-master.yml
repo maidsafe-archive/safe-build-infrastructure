@@ -1,7 +1,9 @@
 ---
-- hosts: masters
+- hosts: masters:wireguard
   become: True
   roles:
     - pip
     - docker
+    - wireguard
+    - wireguard-server
     - jenkins-master

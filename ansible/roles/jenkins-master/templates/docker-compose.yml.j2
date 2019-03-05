@@ -1,27 +1,32 @@
 version: '3.3'
 services:
-  jenkins:
-    image: {{ customised_jenkins_image_name }}
-    restart: always
+  wireguard:
+    container_name: 'wireguard'
+    image: {{ wg_image_name }}:{{ wg_image_tag }}
+    restart: 'unless-stopped'
+    sysctls:
+      - "net.ipv4.conf.all.rp_filter=2"
+    cap_add:
+      - net_admin 
+      - sys_module
     ports:
       - {{ jenkins_web_port }}:8080
       - {{ jenkins_slave_port }}:50000
     volumes:
+      - /etc/wireguard:/etc/wireguard
+  jenkins:
+    image: {{ customised_jenkins_image_name }}
+    restart: always
+    volumes:
       - {{ jenkins_data_mount_path }}/jenkins_home:{{ jenkins_container_home_path }}:z
-    links:
-      - postfix:postfix
     environment:
       - CASC_JENKINS_CONFIG={{ jenkins_container_casc_path }}
       - JENKINS_UC_DOWNLOAD={{ jenkins_alternate_update_center_url }}
+    network_mode: "service:wireguard"
     secrets:
       - secret_jenkins_admin_user_password
       - secret_docker_slave_ssh_key
       - secret_aws_jenkins_secret_key
-  postfix:
-    image: {{ postfix_image_name }}:{{ postfix_image_tag }}
-    restart: always
-    expose:
-      - "25"
 secrets:
   secret_jenkins_admin_user_password:
     file: {{ secret_jenkins_admin_user_password_path }}

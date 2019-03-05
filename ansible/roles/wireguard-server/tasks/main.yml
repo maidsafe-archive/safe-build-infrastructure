@@ -27,3 +27,4 @@
     name: wg-quick@wg0
     state: started
     enabled: yes
+  when: wg_run_on_host == 'True'
