@@ -2,5 +2,7 @@
 - hosts: wireguard
   become: True
   roles:
+    - pip
+    - docker
     - wireguard
     - wireguard-server
