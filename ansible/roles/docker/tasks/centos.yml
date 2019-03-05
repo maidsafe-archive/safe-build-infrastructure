@@ -1,0 +1,16 @@
+---
+- name: 'copy docker configuration to /etc/sysconfig/docker'
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.destination }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { destination: '/etc/sysconfig/docker', src: 'docker.centos7.j2' }
+  notify:
+    - restart docker
+
+- name: 'set docker package name (CentOS)'
+  set_fact:
+    docker_package_name: docker
