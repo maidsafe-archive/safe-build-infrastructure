@@ -17,11 +17,18 @@
     state: present
   when: ansible_distribution == 'Ubuntu'
 
-- name: 'install wireguard'
+- name: 'install wireguard (Linux)'
   package:
     name: "{{ item }}"
     state: present
   with_items: "{{ wg_packages }}"
+  when: ansible_distribution != 'MacOSX'
+
+- name: 'install wireguard (macOS)'
+  homebrew:
+    name: wireguard-tools
+    state: present
+  when: ansible_distribution == 'MacOSX'
 
 - name: 'create wireguard config directory'
   file:

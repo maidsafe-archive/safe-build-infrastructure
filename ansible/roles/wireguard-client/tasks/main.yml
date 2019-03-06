@@ -1,8 +1,7 @@
 ---
 - fail:
     msg: "An IP address or hostname must be supplied for wg_server_endpoint. Run Ansible again and pass the server endpoint with -e."
-  when:
-    - wg_server_endpoint is not defined
+  when: wg_server_endpoint is not defined
 
 - name: 'copy configuration'
   template:
@@ -17,3 +16,4 @@
     name: wg-quick@wg0
     state: started
     enabled: yes
+  when: ansible_distribution != 'MacOSX'
