@@ -22,3 +22,4 @@ secret_wg_client_private_key: !vault |
   3736643463393837343238323565313861663531333931656230
 wg_client_ip_address: 10.20.40.2/24 
 wg_allowed_ip_range: 10.20.40.0/24
+osx_rust_slave_ip_address: 10.20.40.2

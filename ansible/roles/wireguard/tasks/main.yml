@@ -3,6 +3,7 @@
   include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_os_family }}.yml"
+    - "default.yml"
 
 - name: 'setup the wireguard repository (CentOS)'
   get_url:
@@ -28,6 +29,8 @@
   homebrew:
     name: wireguard-tools
     state: present
+  become: yes
+  become_user: "{{ ansible_user }}"
   when: ansible_distribution == 'MacOSX'
 
 - name: 'create wireguard config directory'
@@ -35,5 +38,5 @@
     path: "{{ wg_config_path }}"
     state: directory
     mode: 0755
-    owner: root
-    group: root
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"

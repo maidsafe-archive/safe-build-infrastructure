@@ -1,4 +1,9 @@
 ---
+- name: 'load os specific variables'
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+
 - fail:
     msg: "An IP address or hostname must be supplied for wg_server_endpoint. Run Ansible again and pass the server endpoint with -e."
   when: wg_server_endpoint is not defined
@@ -8,8 +13,8 @@
     src: wg0.conf
     dest: "{{ wg_config_path }}/wg0.conf"
     mode: 0644
-    owner: root
-    group: root
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
 
 - name: 'start the wireguard service'
   service:
