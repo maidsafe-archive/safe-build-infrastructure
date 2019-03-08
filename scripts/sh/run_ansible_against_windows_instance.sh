@@ -6,7 +6,7 @@ instance_id=$(cat .aws_provision/instance_id)
 password=$(cat .aws_provision/instance_password)
 
 function run_ansible() {
-    jenkins_master_url=$(vagrant ssh-config jenkins_master-centos-7.5-x86_64-aws | \
+    jenkins_master_url=$(vagrant ssh-config jenkins_master-ubuntu-bionic-x86_64-aws | \
         grep "HostName" | awk '{ print $2 }')
     echo "Attempting Ansible run against instance... (can take 10+ seconds before output)"
     rm -rf ~/.ansible/tmp
