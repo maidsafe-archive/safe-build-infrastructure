@@ -13,5 +13,8 @@ rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
 
 [wireguard]
 jenkins_master
+rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
+
+[wireguard_sandbox]
 wgserver
 wgclient-ubuntu-bionic-x86_64 ansible_host=localhost ansible_port=2322

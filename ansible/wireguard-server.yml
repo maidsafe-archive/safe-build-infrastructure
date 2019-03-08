@@ -1,5 +1,5 @@
 ---
-- hosts: wireguard
+- hosts: wireguard_slaves
   become: True
   roles:
     - pip
