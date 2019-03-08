@@ -37,6 +37,12 @@ function open_ports() {
             --port "$port" \
             --cidr 0.0.0.0/0
     done
+    aws ec2 authorize-security-group-ingress \
+        --region eu-west-2 \
+        --group-id "$jenkins_group_id" \
+        --protocol udp \
+        --port "51820" \
+        --cidr 0.0.0.0/0
     for port in "${windows_ports[@]}"
     do
         echo "Opening port $port on windows slaves group."
