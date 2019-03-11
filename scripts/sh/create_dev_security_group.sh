@@ -37,6 +37,7 @@ function open_ports() {
             --port "$port" \
             --cidr 0.0.0.0/0
     done
+    echo "Opening port 51820 on jenkins group."
     aws ec2 authorize-security-group-ingress \
         --region eu-west-2 \
         --group-id "$jenkins_group_id" \
