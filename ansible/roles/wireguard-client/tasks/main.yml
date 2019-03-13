@@ -22,3 +22,16 @@
     state: started
     enabled: yes
   when: ansible_distribution != 'MacOSX'
+
+- name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
+  command: wg-quick down wg0
+  ignore_errors: yes
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'start wireguard (macOS)'
+  command: wg-quick up wg0
+  when: ansible_distribution == 'MacOSX'
+
+- name: 'remove the 128/1 route (macOS)'
+  command: route -n delete 128.0/1
+  when: ansible_distribution == 'MacOSX'
