@@ -46,7 +46,7 @@ function run_against_server() {
         ansible/wireguard-server.yml
 }
 
-server_hostname=$(vagrant ssh-config jenkins_master-ubuntu-bionic-x86_64-aws | \
+server_hostname=$(vagrant ssh-config wgserver-ubuntu-bionic-x86_64-aws | \
     grep "HostName" | awk '{ print $2 }')
 run_against_server
 [[ $mode == "vbox" ]] && run_against_vbox_client
