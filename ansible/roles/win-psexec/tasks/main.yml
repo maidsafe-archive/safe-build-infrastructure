@@ -1,0 +1,23 @@
+---
+# It used to be possible to use Chocolatey to install psexec
+# but the package stopped working.
+- name: 'download psexec'
+  win_get_url:
+    url: "{{ psexec_url }}"
+    dest: "{{ psexec_download_path }}"
+
+- name: 'extract psexec'
+  win_unzip:
+    src: "{{ psexec_download_path }}"
+    dest: "{{ psexec_install_path }}"
+
+- name: 'accept eula for psexec'
+  win_regedit:
+    path: "{{ psexec_eula_reg_path }}"
+    name: "{{ psexec_eula_reg_key }}"
+    data: 1
+
+- name: 'remove psexec archive'
+  win_file:
+    path: "{{ psexec_download_path }}"
+    state: absent

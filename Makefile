@@ -80,7 +80,7 @@ jenkins-environment-aws:
 		-e "cloud_environment=true" \
 		-u ubuntu ansible/jenkins-master.yml
 	./scripts/sh/run_ansible_against_mac_slave.sh
-	#./scripts/sh/run_ansible_against_windows_instance.sh
+	./scripts/sh/run_ansible_against_windows_instance.sh
 
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws

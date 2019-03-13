@@ -26,7 +26,6 @@
     - llvm
     - microsoft-build-tools
     - mingw
-    - psexec
     - ruby
     - visualstudio2017buildtools
     - wget
