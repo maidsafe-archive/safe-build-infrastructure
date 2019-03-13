@@ -3,6 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
+  config.vm.allowed_synced_folder_types = [:rsync]
 
   config.vm.define "wgserver-ubuntu-bionic-x86_64-aws" do |wireguard_server|
     wireguard_server.vm.box = "dummy"
