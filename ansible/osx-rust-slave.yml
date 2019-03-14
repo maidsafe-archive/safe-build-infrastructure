@@ -1,8 +1,10 @@
 ---
-- hosts: jenkins-osx-slaves
+- hosts: osx_slaves:wireguard
   become: True
   roles:
     - osx-pip
     - osx-java
+    - wireguard
+    - wireguard-client
     - jenkins-slave
     - rust

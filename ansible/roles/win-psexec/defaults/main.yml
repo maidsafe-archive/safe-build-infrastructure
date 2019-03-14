@@ -1,0 +1,6 @@
+---
+psexec_url: https://download.sysinternals.com/files/PSTools.zip
+psexec_download_path: "C:\\Temp\PSTools.zip"
+psexec_install_path: "C:\\Windows\\System32"
+psexec_eula_reg_path: "HKCU:\\Software\\Sysinternals"
+psexec_eula_reg_key: "PsExec"

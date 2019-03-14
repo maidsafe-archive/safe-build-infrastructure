@@ -1,3 +1,6 @@
+SHELL:=/bin/bash
+DOCKER_SLAVE_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^docker_slave_host_url" | awk '{ print $$2 }')
+DOCKER_SLAVE_IP_ADDRESS := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^docker_slave_ip_address" | awk '{ print $$2 }')
 JENKINS_MASTER_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^jenkins_master_host_url" | awk '{ print $$2 }')
 JENKINS_MASTER_IP_ADDRESS := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^jenkins_master_ip_address" | awk '{ print $$2 }')
 WINDOWS_RUST_SLAVE_URL := $(shell cat environments/vagrant/group_vars/all/vars.yml | grep "^windows_rust_slave_host_url" | awk '{ print $$2 }')
@@ -69,14 +72,25 @@ jenkins-environment-aws:
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=true" \
 		-u centos ansible/docker-slave.yml
-	vagrant up jenkins_master-centos-7.5-x86_64-aws --provider=aws
+	vagrant up jenkins_master-ubuntu-bionic-x86_64-aws --provider=aws
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--limit=jenkins_master \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=true" \
-		-u centos ansible/jenkins-master.yml
+		-u ubuntu ansible/jenkins-master.yml
+	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
+
+wireguard-sandbox-aws:
+	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
+	vagrant up wgclient-ubuntu-bionic-x86_64
+	./scripts/sh/run_ansible_against_wireguard_sandbox_servers.sh "vbox"
+
+wireguard-sandbox-with-mac-client-aws:
+	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
+	./scripts/sh/run_ansible_against_wireguard_sandbox_servers.sh "mac"
 
 base-windows-2012_r2-x86_64:
 	vagrant up base-windows-2012_r2-x86_64 --provision
@@ -112,7 +126,7 @@ clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
 	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
 	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
-	vagrant destroy -f jenkins_master-centos-7.5-x86_64-aws
+	vagrant destroy -f jenkins_master-ubuntu-bionic-x86_64-aws
 	@echo "sleeping for 1 minute to allow machines to terminate"
 	@sleep 60
 	aws ec2 --region eu-west-2 delete-security-group --group-id $$(cat .aws_provision/jenkins_security_group_id)

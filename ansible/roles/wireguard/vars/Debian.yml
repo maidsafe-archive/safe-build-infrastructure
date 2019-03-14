@@ -1,0 +1,7 @@
+---
+wg_packages:
+  - wireguard-dkms
+  - wireguard-tools
+wg_repo_url: ppa:wireguard/wireguard
+root_user: root
+root_group: root

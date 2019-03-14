@@ -1,0 +1,20 @@
+---
+- name: 'add docker gpg key (Ubuntu)'
+  apt_key:
+    url: "{{ docker_gpg_key }}"
+    state: present
+
+- name: 'setup the docker repository (Ubuntu)'
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    state: present
+
+- name: 'apt update (Ubuntu)'
+  command: apt-get update -y
+
+- name: 'ensure correct package source is used (Ubuntu)'
+  command: apt-cache policy docker-ce
+
+- name: 'set docker package name (Ubuntu)'
+  set_fact:
+    docker_package_name: docker-ce

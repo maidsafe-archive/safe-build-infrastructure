@@ -1,0 +1,31 @@
+---
+- name: 'copy configuration'
+  template:
+    src: wg0.conf
+    dest: "{{ wg_config_path }}/wg0.conf"
+    mode: 0644
+    owner: root
+    group: root
+
+# These are applied for non-container setups. When you're running
+# WireGuard in a container they need to be applied to the container,
+# but it doesn't hurt to have them on the host too for when you need that.
+- name: 'apply ipv4 kernel settings'
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    ignoreerrors: yes
+    sysctl_set: yes
+    reload: yes
+    state: present
+  with_items: "{{ sysctl_values }}"
+
+- name: 'reload kernel settings'
+  command: 'sysctl -p /etc/sysctl.conf'
+
+- name: 'start the wireguard service'
+  service:
+    name: wg-quick@wg0
+    state: started
+    enabled: yes
+  when: wg_run_on_host == 'True'

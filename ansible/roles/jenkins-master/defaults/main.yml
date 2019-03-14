@@ -13,6 +13,8 @@ jenkins_container_home_path: "/var/jenkins_home"
 jenkins_container_casc_path: "{{ jenkins_container_home_path }}/casc"
 postfix_image_name: tozd/postfix
 postfix_image_tag: alpine-38
+wg_image_name: activeeos/wireguard-docker
+wg_image_tag: latest
 customised_jenkins_build_path: /tmp/jenkins_docker_image
 customised_jenkins_image_name: "maidsafe/jenkins:{{ jenkins_image_tag }}"
 secret_jenkins_admin_user_password_path: "{{ docker_compose_path }}/secret_jenkins_admin_user_password"
