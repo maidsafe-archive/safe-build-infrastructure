@@ -9,3 +9,4 @@ output-virtualbox-iso/
 .aws_provision/
 **/.terraform/
 *.tfstate
+*.tfstate.backup

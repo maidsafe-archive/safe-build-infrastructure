@@ -48,3 +48,20 @@ resource "aws_instance" "docker_slave" {
   }
   count = 2
 }
+
+resource "aws_instance" "ansible" {
+  ami = "${lookup(var.ansible_ami, var.region)}"
+  instance_type = "${var.ansible_instance_type}"
+  key_name = "${var.key_pair}"
+  subnet_id = "${module.vpc.public_subnets[0]}"
+  associate_public_ip_address = true
+  vpc_security_group_ids = [
+    "${aws_security_group.ansible.id}"
+  ]
+  tags {
+    Name = "ansible"
+    full_name = "ansible-centos-7.6-x86_64"
+    group = "provisioners"
+    environment = "prod"
+  }
+}

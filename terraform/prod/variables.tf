@@ -37,26 +37,14 @@ variable "docker_slave_instance_type" {
   description = "Instance type for Docker slaves"
 }
 
-variable "jenkins_env_nat_ami" {
+variable "ansible_ami" {
   default = {
     eu-west-2 = "ami-0eab3a90fc693af19"
   }
-  description = "AMI for NAT (CentOS 7.6)"
+  description = "AMI for Ansible (CentOS 7.6)"
 }
 
-variable "jenkins_env_nat_instance_type" {
+variable "ansible_instance_type" {
   default = "t2.micro"
-  description = "Instance type for NAT machine"
-}
-
-variable "jenkins_env_bastion_ami" {
-  default = {
-    eu-west-2 = "ami-0eab3a90fc693af19"
-  }
-  description = "AMI for Bastion (CentOS 7.6)"
-}
-
-variable "jenkins_env_bastion_instance_type" {
-  default = "t2.micro"
-  description = "Instance type for Bastion machine"
+  description = "Instance type for Ansible machine"
 }

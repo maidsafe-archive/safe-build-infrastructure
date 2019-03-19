@@ -9,12 +9,21 @@ resource "aws_security_group" "linux_slaves" {
   vpc_id = "${module.vpc.vpc_id}"
 }
 
-resource "aws_security_group_rule" "linux_slaves_ingress_ssh" {
+resource "aws_security_group_rule" "linux_slaves_ingress_ssh_from_jenkins_master" {
   type = "ingress"
   from_port = 22
   to_port = 22
   protocol = "tcp"
   source_security_group_id = "${aws_security_group.jenkins_master.id}"
+  security_group_id = "${aws_security_group.linux_slaves.id}"
+}
+
+resource "aws_security_group_rule" "linux_slaves_ingress_ssh_from_ansible" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.ansible.id}"
   security_group_id = "${aws_security_group.linux_slaves.id}"
 }
 
@@ -58,6 +67,15 @@ resource "aws_security_group" "jenkins_master" {
   vpc_id = "${module.vpc.vpc_id}"
 }
 
+resource "aws_security_group_rule" "jenkins_master_ingress_ssh_from_ansible" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.ansible.id}"
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
 resource "aws_security_group_rule" "jenkins_master_ingress_http" {
   type = "ingress"
   from_port = 80
@@ -73,25 +91,6 @@ resource "aws_security_group_rule" "jenkins_master_ingress_https" {
   to_port = 443
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.jenkins_master.id}"
-}
-
-// Direct SSH access to the Jenkins master should eventually be removed in favour of a Bastion host.
-resource "aws_security_group_rule" "jenkins_master_ingress_ssh" {
-  type = "ingress"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.jenkins_master.id}"
-}
-
-resource "aws_security_group_rule" "jenkins_master_ingress_all_db_server_traffic" {
-  type = "ingress"
-  from_port = 0
-  to_port = 0
-  protocol = -1
-  source_security_group_id = "${aws_security_group.linux_slaves.id}"
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
@@ -113,11 +112,97 @@ resource "aws_security_group_rule" "jenkins_master_egress_https" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
-resource "aws_security_group_rule" "jenkins_master_egress_all_db_server_traffic" {
+// The following 2 rules establish connectivity between the public and private subnets
+// for the Jenkins master and the Linux slaves.
+resource "aws_security_group_rule" "jenkins_master_egress_all_linux_slave_traffic" {
   type = "egress"
   from_port = 0
   to_port = 0
   protocol = -1
   source_security_group_id = "${aws_security_group.linux_slaves.id}"
   security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
+resource "aws_security_group_rule" "jenkins_master_ingress_all_linux_slave_traffic" {
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.linux_slaves.id}"
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
+/*
+  The Ansible group needs to have SSH inbound and the connectivity with the
+  private subnet for provisioning all the machines.
+*/
+resource "aws_security_group" "ansible" {
+  name = "ansible"
+  description = "Connectivity for Ansible machine."
+  vpc_id = "${module.vpc.vpc_id}"
+}
+
+resource "aws_security_group_rule" "ansible_ingress_ssh" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+// The following 2 rules establish connectivity between the public and private subnets
+// for the Ansible provisioner and the Linux slaves.
+resource "aws_security_group_rule" "ansible_egress_all_linux_slave_traffic" {
+  type = "egress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.linux_slaves.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_ingress_all_linux_slave_traffic" {
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.linux_slaves.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_egress_all_jenkins_master_traffic" {
+  type = "egress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.jenkins_master.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_ingress_all_jenkins_master_traffic" {
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.jenkins_master.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_egress_http" {
+  type = "egress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_egress_https" {
+  type = "egress"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ansible.id}"
 }
