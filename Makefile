@@ -83,6 +83,14 @@ jenkins-environment-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
+prod-jenkins-environment-aws:
+	cd terraform/prod && terraform apply -auto-approve
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/ansible \
+		-u ansible ansible/ansible-provisioner.yml
+
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
 	vagrant up wgclient-ubuntu-bionic-x86_64

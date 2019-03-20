@@ -1,0 +1,28 @@
+---
+- name: 'install utils'
+  package:
+    name: ['git', 'vim']
+
+- name: 'install ansible'
+  pip:
+    name: ansible==2.7.2
+
+- name: 'create /etc/ansible directory'
+  file:
+    path: "/etc/ansible"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: 'copy ec2.ini for dynamic inventory'
+  copy:
+    src: ec2.ini
+    dest: /etc/ansible/ec2.ini
+    owner: root
+    group: root
+
+- name: 'install pypsrp for provisioning windows machines'
+  pip:
+    name: pypsrp
+    extra_args: '--ignore-installed requests'
