@@ -83,7 +83,7 @@ jenkins-environment-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
-prod-jenkins-environment-aws:
+create-prod-jenkins-environment-aws:
 	cd terraform/prod && terraform apply -auto-approve
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
@@ -92,6 +92,21 @@ prod-jenkins-environment-aws:
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
 		-u ansible ansible/ansible-provisioner.yml
+
+provision-prod-jenkins-environment-aws:
+	# This is intended to run as the ansible user.
+	# Should be extended to check the current username.
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
+		-u centos ansible/docker-slave.yml
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--limit=jenkins_master \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
+		-u ansible ansible/jenkins-master.yml
 
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
