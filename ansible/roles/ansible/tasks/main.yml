@@ -3,9 +3,18 @@
   package:
     name: ['git', 'vim']
 
+- name: 'install python (Ubuntu)'
+  package:
+    name: python
+  when: ansible_distribution == 'Ubuntu'
+
 - name: 'install ansible'
   pip:
     name: ansible==2.7.2
+
+- name: 'install boto for dynamic inventory'
+  pip:
+    name: boto
 
 - name: 'create /etc/ansible directory'
   file:
