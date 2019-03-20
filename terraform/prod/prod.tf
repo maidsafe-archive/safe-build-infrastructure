@@ -20,6 +20,7 @@ resource "aws_instance" "jenkins_master" {
   key_name = "${var.key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
+  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_master.id}"
   ]
@@ -37,6 +38,7 @@ resource "aws_instance" "docker_slave" {
   key_name = "${var.key_pair}"
   subnet_id = "${module.vpc.private_subnets[0]}"
   associate_public_ip_address = false
+  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.linux_slaves.id}"
   ]
@@ -55,12 +57,13 @@ resource "aws_instance" "ansible" {
   key_name = "${var.key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
+  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.ansible.id}"
   ]
   tags {
-    Name = "ansible"
-    full_name = "ansible-centos-7.6-x86_64"
+    Name = "ansible_bastion"
+    full_name = "ansible_bastion-centos-7.6-x86_64"
     group = "provisioners"
     environment = "prod"
   }
