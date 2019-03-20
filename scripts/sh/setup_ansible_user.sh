@@ -10,9 +10,16 @@ function debian_setup_ansible_user() {
     adduser --disabled-password --gecos "" ansible
 }
 
-yum update -y
-[[ -f "/etc/redhat-release" ]] && centos_setup_ansible_user
-[[ -f "/etc/debian_version" ]] && debian_setup_ansible_user
+touch /etc/reached
+if [[ -f "/etc/redhat-release" ]]; then
+    yum update -y
+    centos_setup_ansible_user
+fi
+if [[ -f "/etc/debian_version" ]]; then
+    apt-get update -y
+    apt-get install -y python
+    debian_setup_ansible_user
+fi
 
 mkdir /home/ansible/.ssh
 chown ansible:ansible /home/ansible/.ssh

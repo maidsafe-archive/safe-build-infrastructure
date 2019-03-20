@@ -86,6 +86,8 @@ jenkins-environment-aws:
 prod-jenkins-environment-aws:
 	cd terraform/prod && terraform apply -auto-approve
 	rm -rf ~/.ansible/tmp
+	echo "Sleep for 2 minutes to allow yum update to complete"
+	sleep 120
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
