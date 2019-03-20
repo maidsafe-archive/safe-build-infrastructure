@@ -96,11 +96,12 @@ create-prod-jenkins-environment-aws:
 provision-prod-jenkins-environment-aws:
 	# This is intended to run as the ansible user.
 	# Should be extended to check the current username.
+	./scripts/install_external_java_role.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=true" \
-		-u centos ansible/docker-slave.yml
+		-u ansible ansible/docker-slave.yml
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--limit=jenkins_master \
