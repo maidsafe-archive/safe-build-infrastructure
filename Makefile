@@ -91,11 +91,19 @@ create-prod-jenkins-environment-aws:
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=production_infrastructure" \
 		-u ansible ansible/ansible-provisioner.yml
 
 provision-prod-jenkins-environment-aws:
-	# This is intended to run as the ansible user.
-	# Should be extended to check the current username.
+ifndef JENKINS_WINDOWS_SLAVE_PASSWORD
+	@echo "The JENKINS_WINDOWS_SLAVE_PASSWORD variable must be set."
+	@exit 1
+endif
+ifndef JENKINS_MASTER_URL
+	@echo "The JENKINS_MASTER_URL variable must be set."
+	@exit 1
+endif
 	./scripts/install_external_java_role.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
@@ -108,6 +116,13 @@ provision-prod-jenkins-environment-aws:
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=true" \
 		-u ansible ansible/jenkins-master.yml
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/jenkins_env_key \
+		-e "cloud_environment=true" \
+		-e "ansible_password=${JENKINS_WINDOWS_SLAVE_PASSWORD}" \
+		-e "jenkins_master_url=${JENKINS_MASTER_URL}" \
+		ansible/jenkins-slave-windows.yml
 
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
