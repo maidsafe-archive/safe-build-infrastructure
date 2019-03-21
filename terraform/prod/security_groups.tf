@@ -94,6 +94,15 @@ resource "aws_security_group_rule" "jenkins_master_ingress_8080" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
+resource "aws_security_group_rule" "jenkins_master_ingress_50000" {
+  type = "ingress"
+  from_port = 50000
+  to_port = 50000
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
 resource "aws_security_group_rule" "jenkins_master_ingress_https" {
   type = "ingress"
   from_port = 443
@@ -121,8 +130,8 @@ resource "aws_security_group_rule" "jenkins_master_egress_https" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
-// The following 2 rules establish connectivity between the public and private subnets
-// for the Jenkins master and the Linux slaves.
+// The following 4 rules establish connectivity between the public and private subnets
+// for the Jenkins master and the Linux/Windows slaves.
 resource "aws_security_group_rule" "jenkins_master_egress_all_linux_slave_traffic" {
   type = "egress"
   from_port = 0
@@ -138,6 +147,24 @@ resource "aws_security_group_rule" "jenkins_master_ingress_all_linux_slave_traff
   to_port = 0
   protocol = -1
   source_security_group_id = "${aws_security_group.linux_slaves.id}"
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
+resource "aws_security_group_rule" "jenkins_master_egress_all_windows_slave_traffic" {
+  type = "egress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.windows_slaves.id}"
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
+resource "aws_security_group_rule" "jenkins_master_ingress_all_windows_slave_traffic" {
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.windows_slaves.id}"
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
@@ -160,8 +187,8 @@ resource "aws_security_group_rule" "ansible_ingress_ssh" {
   security_group_id = "${aws_security_group.ansible.id}"
 }
 
-// The following 2 rules establish connectivity between the public and private subnets
-// for the Ansible provisioner and the Linux slaves.
+// The following 6 rules establish connectivity between the public and private subnets
+// for the Ansible provisioner and the Linux/Windows slaves.
 resource "aws_security_group_rule" "ansible_egress_all_linux_slave_traffic" {
   type = "egress"
   from_port = 0
@@ -198,6 +225,24 @@ resource "aws_security_group_rule" "ansible_ingress_all_jenkins_master_traffic" 
   security_group_id = "${aws_security_group.ansible.id}"
 }
 
+resource "aws_security_group_rule" "ansible_egress_all_windows_slave_traffic" {
+  type = "egress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.windows_slaves.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group_rule" "ansible_ingress_all_windows_slave_traffic" {
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = -1
+  source_security_group_id = "${aws_security_group.windows_slaves.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
 resource "aws_security_group_rule" "ansible_egress_http" {
   type = "egress"
   from_port = 80
@@ -214,4 +259,46 @@ resource "aws_security_group_rule" "ansible_egress_https" {
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.ansible.id}"
+}
+
+resource "aws_security_group" "windows_slaves" {
+  name = "windows_slaves"
+  description = "Connectivity for Windows slaves."
+  vpc_id = "${module.vpc.vpc_id}"
+}
+
+resource "aws_security_group_rule" "windows_slave_ingress_from_ansible_winrm" {
+  type = "ingress"
+  from_port = 5985
+  to_port = 5986
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.ansible.id}"
+  security_group_id = "${aws_security_group.windows_slaves.id}"
+}
+
+resource "aws_security_group_rule" "windows_slave_ingress_rdp" {
+  type = "ingress"
+  from_port = 3389
+  to_port = 3389
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.windows_slaves.id}"
+}
+
+resource "aws_security_group_rule" "windows_slaves_egress_http" {
+  type = "egress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.windows_slaves.id}"
+}
+
+resource "aws_security_group_rule" "windows_slaves_egress_https" {
+  type = "egress"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.windows_slaves.id}"
 }

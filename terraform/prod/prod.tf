@@ -12,6 +12,8 @@ module "vpc" {
   private_subnets = ["10.0.1.0/24"]
   enable_nat_gateway = true
   single_nat_gateway = true
+  enable_dns_hostnames = true
+  enable_dns_support = true
 }
 
 resource "aws_instance" "jenkins_master" {
@@ -65,6 +67,24 @@ resource "aws_instance" "ansible" {
     Name = "ansible_bastion"
     full_name = "ansible_bastion-centos-7.6-x86_64"
     group = "provisioners"
+    environment = "prod"
+  }
+}
+
+resource "aws_instance" "windows_slave" {
+  ami = "${lookup(var.windows_ami, var.region)}"
+  instance_type = "${var.windows_instance_type}"
+  key_name = "${var.key_pair}"
+  subnet_id = "${module.vpc.private_subnets[0]}"
+  associate_public_ip_address = false
+  user_data = "${file("../../scripts/ps/setup_winrm.ps1")}"
+  vpc_security_group_ids = [
+    "${aws_security_group.windows_slaves.id}"
+  ]
+  tags {
+    Name = "windows_slave_001"
+    full_name = "rust_slave-windows-2016-x86_64"
+    group = "windows_slaves"
     environment = "prod"
   }
 }

@@ -48,3 +48,15 @@ variable "ansible_instance_type" {
   default = "t2.micro"
   description = "Instance type for Ansible machine"
 }
+
+variable "windows_ami" {
+  default = {
+    eu-west-2 = "ami-0186531b707ced2ef"
+  }
+  description = "AMI for Windows slave (Windows 2016)"
+}
+
+variable "windows_instance_type" {
+  default = "t3.small"
+  description = "Instance type for Windows slave machine"
+}
