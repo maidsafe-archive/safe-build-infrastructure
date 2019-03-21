@@ -85,6 +85,15 @@ resource "aws_security_group_rule" "jenkins_master_ingress_http" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
+resource "aws_security_group_rule" "jenkins_master_ingress_8080" {
+  type = "ingress"
+  from_port = 8080
+  to_port = 8080
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
 resource "aws_security_group_rule" "jenkins_master_ingress_https" {
   type = "ingress"
   from_port = 443
