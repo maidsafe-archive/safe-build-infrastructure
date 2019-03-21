@@ -100,8 +100,8 @@ ifndef JENKINS_WINDOWS_SLAVE_PASSWORD
 	@echo "The JENKINS_WINDOWS_SLAVE_PASSWORD variable must be set."
 	@exit 1
 endif
-ifndef JENKINS_MASTER_URL
-	@echo "The JENKINS_MASTER_URL variable must be set."
+ifndef JENKINS_MASTER_HOSTNAME
+	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
 	@exit 1
 endif
 	./scripts/install_external_java_role.sh
@@ -121,7 +121,7 @@ endif
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=true" \
 		-e "ansible_password=${JENKINS_WINDOWS_SLAVE_PASSWORD}" \
-		-e "jenkins_master_url=${JENKINS_MASTER_URL}" \
+		-e "jenkins_master_url=${JENKINS_MASTER_HOSTNAME}" \
 		ansible/jenkins-slave-windows.yml
 
 wireguard-sandbox-aws:
