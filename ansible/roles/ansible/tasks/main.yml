@@ -10,7 +10,10 @@
 
 - name: 'install ansible'
   pip:
-    name: ansible==2.7.2
+    name: "{{ item }}"
+  with_items:
+    - ansible==2.7.2
+    - virtualenv
 
 - name: 'install boto for dynamic inventory'
   pip:
@@ -31,7 +34,24 @@
     owner: root
     group: root
 
-- name: 'install pypsrp for provisioning windows machines'
+- name: 'clone safe-build-infrastructure repo'
+  git:
+    repo: "{{ safe_build_infrastructure_repo_url }}"
+    dest: "{{ safe_build_infrastructure_repo_path }}"
+    version: "{{ safe_build_infrastructure_repo_branch }}"
+  become: yes
+  become_user: "{{ provisioning_user }}"
+
+- name: 'create virtualenv in repo location'
+  command: "virtualenv {{ virtualenv_name }}"
+  args:
+    chdir: "{{ safe_build_infrastructure_repo_path }}"
+  become: yes
+  become_user: "{{ provisioning_user }}"
+
+- name: 'install pypsrp in virtualenv'
   pip:
     name: pypsrp
-    extra_args: '--ignore-installed requests'
+    virtualenv: "{{ virtualenv_path }}"
+  become: yes
+  become_user: "{{ provisioning_user }}"
