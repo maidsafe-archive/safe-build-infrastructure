@@ -12,7 +12,7 @@ function debian_setup_ansible_user() {
 
 if [[ -f "/etc/redhat-release" ]]; then
     # Sometimes the yum update appears to fail and I think it might be due to connectivity.
-    sleep 10
+    sleep 120
     yum update -y
     centos_setup_ansible_user
 fi
