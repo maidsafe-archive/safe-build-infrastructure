@@ -60,3 +60,8 @@ variable "windows_instance_type" {
   default = "t3.small"
   description = "Instance type for Windows slave machine"
 }
+
+variable "windows_bastion_count" {
+  default = 0
+  description = "Set this to 1 if you need a Windows Bastion host for debugging problems with the Windows slave in the private subnet."
+}

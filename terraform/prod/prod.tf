@@ -88,3 +88,22 @@ resource "aws_instance" "windows_slave" {
     environment = "prod"
   }
 }
+
+resource "aws_instance" "windows_bastion" {
+  ami = "${lookup(var.windows_ami, var.region)}"
+  instance_type = "${var.windows_instance_type}"
+  key_name = "${var.key_pair}"
+  subnet_id = "${module.vpc.public_subnets[0]}"
+  associate_public_ip_address = true
+  user_data = "${file("../../scripts/ps/setup_winrm.ps1")}"
+  vpc_security_group_ids = [
+    "${aws_security_group.windows_bastion.id}"
+  ]
+  tags {
+    Name = "windows_bastion"
+    full_name = "bastion-windows-2016-x86_64"
+    group = "provisioners"
+    environment = "prod"
+  }
+  count = "${var.windows_bastion_count}"
+}

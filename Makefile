@@ -84,7 +84,11 @@ jenkins-environment-aws:
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
 create-prod-jenkins-environment-aws:
+ifeq ($(DEBUG_JENKINS_ENV),true)
+	cd terraform/prod && terraform apply -auto-approve -var-file=debug.tfvars
+else
 	cd terraform/prod && terraform apply -auto-approve
+endif
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
 	sleep 120
