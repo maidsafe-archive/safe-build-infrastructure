@@ -8,16 +8,9 @@
     name: python
   when: ansible_distribution == 'Ubuntu'
 
-- name: 'install ansible'
+- name: 'install system virtualenv'
   pip:
-    name: "{{ item }}"
-  with_items:
-    - ansible==2.7.2
-    - virtualenv
-
-- name: 'install boto for dynamic inventory'
-  pip:
-    name: boto
+    name: virtualenv
 
 - name: 'create /etc/ansible directory'
   file:
@@ -49,9 +42,13 @@
   become: yes
   become_user: "{{ provisioning_user }}"
 
-- name: 'install pypsrp in virtualenv'
+- name: 'install ansible, boto and pypsrp in virtualenv'
   pip:
     name: pypsrp
     virtualenv: "{{ virtualenv_path }}"
+  with_items:
+    - ansible==2.7.2
+    - boto
+    - pypsrp
   become: yes
   become_user: "{{ provisioning_user }}"
