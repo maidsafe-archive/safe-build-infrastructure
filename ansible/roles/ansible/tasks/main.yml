@@ -49,7 +49,7 @@
     source {{ virtualenv_path }}/bin/activate
     pip install {{ item }}
   with_items:
-    - ansible==2.7.9
+    - git+https://github.com/ansible/ansible.git@devel
     - boto
     - pypsrp
   become: yes
