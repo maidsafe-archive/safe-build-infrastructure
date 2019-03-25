@@ -303,6 +303,15 @@ resource "aws_security_group_rule" "windows_slaves_egress_8080" {
   security_group_id = "${aws_security_group.windows_slaves.id}"
 }
 
+resource "aws_security_group_rule" "windows_slaves_egress_50000" {
+  type = "egress"
+  from_port = 50000
+  to_port = 50000
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.windows_slaves.id}"
+}
+
 resource "aws_security_group_rule" "windows_slaves_egress_https" {
   type = "egress"
   from_port = 443
