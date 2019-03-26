@@ -110,18 +110,18 @@ Log into the AWS GUI or use the CLI to retrieve the public hostname of the Basti
 
 The provisioning for this machine cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
 
-Now perform the following steps:
+Now perform the following steps (all of these have to be applied to the Bastion host):
 
 * Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
 * Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
 * Get the Jenkins IP address from the AWS GUI and set that: `export JENKINS_MASTER_HOSTNAME=<ip address of jenkins master>`
-* Get the Windows password from the AWS GUI and set that: `export JENKINS_WINDOWS_SLAVE_PASSWORD=<ip address of jenkins master>`
+* Get the Windows password from the AWS GUI and set that: `export JENKINS_WINDOWS_SLAVE_PASSWORD='<windows password>'` (note the password must go inside single quotes to prevent Bash from interpreting special characters)
 * Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * Run the provisioning: `make provision-prod-jenkins-environment-aws`
 * Finally, go into the AWS GUI and issue a restart for the Windows slave.
 
-After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `https://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
+After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
 
 ### Configure Jenkins
 
