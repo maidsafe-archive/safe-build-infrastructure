@@ -147,7 +147,7 @@ Follow these steps for building [Crust](https://github.com/maidsafe/crust) on Ub
 
 Follow these steps for building [Crust](https://github.com/maidsafe/crust) on Windows 2012 R2:
 
-* Produce the VM with `make windows-2012_r2-rust-slave`
+* Produce the VM with `make travis_rust_slave-windows-2016-x86_64`
 * After the VM boots, you should be logged in, but unfortunately you need to log out and log back in as the `vagrant` user (the password is "vagrant") for environment variables to take effect.
 * Get the Crust source with `git clone https://github.com/maidsafe/crust`.
 * Change the the crust directory with `cd crust` and if applicable change to any relevant branch.
