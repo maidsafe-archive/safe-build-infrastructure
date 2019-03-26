@@ -121,9 +121,7 @@ clean-rust_slave-osx-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
 
 clean:
-	vagrant destroy -f docker_slave-centos-7.5-x86_64
-	vagrant destroy -f jenkins_master-centos-7.5-x86_64
-	vagrant destroy -f jenkins_rust_slave-windows-2016-x86_64
+	./scripts/sh/destroy_local_vms.sh
 
 clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
