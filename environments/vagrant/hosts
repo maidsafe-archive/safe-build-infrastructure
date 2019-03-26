@@ -6,6 +6,7 @@ docker_slave-centos-7.5-x86_64 ansible_connection=local
 
 [windows_slaves]
 jenkins_rust_slave-windows-2016-x86_64 ansible_become_pass=vagrant
+travis_rust_slave-windows-2016-x86_64 ansible_become_pass=vagrant
 
 [jenkins-osx-slaves]
 rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
