@@ -47,12 +47,12 @@ jenkins-environment: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 jenkins-environment: \
 	docker_slave-centos-7.5-x86_64 \
 	jenkins_master-centos-7.5-x86_64 \
-	travis_rust_slave-windows-2016-x86_64
-	vagrant reload travis_rust_slave-windows-2016-x86_64
+	jenkins_rust_slave-windows-2016-x86_64
+	vagrant reload jenkins_rust_slave-windows-2016-x86_64
 
 jenkins-environment-aws:
 	# For some reason Ansible doesn't work with the traditional way of exporting environment
-	# variables as part of the target (see the 'travis_rust_slave-windows-2016-x86_64' target).
+	# variables as part of the target (see the 'jenkins_rust_slave-windows-2016-x86_64' target).
 	# Also, the ~/.ansible/tmp directory caches the results from the dynamic inventory provider
 	# and this sometimes prevent hosts from being matched correctly, hence why it gets cleared.
 	#
@@ -101,13 +101,13 @@ rust_slave_git_bash-windows-2012_r2-x86_64:
 rust_slave_msys2-windows-2012_r2-x86_64:
 	vagrant up rust_slave_msys2-windows-2012_r2-x86_64 --provision
 
-travis_rust_slave-windows-2016-x86_64: export OBJC_DISABLE_INITIALIZE_FORK_SAFETY := YES
-travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
-travis_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
-travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
-travis_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
-travis_rust_slave-windows-2016-x86_64:
-	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
+jenkins_rust_slave-windows-2016-x86_64: export OBJC_DISABLE_INITIALIZE_FORK_SAFETY := YES
+jenkins_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
+jenkins_rust_slave-windows-2016-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
+jenkins_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_IP_ADDRESS := ${WINDOWS_RUST_SLAVE_IP_ADDRESS}
+jenkins_rust_slave-windows-2016-x86_64: export WINDOWS_RUST_SLAVE_URL := ${WINDOWS_RUST_SLAVE_URL}
+jenkins_rust_slave-windows-2016-x86_64:
+	vagrant up jenkins_rust_slave-windows-2016-x86_64 --provision
 
 provision-rust_slave-osx-mojave-x86_64:
 	# Pipelining must be enabled to get around a problem with permissions and temporary files on OSX:
@@ -120,7 +120,7 @@ clean-rust_slave-osx-mojave-x86_64:
 clean:
 	vagrant destroy -f docker_slave-centos-7.5-x86_64
 	vagrant destroy -f jenkins_master-centos-7.5-x86_64
-	vagrant destroy -f travis_rust_slave-windows-2016-x86_64
+	vagrant destroy -f jenkins_rust_slave-windows-2016-x86_64
 
 clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)

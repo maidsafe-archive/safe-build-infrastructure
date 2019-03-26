@@ -212,7 +212,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "travis_rust_slave-windows-2016-x86_64" do |windows_slave|
+  config.vm.define "jenkins_rust_slave-windows-2016-x86_64" do |windows_slave|
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
@@ -220,7 +220,7 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.username = "vagrant"
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/jenkins-slave-windows.yml"
+      ansible.playbook = "ansible/win-jenkins-slave.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.vault_password_file = "~/.ansible/vault-pass"
       ansible.extra_vars = {
