@@ -11,7 +11,7 @@ declare -a local_vms=(\
     "base-windows-2012_r2-x86_64" \
     "rust_slave_git_bash-windows-2012_r2-x86_64" \
     "jenkins_rust_slave-windows-2016-x86_64" \
-    "rust_slave_msys2-windows-2012_r2-x86_64" \)
+    "rust_slave_msys2-windows-2012_r2-x86_64" \
     "travis_rust_slave-windows-2016-x86_64")
 
 for machine_name in "${local_vms[@]}"
