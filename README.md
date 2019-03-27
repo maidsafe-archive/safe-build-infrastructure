@@ -119,7 +119,7 @@ Now perform the following steps (all of these have to be applied to the Bastion 
 * Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * Run the provisioning: `make provision-prod-jenkins-environment-aws`
-* Finally, go into the AWS GUI and issue a restart for the Windows slave.
+* Finally, after the provisioning has completed, go into the AWS GUI and issue a restart for the Windows slave.
 
 After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
 
