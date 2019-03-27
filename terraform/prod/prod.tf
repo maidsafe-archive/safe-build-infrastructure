@@ -46,7 +46,7 @@ resource "aws_instance" "docker_slave" {
   ]
   tags {
     Name = "docker_slave_${format("%03d", count.index + 1)}"
-    full_name = "docker_slave_${format("%03d", count.index + 1)}-centos-7.5-x86_64"
+    full_name = "docker_slave_${format("%03d", count.index + 1)}-centos-7.6-x86_64"
     group = "slaves"
     environment = "prod"
   }

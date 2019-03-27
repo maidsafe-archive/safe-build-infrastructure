@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
     jenkins_master_aws.vm.provision "shell", inline: "apt-get install -y python"
   end
 
-  config.vm.define "docker_slave_01-centos-7.5-x86_64-aws" do |docker_slave_aws|
+  config.vm.define "docker_slave_01-centos-7.6-x86_64-aws" do |docker_slave_aws|
     docker_slave_aws.vm.box = "dummy"
     docker_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
         'Name' => 'docker_slave_01',
-        'full_name' => 'docker_slave_01-centos-7.5-x86_64',
+        'full_name' => 'docker_slave_01-centos-7.6-x86_64',
         'group' => 'slaves',
         'environment' => 'dev'
       }
@@ -79,7 +79,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "docker_slave_02-centos-7.5-x86_64-aws" do |docker_slave_aws|
+  config.vm.define "docker_slave_02-centos-7.6-x86_64-aws" do |docker_slave_aws|
     docker_slave_aws.vm.box = "dummy"
     docker_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
@@ -91,7 +91,7 @@ Vagrant.configure("2") do |config|
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
         'Name' => 'docker_slave_02',
-        'full_name' => 'docker_slave_02-centos-7.5-x86_64',
+        'full_name' => 'docker_slave_02-centos-7.6-x86_64',
         'group' => 'slaves',
         'environment' => 'dev'
       }
@@ -100,7 +100,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "jenkins_master-centos-7.5-x86_64" do |jenkins_master|
+  config.vm.define "jenkins_master-centos-7.6-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"
     jenkins_master.vm.network :private_network, :ip => "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
     jenkins_master.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
@@ -116,7 +116,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "rust_slave-centos-7.5-x86_64" do |rust_slave_centos|
+  config.vm.define "rust_slave-centos-7.6-x86_64" do |rust_slave_centos|
     rust_slave_centos.vm.box = "centos/7"
     rust_slave_centos.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"
     rust_slave_centos.vm.provision "shell", path: "scripts/setup_ansible.sh"
@@ -131,7 +131,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "docker_slave-centos-7.5-x86_64" do |docker_slave_centos|
+  config.vm.define "docker_slave-centos-7.6-x86_64" do |docker_slave_centos|
     docker_slave_centos.vm.box = "centos/7"
     docker_slave_centos.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"
     docker_slave_centos.vm.provision "file", source: "~/.ansible/vault-pass", destination: "/home/vagrant/.ansible/vault-pass"

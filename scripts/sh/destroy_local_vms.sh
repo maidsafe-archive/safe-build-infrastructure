@@ -4,9 +4,9 @@ set -e
 
 declare -a local_vms=(\
     "wgclient-ubuntu-bionic-x86_64" \
-    "jenkins_master-centos-7.5-x86_64" \
-    "rust_slave-centos-7.5-x86_64" \
-    "docker_slave-centos-7.5-x86_64" \
+    "jenkins_master-centos-7.6-x86_64" \
+    "rust_slave-centos-7.6-x86_64" \
+    "docker_slave-centos-7.6-x86_64" \
     "rust_slave-ubuntu-trusty-x86_64" \
     "base-windows-2012_r2-x86_64" \
     "rust_slave_git_bash-windows-2012_r2-x86_64" \

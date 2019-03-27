@@ -28,29 +28,29 @@ build-docker_slave-centos-7.6-x86_64-aws:
 	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
 	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
 
-jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
-jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
-jenkins_master-centos-7.5-x86_64:
-	vagrant up jenkins_master-centos-7.5-x86_64 --provision
+jenkins_master-centos-7.6-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
+jenkins_master-centos-7.6-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
+jenkins_master-centos-7.6-x86_64:
+	vagrant up jenkins_master-centos-7.6-x86_64 --provision
 
-rust_slave-centos-7.5-x86_64:
-	vagrant up rust_slave-centos-7.5-x86_64 --provision
+rust_slave-centos-7.6-x86_64:
+	vagrant up rust_slave-centos-7.6-x86_64 --provision
 
 rust_slave-ubuntu-trusty-x86_64:
 	vagrant up rust_slave-ubuntu-trusty-x86_64 --provision
 
-docker_slave-centos-7.5-x86_64: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
-docker_slave-centos-7.5-x86_64: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
-docker_slave-centos-7.5-x86_64:
-	vagrant up docker_slave-centos-7.5-x86_64 --provision
+docker_slave-centos-7.6-x86_64: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
+docker_slave-centos-7.6-x86_64: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
+docker_slave-centos-7.6-x86_64:
+	vagrant up docker_slave-centos-7.6-x86_64 --provision
 
 jenkins-environment: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 jenkins-environment: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
 jenkins-environment: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 jenkins-environment: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 jenkins-environment: \
-	docker_slave-centos-7.5-x86_64 \
-	jenkins_master-centos-7.5-x86_64 \
+	docker_slave-centos-7.6-x86_64 \
+	jenkins_master-centos-7.6-x86_64 \
 	jenkins_rust_slave-windows-2016-x86_64
 	vagrant reload jenkins_rust_slave-windows-2016-x86_64
 
@@ -67,8 +67,8 @@ jenkins-environment-aws:
 	# because you need to specify the URL of the Jenkins master.
 	./scripts/install_external_java_role.sh
 	./scripts/sh/create_dev_security_group.sh
-	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
-	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
+	vagrant up docker_slave_01-centos-7.6-x86_64-aws --provider=aws
+	vagrant up docker_slave_02-centos-7.6-x86_64-aws --provider=aws
 	./scripts/sh/run_windows_instance.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
@@ -173,8 +173,8 @@ clean:
 
 clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
-	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
-	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
+	vagrant destroy -f docker_slave_01-centos-7.6-x86_64-aws
+	vagrant destroy -f docker_slave_02-centos-7.6-x86_64-aws
 	vagrant destroy -f jenkins_master-ubuntu-bionic-x86_64-aws
 	@echo "sleeping for 1 minute to allow machines to terminate"
 	@sleep 60
