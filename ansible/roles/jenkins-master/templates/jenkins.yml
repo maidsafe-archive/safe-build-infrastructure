@@ -25,7 +25,7 @@ jenkins:
         launcher:
           sSHLauncher:
             credentialsId: "docker_slave_jenkins_user_ssh_key"
-            host: "{{ hostvars[slave]['ec2_public_dns_name'] }}"
+            host: "{{ hostvars[slave]['ec2_private_ip_address'] }}"
             launchTimeoutSeconds: 210
             maxNumRetries: 10
             port: 22

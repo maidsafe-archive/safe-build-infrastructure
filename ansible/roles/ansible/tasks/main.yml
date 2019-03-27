@@ -1,0 +1,56 @@
+---
+- name: 'install utils'
+  package:
+    name: ['git', 'nc', 'vim']
+
+- name: 'install python (Ubuntu)'
+  package:
+    name: python
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'install system virtualenv'
+  pip:
+    name: virtualenv
+
+- name: 'create /etc/ansible directory'
+  file:
+    path: "/etc/ansible"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: 'copy ec2.ini for dynamic inventory'
+  copy:
+    src: ec2.ini
+    dest: /etc/ansible/ec2.ini
+    owner: root
+    group: root
+
+- name: 'clone safe-build-infrastructure repo'
+  git:
+    repo: "{{ safe_build_infrastructure_repo_url }}"
+    dest: "{{ safe_build_infrastructure_repo_path }}"
+    version: "{{ safe_build_infrastructure_repo_branch }}"
+  become: yes
+  become_user: "{{ provisioning_user }}"
+
+- name: 'create virtualenv in repo location'
+  command: "virtualenv {{ virtualenv_name }}"
+  args:
+    chdir: "{{ safe_build_infrastructure_repo_path }}"
+  become: yes
+  become_user: "{{ provisioning_user }}"
+
+# You are supposed to be able to use the 'virtualenv' parameter of the pip module to
+# install packages into a virtualenv, but it wasn't working correctly.
+- name: 'install ansible, boto and pypsrp in virtualenv'
+  shell: |
+    source {{ virtualenv_path }}/bin/activate
+    pip install {{ item }}
+  with_items:
+    - git+https://github.com/ansible/ansible.git@devel
+    - boto
+    - pypsrp
+  become: yes
+  become_user: "{{ provisioning_user }}"

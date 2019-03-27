@@ -7,4 +7,6 @@ packer_output/
 ansible/roles/java
 output-virtualbox-iso/
 .aws_provision/
-.env/
+**/.terraform/
+*.tfstate
+*.tfstate.backup

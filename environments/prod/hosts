@@ -1,0 +1,21 @@
+[provisioners]
+ansible_bastion
+
+[slaves]
+docker_slave_001
+docker_slave_002
+
+[masters]
+jenkins_master
+
+[windows_slaves]
+windows_slave_001 ansible_become_pass="{{ ansible_password }}"
+
+[osx_slaves]
+rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
+
+[wireguard]
+jenkins_master
+rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
+wgserver
+wgclient-ubuntu-bionic-x86_64 ansible_host=localhost ansible_port=2322

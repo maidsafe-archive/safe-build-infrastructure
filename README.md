@@ -84,6 +84,48 @@ At the end the Jenkins URL will be printed to the console. As with the local env
 
 When you're finished, you can tear the environment down by running `make clean-aws`.
 
+### AWS Production Provision
+
+Our production infrastructure for Jenkins runs in its own VPC, with a public subnet containing the Jenkins master and a Bastion host, and a private subnet containing the slaves. Producing this environment is a semi-automated process with 2 parts: the infrastructure is created, then we SSH to the Bastion host to provision the machines.
+
+#### Setup Prerequisites
+
+On your development host:
+
+* Install [Terraform](https://www.terraform.io/) on your distribution. Terraform is distributed as a single binary file, so you can either just extract it to somewhere on PATH, or put it somewhere and then symlink it to a location on PATH.
+* Terraform needs to connect to AWS, so you need to supply your keys:
+  - `export AWS_ACCESS_KEY_ID=<your access key id>`
+  - `export AWS_SECRET_ACCESS_KEY=<your secret access key>`
+* Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
+* Get a copy of the Ansible SSH key from someone in QA and save this somewhere like `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
+  
+#### Creating the Infrastructure
+
+After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make create-prod-jenkins-environment-aws`.
+
+After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
+
+*Important note:* at this point, you need to check the password that's been generated for the Windows instance. Unfortunately there is a problem if the password has a dollar character in it. The password needs to be supplied to Ansible to connect to provision the Windows instance, and there's a problem getting both Bash and a Makefile to correctly interpret this dollar. Use the AWS GUI to get the password, and if there's a dollar in it, run `cd terraform/prod && terraform destroy`, then run `make create-prod-jenkins-environment-aws` to create the environment again.
+
+#### Provisioning the Infrastructure
+
+Log into the AWS GUI or use the CLI to retrieve the public hostname of the Bastion. The machine is tagged with `Name=ansible_bastion`, which you can see in the GUI. SSH to this machine using the Ansible key referred to earlier: `ssh -i ~/.ssh/ansible ansible@<public hostname>`.
+
+The provisioning for this machine cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
+
+Now perform the following steps (all of these have to be applied to the Bastion host):
+
+* Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
+* Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
+* Get the Jenkins IP address from the AWS GUI and set that: `export JENKINS_MASTER_HOSTNAME=<ip address of jenkins master>`
+* Get the Windows password from the AWS GUI and set that: `export JENKINS_WINDOWS_SLAVE_PASSWORD='<windows password>'` (note the password must go inside single quotes to prevent Bash from interpreting special characters)
+* Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
+* Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
+* Run the provisioning: `make provision-prod-jenkins-environment-aws`
+* Finally, after the provisioning has completed, go into the AWS GUI and issue a restart for the Windows slave.
+
+After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
+
 ### Configure Jenkins
 
 After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running.

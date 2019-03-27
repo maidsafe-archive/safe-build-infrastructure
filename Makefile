@@ -83,6 +83,50 @@ jenkins-environment-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
+create-prod-jenkins-environment-aws:
+ifeq ($(DEBUG_JENKINS_ENV),true)
+	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+else
+	cd terraform/prod && terraform init && terraform apply -auto-approve
+endif
+	rm -rf ~/.ansible/tmp
+	echo "Sleep for 2 minutes to allow yum update to complete"
+	sleep 120
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/ansible \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=production_infrastructure" \
+		-u ansible ansible/ansible-provisioner.yml
+
+provision-prod-jenkins-environment-aws:
+ifndef JENKINS_WINDOWS_SLAVE_PASSWORD
+	@echo "The JENKINS_WINDOWS_SLAVE_PASSWORD variable must be set."
+	@exit 1
+endif
+ifndef JENKINS_MASTER_HOSTNAME
+	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
+	@exit 1
+endif
+	./scripts/install_external_java_role.sh
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
+		-u ansible ansible/docker-slave.yml
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--limit=jenkins_master \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
+		-u ansible ansible/jenkins-master.yml
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=true" \
+		-e "ansible_password=${JENKINS_WINDOWS_SLAVE_PASSWORD}" \
+		-e "jenkins_master_url=${JENKINS_MASTER_HOSTNAME}" \
+		ansible/jenkins-slave-windows.yml
+
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
 	vagrant up wgclient-ubuntu-bionic-x86_64
