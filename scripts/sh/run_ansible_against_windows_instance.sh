@@ -16,7 +16,7 @@ function run_ansible() {
         -e "cloud_environment=true" \
         -e "ansible_password=$password" \
         -e "jenkins_master_url=$jenkins_master_url" \
-        ansible/jenkins-slave-windows.yml
+        ansible/win-jenkins-slave.yml
 }
 
 function reboot_instance() {

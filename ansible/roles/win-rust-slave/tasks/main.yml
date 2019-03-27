@@ -1,4 +1,9 @@
 ---
+- name: 'install make'
+  win_chocolatey:
+    name: make
+    state: present
+
 # I tried to use the 'win_tempfile' module for this, which worked on the local VM
 # but not on the EC2 instance. The directory it created didn't exist by the time
 # the installer script came to execute, so I'm just going to use a known location.
@@ -18,8 +23,8 @@
     elevated: yes
     username: "{{ jenkins_service_account_user }}"
     password: "{{ jenkins_service_account_password }}"
-  when: jenkins_service_account_user is defined
+  when: jenkins_service_account_user != ""
 
 - name: 'run the rust installer as the admin user'
-  win_command: "{{ temp_installer_directory.path }}\\install_rustup.ps1"
-  when: jenkins_service_account_user is not defined
+  win_command: "powershell.exe -File C:\\Temp\\install_rustup.ps1"
+  when: jenkins_service_account_user == ""
