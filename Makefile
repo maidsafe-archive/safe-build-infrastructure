@@ -24,6 +24,10 @@ build-travis_slave-windows-2016-box:
 	packer validate templates/travis_slave-windows-2016-virtualbox-x86_64.json
 	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
+build-docker_slave-centos-7.6-x86_64-aws:
+	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
+	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
+
 jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 jenkins_master-centos-7.5-x86_64:
