@@ -3,7 +3,6 @@
 
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
-  config.vm.allowed_synced_folder_types = [:rsync]
 
   config.vm.define "wgserver-ubuntu-bionic-x86_64-aws" do |wireguard_server|
     wireguard_server.vm.box = "dummy"
@@ -212,6 +211,30 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "jenkins_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
+    windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
+    windows_slave.vm.guest = :windows
+    windows_slave.vm.communicator = "winrm"
+    windows_slave.winrm.username = "vagrant"
+    windows_slave.winrm.password = "vagrant"
+    windows_slave.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/win-jenkins-slave.yml"
+      ansible.inventory_path = "environments/vagrant/hosts"
+      ansible.vault_password_file = "~/.ansible/vault-pass"
+      ansible.extra_vars = {
+        jenkins_master_url: "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
+      }
+    end
+    windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
+    windows_slave.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.gui = true
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    end
+  end
+
   config.vm.define "travis_rust_slave-windows-2016-x86_64" do |windows_slave|
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
@@ -220,11 +243,12 @@ Vagrant.configure("2") do |config|
     windows_slave.winrm.username = "vagrant"
     windows_slave.winrm.password = "vagrant"
     windows_slave.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/jenkins-slave-windows.yml"
+      ansible.playbook = "ansible/win-travis-slave.yml"
+      ansible.limit = "travis_rust_slave-windows-2016-x86_64"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.vault_password_file = "~/.ansible/vault-pass"
       ansible.extra_vars = {
-        jenkins_master_url: "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
+        jenkins_service_account_user: "" # This is necessary to instruct the role *not* to use the service account.
       }
     end
     windows_slave.vm.provision "shell", path: "scripts/bat/tools.bat"
