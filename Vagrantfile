@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
     jenkins_master_aws.vm.provision "shell", inline: "apt-get install -y python"
   end
 
-  config.vm.define "docker_slave_01-centos-7.6-x86_64-aws" do |docker_slave_aws|
+  config.vm.define "docker_slave_001-centos-7.6-x86_64-aws" do |docker_slave_aws|
     docker_slave_aws.vm.box = "dummy"
     docker_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
@@ -69,8 +69,8 @@ Vagrant.configure("2") do |config|
       aws.security_groups = ["jenkins_master-dev"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
-        'Name' => 'docker_slave_01',
-        'full_name' => 'docker_slave_01-centos-7.6-x86_64',
+        'Name' => 'docker_slave_001',
+        'full_name' => 'docker_slave_001-centos-7.6-x86_64',
         'group' => 'slaves',
         'environment' => 'dev'
       }
@@ -79,7 +79,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "docker_slave_02-centos-7.6-x86_64-aws" do |docker_slave_aws|
+  config.vm.define "docker_slave_002-centos-7.6-x86_64-aws" do |docker_slave_aws|
     docker_slave_aws.vm.box = "dummy"
     docker_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
@@ -90,8 +90,8 @@ Vagrant.configure("2") do |config|
       aws.security_groups = ["jenkins_master-dev"]
       aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
       aws.tags = {
-        'Name' => 'docker_slave_02',
-        'full_name' => 'docker_slave_02-centos-7.6-x86_64',
+        'Name' => 'docker_slave_002',
+        'full_name' => 'docker_slave_002-centos-7.6-x86_64',
         'group' => 'slaves',
         'environment' => 'dev'
       }

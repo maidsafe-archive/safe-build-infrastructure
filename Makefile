@@ -67,8 +67,8 @@ jenkins-environment-aws:
 	# because you need to specify the URL of the Jenkins master.
 	./scripts/install_external_java_role.sh
 	./scripts/sh/create_dev_security_group.sh
-	vagrant up docker_slave_01-centos-7.6-x86_64-aws --provider=aws
-	vagrant up docker_slave_02-centos-7.6-x86_64-aws --provider=aws
+	vagrant up docker_slave_001-centos-7.6-x86_64-aws --provider=aws
+	vagrant up docker_slave_002-centos-7.6-x86_64-aws --provider=aws
 	./scripts/sh/run_windows_instance.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
@@ -173,8 +173,8 @@ clean:
 
 clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
-	vagrant destroy -f docker_slave_01-centos-7.6-x86_64-aws
-	vagrant destroy -f docker_slave_02-centos-7.6-x86_64-aws
+	vagrant destroy -f docker_slave_001-centos-7.6-x86_64-aws
+	vagrant destroy -f docker_slave_002-centos-7.6-x86_64-aws
 	vagrant destroy -f jenkins_master-ubuntu-bionic-x86_64-aws
 	@echo "sleeping for 1 minute to allow machines to terminate"
 	@sleep 60
