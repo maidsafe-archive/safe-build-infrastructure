@@ -45,11 +45,18 @@
     owner: "{{ build_user }}"
     group: "{{ build_user }}"
 
-- name: 'add authorized key'
+- name: 'add jenkins user authorized key'
   authorized_key:
     user: "{{ build_user }}"
     state: present
     key: "{{ lookup('file', '../../../../ssh_keys/docker_build_slave_key.pub')}}"
+    manage_dir: false
+
+- name: 'add jenkins_env ec2 key pair authorized key'
+  authorized_key:
+    user: "{{ build_user }}"
+    state: present
+    key: "{{ lookup('file', '../../../../ssh_keys/jenkins_env_key.pub')}}"
     manage_dir: false
 
 - name: 'create bashrc for build user'
