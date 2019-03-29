@@ -133,6 +133,8 @@ After the provisioning is complete, go to the AWS GUI and get the address of the
 
 After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running.
 
+If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
+
 The instance is using the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-plugin) to define all the jobs in code. This requires a 'seed' job to be created manually. After that's created, all the other job definitions will be created from the seed. When Jenkins is up and running you need to create this seed job. After logging in, perform the following steps:
 
 * Create a new 'freestyle' job to function as the seed (I usually call it 'freestyle-job_seed')
