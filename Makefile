@@ -102,9 +102,9 @@ jenkins-environment-aws:
 
 create-prod-jenkins-environment-aws:
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/prod && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
 else
-	cd terraform/prod && terraform apply -auto-approve
+	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
