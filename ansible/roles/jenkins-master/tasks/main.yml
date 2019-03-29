@@ -99,8 +99,8 @@
 
 - name: 'copy jenkins user aws secret key'
   copy:
-    content: "{{ secret_aws_jenkins_secret_access_key_path }}"
-    dest: "{{ secret_aws_jenkins_secret_access_key }}"
+    content: "{{ secret_aws_jenkins_secret_access_key }}"
+    dest: "{{ secret_aws_jenkins_secret_access_key_path }}"
     owner: root
     group: root
     mode: 0644
