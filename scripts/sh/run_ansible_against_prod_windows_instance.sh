@@ -8,4 +8,4 @@ EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
     -e "cloud_environment=true" \
     -e "ansible_password=$JENKINS_WINDOWS_SLAVE_PASSWORD" \
     -e "jenkins_master_url=$JENKINS_MASTER_HOSTNAME" \
-    ansible/jenkins-slave-windows.yml
+    ansible/win-jenkins-slave.yml
