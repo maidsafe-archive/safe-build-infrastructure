@@ -132,11 +132,6 @@ endif
 	./scripts/install_external_java_role.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-		--vault-password-file=~/.ansible/vault-pass \
-		-e "cloud_environment=true" \
-		-u ansible ansible/docker-slave.yml
-	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--limit=jenkins_master \
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=true" \
