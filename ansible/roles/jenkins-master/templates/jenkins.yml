@@ -24,7 +24,7 @@ jenkins:
         cloudName: "jenkins"
         credentialsId: "jenkins-ec2"
         instanceCapStr: ""
-        privateKey: "{{ secret_jenkins_env_private_key }}"
+        privateKey: ""
         region: "eu-west-2"
         templates:
           - ami: "{{ docker_slave_ami_id }}"
