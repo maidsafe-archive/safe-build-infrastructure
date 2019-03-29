@@ -33,6 +33,19 @@ jenkins_master-centos-7.6-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_
 jenkins_master-centos-7.6-x86_64:
 	vagrant up jenkins_master-centos-7.6-x86_64 --provision
 
+jenkins_master-ubuntu-bionic-x86_64-aws:
+	./scripts/install_external_java_role.sh
+	./scripts/sh/create_dev_security_group.sh
+	rm -rf ~/.ansible/tmp
+	vagrant up jenkins_master-ubuntu-bionic-x86_64-aws --provider=aws
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--limit=jenkins_master \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/jenkins_env_key \
+		-e "cloud_environment=true" \
+		-u ubuntu ansible/jenkins-master.yml
+
 rust_slave-centos-7.6-x86_64:
 	vagrant up rust_slave-centos-7.6-x86_64 --provision
 
