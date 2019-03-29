@@ -105,8 +105,6 @@ After setting up Terraform and providing the AWS details, we can bring up the in
 
 After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
 
-*Important note:* at this point, you need to check the password that's been generated for the Windows instance. Unfortunately there is a problem if the password has a dollar character in it. The password needs to be supplied to Ansible to connect to provision the Windows instance, and there's a problem getting both Bash and a Makefile to correctly interpret this dollar. Use the AWS GUI to get the password, and if there's a dollar in it, run `cd terraform/prod && terraform destroy`, then run `make create-prod-jenkins-environment-aws` to create the environment again.
-
 #### Provisioning the Infrastructure
 
 Log into the AWS GUI or use the CLI to retrieve the public hostname of the Bastion. The machine is tagged with `Name=ansible_bastion`, which you can see in the GUI. SSH to this machine using the Ansible key referred to earlier: `ssh -i ~/.ssh/ansible ansible@<public hostname>`.
