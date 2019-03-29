@@ -3,8 +3,8 @@
   because this is a private subnet, egress HTTP and HTTPS rules allow these instances to have
   internet connectivity via the NAT gateway, for installing updates and so on.
 */
-resource "aws_security_group" "linux_slaves-prod" {
-  name = "linux_slaves"
+resource "aws_security_group" "linux_slaves" {
+  name = "linux_slaves-prod"
   description = "Connectivity for Linux slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -61,8 +61,8 @@ resource "aws_security_group_rule" "linux_slaves_egress_ssh" {
   in favour of using a Bastion host. The 'all traffic' rules are what enables communication
   between the public and private subnets.
 */
-resource "aws_security_group" "jenkins_master-prod" {
-  name = "jenkins_master"
+resource "aws_security_group" "jenkins_master" {
+  name = "jenkins_master-prod"
   description = "Connectivity for the Jenkins master."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -172,8 +172,8 @@ resource "aws_security_group_rule" "jenkins_master_ingress_all_windows_slave_tra
   The Ansible group needs to have SSH inbound and the connectivity with the
   private subnet for provisioning all the machines.
 */
-resource "aws_security_group" "ansible-prod" {
-  name = "ansible"
+resource "aws_security_group" "ansible" {
+  name = "ansible-prod"
   description = "Connectivity for Ansible machine."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -261,8 +261,8 @@ resource "aws_security_group_rule" "ansible_egress_https" {
   security_group_id = "${aws_security_group.ansible.id}"
 }
 
-resource "aws_security_group" "windows_slaves-prod" {
-  name = "windows_slaves"
+resource "aws_security_group" "windows_slaves" {
+  name = "windows_slaves-prod"
   description = "Connectivity for Windows slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -322,7 +322,7 @@ resource "aws_security_group_rule" "windows_slaves_egress_https" {
 }
 
 resource "aws_security_group" "windows_bastion" {
-  name = "windows_bastion"
+  name = "windows_bastion-prod"
   description = "Connectivity for Windows Bastion host."
   vpc_id = "${module.vpc.vpc_id}"
 }
