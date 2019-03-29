@@ -34,25 +34,6 @@ resource "aws_instance" "jenkins_master" {
   }
 }
 
-resource "aws_instance" "docker_slave" {
-  ami = "${lookup(var.docker_slave_ami, var.region)}"
-  instance_type = "${var.docker_slave_instance_type}"
-  key_name = "${var.key_pair}"
-  subnet_id = "${module.vpc.private_subnets[0]}"
-  associate_public_ip_address = false
-  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
-  vpc_security_group_ids = [
-    "${aws_security_group.linux_slaves.id}"
-  ]
-  tags {
-    Name = "docker_slave_${format("%03d", count.index + 1)}"
-    full_name = "docker_slave_${format("%03d", count.index + 1)}-centos-7.6-x86_64"
-    group = "slaves"
-    environment = "prod"
-  }
-  count = 2
-}
-
 resource "aws_instance" "ansible" {
   ami = "${lookup(var.ansible_ami, var.region)}"
   instance_type = "${var.ansible_instance_type}"

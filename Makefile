@@ -125,6 +125,10 @@ ifndef JENKINS_MASTER_HOSTNAME
 	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
 	@exit 1
 endif
+ifndef SLAVE_SUBNET_ID
+	@echo "The SLAVE_SUBNET_ID variable must be set."
+	@exit 1
+endif
 	./scripts/install_external_java_role.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
@@ -136,6 +140,7 @@ endif
 		--limit=jenkins_master \
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=true" \
+		-e "slave_vpc_subnet_id=${SLAVE_SUBNET_ID}" \
 		-u ansible ansible/jenkins-master.yml
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
