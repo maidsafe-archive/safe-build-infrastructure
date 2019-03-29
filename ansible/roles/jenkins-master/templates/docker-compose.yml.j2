@@ -29,6 +29,7 @@ services:
       - secret_jenkins_admin_user_password
       - secret_docker_slave_ssh_key
       - secret_aws_jenkins_secret_key
+      - secret_aws_jenkins_ec2_secret_key
 secrets:
   secret_jenkins_admin_user_password:
     file: {{ secret_jenkins_admin_user_password_path }}
@@ -36,3 +37,5 @@ secrets:
     file: {{ secret_docker_slave_ssh_key_path }}
   secret_aws_jenkins_secret_key:
     file: {{ secret_aws_jenkins_secret_access_key_path }}
+  secret_aws_jenkins_ec2_secret_key:
+    file: {{ secret_aws_jenkins_ec2_user_secret_access_key_path }}
