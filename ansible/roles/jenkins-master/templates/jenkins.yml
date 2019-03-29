@@ -56,6 +56,20 @@ jenkins:
 {% endif %}
   nodes:
 {% if cloud_environment is defined %}
+{% for slave in groups['windows_slaves'] %}
+    - permanent:
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+        name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
+        labelString: "windows"
+        numExecutors: 2
+        # This variable must be without quotes for the Windows style path
+        remoteFS: {{ windows_rust_slave_working_path }}
+{% endfor %}
     - permanent:
         launcher:
           sSHLauncher:
