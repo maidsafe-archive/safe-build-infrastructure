@@ -1,8 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+module OS
+  def OS.windows?
+    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  end
+  def OS.mac?
+    (/darwin/ =~ RUBY_PLATFORM) != nil
+  end
+  def OS.unix?
+    !OS.windows?
+  end
+  def OS.linux?
+    OS.unix? and not OS.mac?
+  end
+end
+
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
+  if OS.mac?
+    config.vm.allowed_synced_folder_types = [:rsync]
+  end
 
   config.vm.define "wgserver-ubuntu-bionic-x86_64-aws" do |wireguard_server|
     wireguard_server.vm.box = "dummy"
