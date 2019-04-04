@@ -68,36 +68,26 @@ jenkins-environment: \
 	vagrant reload jenkins_rust_slave-windows-2016-x86_64
 
 jenkins-environment-aws:
-	# For some reason Ansible doesn't work with the traditional way of exporting environment
-	# variables as part of the target (see the 'jenkins_rust_slave-windows-2016-x86_64' target).
-	# Also, the ~/.ansible/tmp directory caches the results from the dynamic inventory provider
-	# and this sometimes prevent hosts from being matched correctly, hence why it gets cleared.
-	#
-	# The Windows instance is fired up before the Jenkins master, but it's not provisioned with
-	# Ansible until after the Jenkins master. The Jenkins master needs the Windows host to appear
-	# in the inventory because it uses that to populate the Jenkins configuration file. However,
-	# the Ansible run for the Windows slave can only happen *after* the Jenkins master exists,
-	# because you need to specify the URL of the Jenkins master.
 	./scripts/install_external_java_role.sh
-	./scripts/sh/create_dev_security_group.sh
-	vagrant up docker_slave_001-centos-7.6-x86_64-aws --provider=aws
-	vagrant up docker_slave_002-centos-7.6-x86_64-aws --provider=aws
-	./scripts/sh/run_windows_instance.sh
+	cd terraform/dev && terraform init && terraform apply -auto-approve
+	@echo "Sleep for 3 minutes to allow SSH to become available and yum updates on Linux instances..."
+	@sleep 180
+	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
-		-e "cloud_environment=true" \
+		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
-	vagrant up jenkins_master-ubuntu-bionic-x86_64-aws --provider=aws
+	@echo "Attempting Ansible run against Jenkins master...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
 		--limit=jenkins_master \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
-		-e "cloud_environment=true" \
+		-e "cloud_environment=dev" \
 		-u ubuntu ansible/jenkins-master.yml
-	./scripts/sh/run_ansible_against_mac_slave.sh
+	#./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
 create-prod-jenkins-environment-aws:
