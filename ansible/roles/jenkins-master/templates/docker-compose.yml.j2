@@ -1,5 +1,6 @@
 version: '3.3'
 services:
+{% if cloud_environment == "prod" %}
   wireguard:
     container_name: 'wireguard'
     image: {{ wg_image_name }}:{{ wg_image_tag }}
@@ -16,15 +17,23 @@ services:
       - {{ wg_server_listen_port }}:{{ wg_server_listen_port }}/udp
     volumes:
       - /etc/wireguard:/etc/wireguard
+{% endif %}
   jenkins:
     image: {{ customised_jenkins_image_name }}
     restart: always
+{% if cloud_environment != "prod" %}
+    ports:
+      - {{ jenkins_web_port }}:8080
+      - {{ jenkins_slave_port }}:50000
+{% endif %}
     volumes:
       - {{ jenkins_data_mount_path }}/jenkins_home:{{ jenkins_container_home_path }}:z
     environment:
       - CASC_JENKINS_CONFIG={{ jenkins_container_casc_path }}
       - JENKINS_UC_DOWNLOAD={{ jenkins_alternate_update_center_url }}
+{% if cloud_environment == "prod" %}
     network_mode: "service:wireguard"
+{% endif %}
     secrets:
       - secret_jenkins_admin_user_password
       - secret_docker_slave_ssh_key

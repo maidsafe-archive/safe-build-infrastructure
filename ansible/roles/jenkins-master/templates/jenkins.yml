@@ -18,7 +18,7 @@ jenkins:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   mode: NORMAL
-{% if cloud_environment is defined %}
+{% if cloud_environment == "prod" %}
   clouds:
     - amazonEC2:
         cloudName: "jenkins"
@@ -55,7 +55,24 @@ jenkins:
         useInstanceProfileForCredentials: false
 {% endif %}
   nodes:
-{% if cloud_environment is defined %}
+{% if cloud_environment == "dev" %}
+{% for slave in groups['linux_slaves'] %}
+    - permanent:
+        launcher:
+          sSHLauncher:
+            credentialsId: "docker_slave_jenkins_user_ssh_key"
+            host: "{{ hostvars[slave]['ec2_private_ip_address'] }}"
+            launchTimeoutSeconds: 210
+            maxNumRetries: 10
+            port: 22
+            retryWaitTime: 15
+        name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
+        labelString: "docker"
+        numExecutors: 2
+        remoteFS: "/home/jenkins"
+{% endfor %}
+{% endif %}
+{% if cloud_environment == "dev" or cloud_environment == "prod" %}
 {% for slave in groups['windows_slaves'] %}
     - permanent:
         launcher:
