@@ -1,5 +1,5 @@
 ---
-- hosts: slaves
+- hosts: linux_slaves
   become: True
   roles:
     - pip

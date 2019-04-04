@@ -1,4 +1,4 @@
-[slaves]
+[linux_slaves]
 docker_slave_001
 docker_slave_002
 
@@ -6,7 +6,7 @@ docker_slave_002
 jenkins_master
 
 [windows_slaves]
-windows_slave_01 ansible_become_pass="{{ ansible_password }}"
+windows_slave_001 ansible_become_pass="{{ ansible_password }}"
 
 [osx_slaves]
 rust_slave-osx-mojave-x86_64 ansible_host=192.168.1.190 ansible_user=qamaidsafe
