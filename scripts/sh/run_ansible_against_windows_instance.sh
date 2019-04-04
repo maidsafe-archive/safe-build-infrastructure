@@ -2,13 +2,45 @@
 
 set -e
 
-instance_id=$(cat .aws_provision/instance_id)
-password=$(cat .aws_provision/instance_password)
+function get_instance_id() {
+    instance_id=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=windows_slave_001" \
+        "Name=tag:environment,Values=dev" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .InstanceId' \
+        | sed 's/\"//g')
+}
+
+function get_instance_password() {
+    local response
+    response=$(aws ec2 get-password-data \
+        --region eu-west-2 \
+        --instance-id "$instance_id" \
+        --priv-launch-key ~/.ssh/jenkins_env_key)
+    password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
+    while [[ $password == "" ]]
+    do
+        response=$(aws ec2 get-password-data \
+            --region eu-west-2 \
+            --instance-id "$instance_id" \
+            --priv-launch-key ~/.ssh/jenkins_env_key)
+        password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
+        echo "Password for instance not yet available. Waiting for 5 seconds before retry."
+        sleep 5
+    done
+    echo "Password retrieved for Windows instance."
+}
 
 function run_ansible() {
-    jenkins_master_url=$(vagrant ssh-config jenkins_master-ubuntu-bionic-x86_64-aws | \
-        grep "HostName" | awk '{ print $2 }')
-    echo "Attempting Ansible run against instance... (can take 10+ seconds before output)"
+    jenkins_master_url=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=jenkins_master" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+        | sed 's/\"//g')
+    echo "Jenkins master is at $jenkins_master_url"
+    echo "Attempting Ansible run against Windows slave... (can be 10+ seconds before output)"
     rm -rf ~/.ansible/tmp
     EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
         --vault-password-file=~/.ansible/vault-pass \
@@ -25,6 +57,8 @@ function reboot_instance() {
     aws ec2 reboot-instances --region eu-west-2 --instance-ids "$instance_id"
 }
 
+get_instance_id
+get_instance_password
 run_ansible
 reboot_instance
 
