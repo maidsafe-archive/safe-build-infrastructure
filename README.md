@@ -59,8 +59,6 @@ First, do the following:
 * The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
-* Install the [vagrant-aws](https://github.com/mitchellh/vagrant-aws) plugin with `vagrant plugin install vagrant-aws`.
-* Install the 'dummy' AWS box for Vagrant with `vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
 * Set `export AWS_KEYPAIR_NAME=jenkins_env`.

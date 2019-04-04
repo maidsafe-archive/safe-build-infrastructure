@@ -102,8 +102,8 @@ endif
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
-		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=dynamic_slaves" \
+		-e "safe_build_infrastructure_repo_owner=maidsafe" \
+		-e "safe_build_infrastructure_repo_branch=master" \
 		-u ansible ansible/ansible-provisioner.yml
 
 provision-prod-jenkins-environment-aws:
