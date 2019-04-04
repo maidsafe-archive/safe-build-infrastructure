@@ -40,6 +40,7 @@ display-url-api:2.3.0
 docker-commons:1.13
 docker-workflow:1.17
 durable-task:1.28
+ec2:1.42
 email-ext:2.63
 favorite:2.3.2
 git:3.9.1
@@ -68,6 +69,7 @@ matrix-auth:2.3
 matrix-project:1.13
 mercurial:2.4
 momentjs:1.1.1
+node-iterator-api:1.5.0
 pam-auth:1.4
 pipeline-aws:1.35
 pipeline-build-step:2.7

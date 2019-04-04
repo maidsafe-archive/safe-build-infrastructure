@@ -1,9 +1,9 @@
 ---
 jenkins_master_ip_address: 192.168.10.100
-jenkins_master_full_name: jenkins_master-centos-7.5-x86_64
+jenkins_master_full_name: jenkins_master-centos-7.6-x86_64
 jenkins_master_host_url: jenkins_master.centos.local
 docker_slave_ip_address: 192.168.10.101
-docker_slave_full_name: docker_slave-centos-7.5-x86_64
+docker_slave_full_name: docker_slave-centos-7.6-x86_64
 docker_slave_host_url: docker-slave.centos.local
 windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
@@ -22,3 +22,4 @@ secret_jenkins_admin_user_password: !vault |
   38626264653832666538666335616334623462373131396534346264336534316235353666393437
   3863643464643932626265303062356131636533316265383433
 rust_version: 1.32.0
+linux_slaves_security_group_name: linux_slaves

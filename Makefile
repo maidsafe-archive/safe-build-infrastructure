@@ -24,29 +24,46 @@ build-travis_slave-windows-2016-box:
 	packer validate templates/travis_slave-windows-2016-virtualbox-x86_64.json
 	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
-jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
-jenkins_master-centos-7.5-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
-jenkins_master-centos-7.5-x86_64:
-	vagrant up jenkins_master-centos-7.5-x86_64 --provision
+build-docker_slave-centos-7.6-x86_64-aws:
+	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
+	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
 
-rust_slave-centos-7.5-x86_64:
-	vagrant up rust_slave-centos-7.5-x86_64 --provision
+jenkins_master-centos-7.6-x86_64: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
+jenkins_master-centos-7.6-x86_64: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
+jenkins_master-centos-7.6-x86_64:
+	vagrant up jenkins_master-centos-7.6-x86_64 --provision
+
+jenkins_master-ubuntu-bionic-x86_64-aws:
+	./scripts/install_external_java_role.sh
+	./scripts/sh/create_dev_security_group.sh
+	rm -rf ~/.ansible/tmp
+	vagrant up jenkins_master-ubuntu-bionic-x86_64-aws --provider=aws
+	rm -rf ~/.ansible/tmp
+	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+		--limit=jenkins_master \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/jenkins_env_key \
+		-e "cloud_environment=true" \
+		-u ubuntu ansible/jenkins-master.yml
+
+rust_slave-centos-7.6-x86_64:
+	vagrant up rust_slave-centos-7.6-x86_64 --provision
 
 rust_slave-ubuntu-trusty-x86_64:
 	vagrant up rust_slave-ubuntu-trusty-x86_64 --provision
 
-docker_slave-centos-7.5-x86_64: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
-docker_slave-centos-7.5-x86_64: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
-docker_slave-centos-7.5-x86_64:
-	vagrant up docker_slave-centos-7.5-x86_64 --provision
+docker_slave-centos-7.6-x86_64: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
+docker_slave-centos-7.6-x86_64: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
+docker_slave-centos-7.6-x86_64:
+	vagrant up docker_slave-centos-7.6-x86_64 --provision
 
 jenkins-environment: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 jenkins-environment: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
 jenkins-environment: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 jenkins-environment: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 jenkins-environment: \
-	docker_slave-centos-7.5-x86_64 \
-	jenkins_master-centos-7.5-x86_64 \
+	docker_slave-centos-7.6-x86_64 \
+	jenkins_master-centos-7.6-x86_64 \
 	jenkins_rust_slave-windows-2016-x86_64
 	vagrant reload jenkins_rust_slave-windows-2016-x86_64
 
@@ -63,8 +80,8 @@ jenkins-environment-aws:
 	# because you need to specify the URL of the Jenkins master.
 	./scripts/install_external_java_role.sh
 	./scripts/sh/create_dev_security_group.sh
-	vagrant up docker_slave_01-centos-7.5-x86_64-aws --provider=aws
-	vagrant up docker_slave_02-centos-7.5-x86_64-aws --provider=aws
+	vagrant up docker_slave_001-centos-7.6-x86_64-aws --provider=aws
+	vagrant up docker_slave_002-centos-7.6-x86_64-aws --provider=aws
 	./scripts/sh/run_windows_instance.sh
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
@@ -96,7 +113,7 @@ endif
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=production_infrastructure" \
+		-e "safe_build_infrastructure_repo_branch=dynamic_slaves" \
 		-u ansible ansible/ansible-provisioner.yml
 
 provision-prod-jenkins-environment-aws:
@@ -108,24 +125,19 @@ ifndef JENKINS_MASTER_HOSTNAME
 	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
 	@exit 1
 endif
+ifndef SLAVE_SUBNET_ID
+	@echo "The SLAVE_SUBNET_ID variable must be set."
+	@exit 1
+endif
 	./scripts/install_external_java_role.sh
-	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-		--vault-password-file=~/.ansible/vault-pass \
-		-e "cloud_environment=true" \
-		-u ansible ansible/docker-slave.yml
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--limit=jenkins_master \
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=true" \
+		-e "slave_vpc_subnet_id=${SLAVE_SUBNET_ID}" \
 		-u ansible ansible/jenkins-master.yml
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-		--vault-password-file=~/.ansible/vault-pass \
-		-e "cloud_environment=true" \
-		-e "ansible_password=${JENKINS_WINDOWS_SLAVE_PASSWORD}" \
-		-e "jenkins_master_url=${JENKINS_MASTER_HOSTNAME}" \
-		ansible/jenkins-slave-windows.yml
+	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
 wireguard-sandbox-aws:
 	vagrant up wgserver-ubuntu-bionic-x86_64-aws --provider=aws
@@ -169,8 +181,8 @@ clean:
 
 clean-aws:
 	aws ec2 --region eu-west-2 terminate-instances --instance-ids $$(cat .aws_provision/instance_id)
-	vagrant destroy -f docker_slave_01-centos-7.5-x86_64-aws
-	vagrant destroy -f docker_slave_02-centos-7.5-x86_64-aws
+	vagrant destroy -f docker_slave_001-centos-7.6-x86_64-aws
+	vagrant destroy -f docker_slave_002-centos-7.6-x86_64-aws
 	vagrant destroy -f jenkins_master-ubuntu-bionic-x86_64-aws
 	@echo "sleeping for 1 minute to allow machines to terminate"
 	@sleep 60

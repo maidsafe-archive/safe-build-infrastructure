@@ -1,6 +1,6 @@
 [slaves]
-docker_slave_01
-docker_slave_02
+docker_slave_001
+docker_slave_002
 
 [masters]
 jenkins_master

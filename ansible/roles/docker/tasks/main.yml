@@ -23,6 +23,7 @@
   service:
     name: docker
     state: started
+    enabled: yes
 
 - name: 'install docker-compose'
   get_url:

@@ -4,7 +4,7 @@
   internet connectivity via the NAT gateway, for installing updates and so on.
 */
 resource "aws_security_group" "linux_slaves" {
-  name = "linux_slaves"
+  name = "linux_slaves-prod"
   description = "Connectivity for Linux slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -62,7 +62,7 @@ resource "aws_security_group_rule" "linux_slaves_egress_ssh" {
   between the public and private subnets.
 */
 resource "aws_security_group" "jenkins_master" {
-  name = "jenkins_master"
+  name = "jenkins_master-prod"
   description = "Connectivity for the Jenkins master."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -173,7 +173,7 @@ resource "aws_security_group_rule" "jenkins_master_ingress_all_windows_slave_tra
   private subnet for provisioning all the machines.
 */
 resource "aws_security_group" "ansible" {
-  name = "ansible"
+  name = "ansible-prod"
   description = "Connectivity for Ansible machine."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -262,7 +262,7 @@ resource "aws_security_group_rule" "ansible_egress_https" {
 }
 
 resource "aws_security_group" "windows_slaves" {
-  name = "windows_slaves"
+  name = "windows_slaves-prod"
   description = "Connectivity for Windows slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -322,7 +322,7 @@ resource "aws_security_group_rule" "windows_slaves_egress_https" {
 }
 
 resource "aws_security_group" "windows_bastion" {
-  name = "windows_bastion"
+  name = "windows_bastion-prod"
   description = "Connectivity for Windows Bastion host."
   vpc_id = "${module.vpc.vpc_id}"
 }

@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "generated_ami_name": "docker_slave-centos-7.6-x86_64"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_access_key`}}",
+      "ssh_username": "centos",
+      "instance_type": "t2.micro",
+      "region": "eu-west-2",
+      "source_ami": "ami-0eab3a90fc693af19",
+      "ami_name": "{{user `generated_ami_name`}}",
+      "run_tags": {
+        "Name": "docker_slave_001",
+        "full_name": "{{user `generated_ami_name`}}",
+        "group": "slaves",
+        "environment": "prod"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/docker-slave.yml",
+      "inventory_directory": "environments/prod",
+      "groups": "slaves"
+    }
+  ]
+}

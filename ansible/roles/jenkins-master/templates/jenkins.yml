@@ -18,23 +18,44 @@ jenkins:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   mode: NORMAL
+{% if cloud_environment is defined %}
+  clouds:
+    - amazonEC2:
+        cloudName: "jenkins"
+        credentialsId: "jenkins-ec2"
+        instanceCapStr: ""
+        privateKey: ""
+        region: "eu-west-2"
+        templates:
+          - ami: "{{ docker_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ docker_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "docker"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "/home/jenkins"
+            securityGroups: "{{ linux_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Micro
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
+        useInstanceProfileForCredentials: false
+{% endif %}
   nodes:
 {% if cloud_environment is defined %}
-{% for slave in groups['slaves'] %}
-    - permanent:
-        launcher:
-          sSHLauncher:
-            credentialsId: "docker_slave_jenkins_user_ssh_key"
-            host: "{{ hostvars[slave]['ec2_private_ip_address'] }}"
-            launchTimeoutSeconds: 210
-            maxNumRetries: 10
-            port: 22
-            retryWaitTime: 15
-        name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
-        labelString: "docker"
-        numExecutors: 2
-        remoteFS: "/home/jenkins"
-{% endfor %}
 {% for slave in groups['windows_slaves'] %}
     - permanent:
         launcher:
@@ -145,3 +166,9 @@ credentials:
             password: ${secret_aws_jenkins_secret_key}
             scope: GLOBAL
             username: "{{ aws_jenkins_access_key }}"
+        - aws:
+            accessKey: "AKIAVVODCRMSJYOPDR5R"
+            description: "User for controlling the EC2 plugin."
+            id: "jenkins-ec2"
+            scope: GLOBAL
+            secretKey: "{{ secret_aws_jenkins_ec2_user_secret_access_key }}"
