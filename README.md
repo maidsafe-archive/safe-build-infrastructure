@@ -20,6 +20,8 @@ To get the VMs up and running, you need some things installed on your developmen
 
 Of course, for everything here that's installed via pip, you can considering using a [virtualenv](https://virtualenv.pypa.io/en/latest/) (and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) is even better). This is a good solution for running experimental versions of Ansible. You can have a different virtualenv for each installation.
 
+**Important note**: if you're running macOS, there's an [issue](https://github.com/ansible/ansible/issues/32499) with using Ansible to provision Windows hosts. You can work around this issue by setting an environment variable: `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`. Add this to your `~/.bashrc` to prevent having to set it all the time.
+
 If you want to build the Windows boxes you will need a [Packer](https://packer.io/) installation; however this isn't necessary for running the Vagrant boxes, as the boxes will be hosted on S3.
 
 ## VMs
