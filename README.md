@@ -70,7 +70,7 @@ First, do the following:
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
-After that you can run `make jenkins-environment-aws`. This creates:
+After that you can run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
@@ -78,13 +78,13 @@ After that you can run `make jenkins-environment-aws`. This creates:
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
-Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make clean-aws` followed by `make jenkins-environment-aws`.
+Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make env-jenkins-dev-aws`.
 
 This setup is intended *only* for development. The machines are all running on the default VPC and Jenkins doesn't have HTTPS enabled.
 
 At the end the Jenkins URL will be printed to the console. As with the local environment, see someone in QA to get the admin password for Jenkins.
 
-When you're finished, you can tear the environment down by running `make clean-aws`.
+When you're finished, you can tear the environment down by running `make clean-jenkins-dev-aws`.
 
 ### AWS Production Provision
 
