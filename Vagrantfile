@@ -1,26 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-module OS
-  def OS.windows?
-    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-  end
-  def OS.mac?
-    (/darwin/ =~ RUBY_PLATFORM) != nil
-  end
-  def OS.unix?
-    !OS.windows?
-  end
-  def OS.linux?
-    OS.unix? and not OS.mac?
-  end
-end
-
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
-  if OS.mac?
-    config.vm.allowed_synced_folder_types = [:rsync]
-  end
 
   config.vm.define "jenkins_master-centos-7.6-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"
@@ -87,6 +69,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "base-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -102,6 +85,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "base-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2016"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2016-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -117,6 +101,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "rust_slave_git_bash-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -135,6 +120,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "jenkins_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
@@ -159,6 +145,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "travis_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
@@ -184,6 +171,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "rust_slave_msys2-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
