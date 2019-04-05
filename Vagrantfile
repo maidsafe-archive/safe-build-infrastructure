@@ -22,37 +22,6 @@ Vagrant.configure("2") do |config|
     config.vm.allowed_synced_folder_types = [:rsync]
   end
 
-  config.vm.define "wgserver-ubuntu-bionic-x86_64-aws" do |wireguard_server|
-    wireguard_server.vm.box = "dummy"
-    wireguard_server.vm.provider :aws do |aws, override|
-      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
-      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
-      aws.region = "eu-west-2"
-      aws.ami = "ami-0883141bc92a74917"
-      aws.instance_type = "t2.micro"
-      aws.security_groups = ["wg-dev"]
-      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
-      aws.tags = { 'Name' => 'wgserver' }
-      override.ssh.username = "ubuntu"
-      override.ssh.private_key_path = "~/.ssh/id_rsa"
-    end
-    wireguard_server.vm.provision "shell", inline: "apt-get update -y"
-    wireguard_server.vm.provision "shell", inline: "apt-get install -y python"
-  end
-
-  config.vm.define "wgclient-ubuntu-bionic-x86_64" do |wireguard_client|
-    wireguard_client.vm.box = "ubuntu/bionic64"
-    wireguard_client.vm.box_version = "20190225.0.0"
-    # The inventory file that's used with this machine needs to have a known port for SSH.
-    wireguard_client.vm.network :forwarded_port, guest: 22, host: 2322, id: "ssh"
-    wireguard_client.vm.provision "file", source: "~/.ssh/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"
-    wireguard_client.vm.provision "shell", inline: "apt-get update -y"
-    wireguard_client.vm.provision "shell", inline: "apt-get install -y python"
-    wireguard_client.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--audio", "none"]
-    end
-  end
-
   config.vm.define "jenkins_master-centos-7.6-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"
     jenkins_master.vm.network :private_network, :ip => "#{ENV['JENKINS_MASTER_IP_ADDRESS']}"
