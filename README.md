@@ -46,7 +46,7 @@ A Jenkins environment is declared in this repository. It runs in a Docker contai
 
 ### Local Provision
 
-To get a local Jenkins environment, simply run `make jenkins-environment`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
+To get a local Jenkins environment, simply run `make env-jenkins-dev-vbox`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
 
 ### AWS Development Provision
 
@@ -101,7 +101,7 @@ On your development host:
   
 #### Creating the Infrastructure
 
-After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make create-prod-jenkins-environment-aws`.
+After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make env-jenkins-prod-aws`.
 
 After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
 
@@ -122,7 +122,7 @@ Now perform the following steps (all of these have to be applied to the Bastion 
     - `export SLAVE_SUBNET_ID=<private subnet ID>`
 * Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
-* Run the provisioning: `make provision-prod-jenkins-environment-aws`
+* Run the provisioning: `make provision-jenkins-prod-aws`
 * Finally, after the provisioning has completed, go into the AWS GUI and issue a restart for the Windows slave.
 
 After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
