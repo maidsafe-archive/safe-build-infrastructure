@@ -117,8 +117,6 @@ Now perform the following steps (all of these have to be applied to the Bastion 
 
 * Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
 * Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
-* Get the Jenkins IP address from the AWS GUI and set that: `export JENKINS_MASTER_HOSTNAME=<ip address of jenkins master>`
-* Get the Windows password from the AWS GUI and set that: `export JENKINS_WINDOWS_SLAVE_PASSWORD='<windows password>'` (note the password must go inside single quotes to prevent Bash from interpreting special characters)
 * Get the ID of the private subnet for the slaves and set that:
     - In the AWS GUI go to Services -> VPC -> Subnets -> jenkins_environment-private-eu-west-2 and copy the ID of the subnet
     - `export SLAVE_SUBNET_ID=<private subnet ID>`

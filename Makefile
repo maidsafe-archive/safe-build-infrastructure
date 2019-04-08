@@ -94,7 +94,7 @@ env-jenkins-dev-aws:
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=dev" \
 		-u ubuntu ansible/jenkins-master.yml
-	#./scripts/sh/run_ansible_against_mac_slave.sh
+	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
 env-jenkins-prod-aws:
@@ -114,14 +114,6 @@ endif
 		-u ansible ansible/ansible-provisioner.yml
 
 provision-jenkins-prod-aws:
-ifndef JENKINS_WINDOWS_SLAVE_PASSWORD
-	@echo "The JENKINS_WINDOWS_SLAVE_PASSWORD variable must be set."
-	@exit 1
-endif
-ifndef JENKINS_MASTER_HOSTNAME
-	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
-	@exit 1
-endif
 ifndef SLAVE_SUBNET_ID
 	@echo "The SLAVE_SUBNET_ID variable must be set."
 	@exit 1
