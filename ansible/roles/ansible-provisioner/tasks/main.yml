@@ -1,4 +1,66 @@
 ---
+- name: 'fail if aws access key id is not set'
+  fail:
+    msg: "The AWS access key ID must be provided"
+  when: aws_access_key_id is not defined or aws_access_key_id == ""
+
+- name: 'fail if aws secret access key is not set'
+  fail:
+    msg: "The AWS secret access key must be provided"
+  when: aws_secret_access_key is not defined or aws_secret_access_key == ""
+
+- name: 'fail if ansible password is not set'
+  fail:
+    msg: "The Ansible vault password must be provided"
+  when: ansible_vault_password is not defined or ansible_vault_password == ""
+
+- name: 'fail if jenkins_env_key is not set'
+  fail:
+    msg: "The jenkins_env private key must be provided"
+  when: jenkins_env_key is not defined or jenkins_env_key == ""
+
+- name: 'set the aws access key id in ansible user ~/.bashrc'
+  lineinfile:
+    path: "/home/ansible/.bashrc"
+    state: present
+    line: "export AWS_ACCESS_KEY_ID={{ aws_access_key_id }}"
+
+- name: 'set the aws secret access key in ansible user ~/.bashrc'
+  lineinfile:
+    path: /home/ansible/.bashrc
+    state: present
+    line: "export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
+
+- name: 'set the aws default region in ansible user ~/.bashrc'
+  lineinfile:
+    path: /home/ansible/.bashrc
+    state: present
+    line: export AWS_DEFAULT_REGION=eu-west-2
+
+- name: 'create .ansible directory'
+  file:
+    path: /home/ansible/.ansible
+    state: directory
+    mode: 0700
+    owner: ansible
+    group: ansible
+
+- name: 'set the ansible vault password'
+  copy:
+    content: "{{ ansible_vault_password }}"
+    dest: "/home/ansible/.ansible/vault-pass"
+    mode: 0600
+    owner: ansible
+    group: ansible
+
+- name: 'copy the jenkins_env_key'
+  copy:
+    content: "{{ jenkins_env_key }}"
+    dest: "/home/ansible/.ssh/jenkins_env_key"
+    mode: 0400
+    owner: ansible
+    group: ansible
+
 - name: 'install utils'
   package:
     name: ['git', 'nc', 'vim']

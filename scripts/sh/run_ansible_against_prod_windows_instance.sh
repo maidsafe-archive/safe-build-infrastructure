@@ -6,7 +6,7 @@ function get_instance_id() {
     instance_id=$(aws ec2 describe-instances \
         --filters \
         "Name=tag:Name,Values=windows_slave_001" \
-        "Name=tag:environment,Values=dev" \
+        "Name=tag:environment,Values=prod" \
         "Name=instance-state-name,Values=running" \
         | jq '.Reservations | .[0] | .Instances | .[0] | .InstanceId' \
         | sed 's/\"//g')
@@ -51,6 +51,14 @@ function run_ansible() {
         ansible/win-jenkins-slave.yml
 }
 
+function reboot_instance() {
+    echo "Rebooting instance for necessary changes to take effect."
+    echo "The Jenkins GUI will indicate when the machine becomes available again."
+    aws ec2 reboot-instances --region eu-west-2 --instance-ids "$instance_id"
+}
+
 get_instance_id
+get_instance_password
 get_jenkins_url
 run_ansible
+reboot_instance

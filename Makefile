@@ -97,27 +97,33 @@ env-jenkins-dev-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
+.ONESHELL:
 env-jenkins-prod-aws:
+	@read -p "Please provide your AWS access key ID: " aws_access_key_id;
+	@read -p "Please provide your AWS secret access key: " aws_secret_access_key;
+	@read -p "Please provide the Ansible vault password: " ansible_vault_password;
+	@jenkins_env_key=$$(cat ~/.ssh/jenkins_env_key)
 ifeq ($(DEBUG_JENKINS_ENV),true)
 	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
 else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
+	cd ../..
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
 	sleep 120
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
+		-e "aws_access_key_id=$$aws_access_key_id" \
+		-e "aws_secret_access_key=$$aws_secret_access_key" \
+		-e "ansible_vault_password=$$ansible_vault_password" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
 		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
 		-u ansible ansible/ansible-provisioner.yml
+	./scripts/sh/get_jenkins_master_url.sh
 
 provision-jenkins-prod-aws:
-ifndef SLAVE_SUBNET_ID
-	@echo "The SLAVE_SUBNET_ID variable must be set."
-	@exit 1
-endif
 	./scripts/install_external_java_role.sh
 	./scripts/sh/run_ansible_against_jenkins_master.sh
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh

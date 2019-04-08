@@ -99,26 +99,23 @@ On your development host:
   - `export AWS_ACCESS_KEY_ID=<your access key id>`
   - `export AWS_SECRET_ACCESS_KEY=<your secret access key>`
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
-* Get a copy of the Ansible SSH key from someone in QA and save this somewhere like `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
+* Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
+* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
   
 #### Creating the Infrastructure
 
-After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make env-jenkins-prod-aws`.
+After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make env-jenkins-prod-aws`. You will be prompted to supply your AWS keys and the vault password, which will be copied to the Bastion host for convenience.
 
 After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
 
-#### Provisioning the Infrastructure
+At the end of this target it will print you out the SSH command for accessing the Bastion.
 
-Log into the AWS GUI or use the CLI to retrieve the public hostname of the Bastion. The machine is tagged with `Name=ansible_bastion`, which you can see in the GUI. SSH to this machine using the Ansible key referred to earlier: `ssh -i ~/.ssh/ansible ansible@<public hostname>`.
+#### Provisioning the Infrastructure
 
 The provisioning for this machine cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
 
 Now perform the following steps (all of these have to be applied to the Bastion host):
 
-* Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
-* Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
-* Set your AWS default region: `export AWS_DEFAULT_REGION=eu-west-2`
-* Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * Run the provisioning: `make provision-jenkins-prod-aws`
 * Finally, after the provisioning has completed, go into the AWS GUI and issue a restart for the Windows slave.
