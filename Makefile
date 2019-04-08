@@ -109,8 +109,8 @@ endif
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
-		-e "safe_build_infrastructure_repo_owner=maidsafe" \
-		-e "safe_build_infrastructure_repo_branch=master" \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
 		-u ansible ansible/ansible-provisioner.yml
 
 provision-jenkins-prod-aws:
@@ -119,13 +119,7 @@ ifndef SLAVE_SUBNET_ID
 	@exit 1
 endif
 	./scripts/install_external_java_role.sh
-	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-		--limit=jenkins_master \
-		--vault-password-file=~/.ansible/vault-pass \
-		-e "cloud_environment=true" \
-		-e "slave_vpc_subnet_id=${SLAVE_SUBNET_ID}" \
-		-u ansible ansible/jenkins-master.yml
+	./scripts/sh/run_ansible_against_jenkins_master.sh
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
 provision-rust_slave-macos-mojave-x86_64:

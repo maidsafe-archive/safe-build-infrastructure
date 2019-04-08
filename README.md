@@ -117,9 +117,6 @@ Now perform the following steps (all of these have to be applied to the Bastion 
 
 * Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
 * Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
-* Get the ID of the private subnet for the slaves and set that:
-    - In the AWS GUI go to Services -> VPC -> Subnets -> jenkins_environment-private-eu-west-2 and copy the ID of the subnet
-    - `export SLAVE_SUBNET_ID=<private subnet ID>`
 * Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * Run the provisioning: `make provision-jenkins-prod-aws`
