@@ -3,6 +3,12 @@
   package:
     name: ['git', 'nc', 'vim']
 
+- name: 'install jq'
+  get_url:
+    url: "{{ jq_url }}"
+    dest: "{{ jq_install_path }}"
+    mode: 0755
+
 - name: 'install python (Ubuntu)'
   package:
     name: python
@@ -49,6 +55,7 @@
     source {{ virtualenv_path }}/bin/activate
     pip install {{ item }}
   with_items:
+    - awscli
     - git+https://github.com/ansible/ansible.git@devel
     - boto
     - pypsrp
