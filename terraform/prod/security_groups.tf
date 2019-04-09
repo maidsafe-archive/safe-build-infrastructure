@@ -94,6 +94,15 @@ resource "aws_security_group_rule" "jenkins_master_ingress_8080" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
+resource "aws_security_group_rule" "jenkins_master_ingress_51820" {
+  type = "ingress"
+  from_port = 51820
+  to_port = 51820
+  protocol = "udp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
 resource "aws_security_group_rule" "jenkins_master_ingress_50000" {
   type = "ingress"
   from_port = 50000
