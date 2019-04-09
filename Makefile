@@ -25,6 +25,7 @@ box-travis_slave-windows-2016-vbox:
 	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-aws:
+	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
 	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
 
