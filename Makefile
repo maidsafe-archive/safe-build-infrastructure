@@ -121,7 +121,7 @@ endif
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
 		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
 		-u ansible ansible/ansible-provisioner.yml
-	./scripts/sh/get_jenkins_master_url.sh
+	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
 	./scripts/install_external_java_role.sh
@@ -129,9 +129,7 @@ provision-jenkins-prod-aws:
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
 provision-rust_slave-macos-mojave-x86_64:
-	# Pipelining must be enabled to get around a problem with permissions and temporary files on OSX:
-	# https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
-	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-rust-slave.yml
+	./scripts/sh/run_ansible_against_mac_slave.sh
 
 clean-rust_slave-macos-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml

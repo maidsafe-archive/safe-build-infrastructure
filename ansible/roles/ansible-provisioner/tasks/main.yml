@@ -14,11 +14,6 @@
     msg: "The Ansible vault password must be provided"
   when: ansible_vault_password is not defined or ansible_vault_password == ""
 
-- name: 'fail if jenkins_env_key is not set'
-  fail:
-    msg: "The jenkins_env private key must be provided"
-  when: jenkins_env_key is not defined or jenkins_env_key == ""
-
 - name: 'set the aws access key id in ansible user ~/.bashrc'
   lineinfile:
     path: "/home/ansible/.bashrc"
@@ -50,14 +45,6 @@
     content: "{{ ansible_vault_password }}"
     dest: "/home/ansible/.ansible/vault-pass"
     mode: 0600
-    owner: ansible
-    group: ansible
-
-- name: 'copy the jenkins_env_key'
-  copy:
-    content: "{{ jenkins_env_key }}"
-    dest: "/home/ansible/.ssh/jenkins_env_key"
-    mode: 0400
     owner: ansible
     group: ansible
 
