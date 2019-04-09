@@ -104,22 +104,24 @@ On your development host:
   
 #### Creating the Infrastructure
 
-After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make env-jenkins-prod-aws`. You will be prompted to supply your AWS keys and the vault password, which will be copied to the Bastion host for convenience.
+We can now bring up the infrastructure by running `make env-jenkins-prod-aws`. You will be prompted to supply your AWS keys and the vault password, which will be copied to the Bastion host for convenience.
 
-After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
-
-At the end of this target it will print you out the SSH command for accessing the Bastion.
+After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure. For convenience, the SSH command to access the Bastion will be printed to the console.
 
 #### Provisioning the Infrastructure
 
-The provisioning for this machine cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
+Among other things, the provisioning for the Bastion cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
 
-Now perform the following steps (all of these have to be applied to the Bastion host):
+Now perform the following steps on the Bastion host:
 
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * Run the provisioning: `make provision-jenkins-prod-aws`
 
-After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
+The `provision-jenkins-prod-aws` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision.
+
+#### Provisioning the macOS Slave
+
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. If you go back to your development host, you can provision it by running `make provision-rust_slave-macos-mojave-x86_64`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
 
 ### Configure Jenkins
 
