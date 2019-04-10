@@ -78,6 +78,7 @@ env-jenkins-dev-vbox: \
 env-jenkins-dev-aws:
 	./scripts/install_external_java_role.sh
 	cd terraform/dev && terraform init && terraform apply -auto-approve
+	cd ../..
 	@echo "Sleep for 3 minutes to allow SSH to become available and yum updates on Linux instances..."
 	@sleep 180
 	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
@@ -95,7 +96,6 @@ env-jenkins-dev-aws:
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=dev" \
 		-u ubuntu ansible/jenkins-master.yml
-	./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
 .ONESHELL:
