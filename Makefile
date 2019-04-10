@@ -100,10 +100,14 @@ env-jenkins-dev-aws:
 
 .ONESHELL:
 env-jenkins-prod-aws:
-	@read -p "Please provide your AWS access key ID: " aws_access_key_id;
-	@read -p "Please provide your AWS secret access key: " aws_secret_access_key;
-	@read -p "Please provide the Ansible vault password: " ansible_vault_password;
-	@jenkins_env_key=$$(cat ~/.ssh/jenkins_env_key)
+ifndef AWS_ACCESS_KEY_ID
+	@echo "Your AWS access key ID must be set."
+	@exit 1
+endif
+ifndef AWS_SECRET_ACCESS_KEY
+	@echo "Your AWS secret access key must be set."
+	@exit 1
+endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
 	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
 else
@@ -111,14 +115,14 @@ else
 endif
 	cd ../..
 	rm -rf ~/.ansible/tmp
-	echo "Sleep for 2 minutes to allow yum update to complete"
-	sleep 120
+	#echo "Sleep for 2 minutes to allow yum update to complete"
+	#sleep 120
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
-		-e "aws_access_key_id=$$aws_access_key_id" \
-		-e "aws_secret_access_key=$$aws_secret_access_key" \
-		-e "ansible_vault_password=$$ansible_vault_password" \
+		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
+		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
 		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
 		-u ansible ansible/ansible-provisioner.yml
