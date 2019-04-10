@@ -87,6 +87,7 @@ jenkins:
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
 {% endfor %}
+{% if cloud_environment == "prod" %}
     - permanent:
         launcher:
           sSHLauncher:
@@ -100,6 +101,7 @@ jenkins:
         labelString: "osx"
         numExecutors: 1
         remoteFS: "/Users/jenkins"
+{% endif %}
 {% else %}
     - permanent:
         launcher:
