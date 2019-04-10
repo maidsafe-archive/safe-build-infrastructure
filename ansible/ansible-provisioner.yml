@@ -4,4 +4,4 @@
   roles:
     - pip
     - ansible-user-key
-    - ansible
+    - ansible-provisioner

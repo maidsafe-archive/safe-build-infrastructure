@@ -25,6 +25,7 @@ box-travis_slave-windows-2016-vbox:
 	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-aws:
+	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
 	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
 
@@ -77,6 +78,7 @@ env-jenkins-dev-vbox: \
 env-jenkins-dev-aws:
 	./scripts/install_external_java_role.sh
 	cd terraform/dev && terraform init && terraform apply -auto-approve
+	cd ../..
 	@echo "Sleep for 3 minutes to allow SSH to become available and yum updates on Linux instances..."
 	@sleep 180
 	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
@@ -94,52 +96,41 @@ env-jenkins-dev-aws:
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=dev" \
 		-u ubuntu ansible/jenkins-master.yml
-	#./scripts/sh/run_ansible_against_mac_slave.sh
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
+.ONESHELL:
 env-jenkins-prod-aws:
+	@read -p "Please provide your AWS access key ID: " aws_access_key_id;
+	@read -p "Please provide your AWS secret access key: " aws_secret_access_key;
+	@read -p "Please provide the Ansible vault password: " ansible_vault_password;
+	@jenkins_env_key=$$(cat ~/.ssh/jenkins_env_key)
 ifeq ($(DEBUG_JENKINS_ENV),true)
 	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
 else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
+	cd ../..
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
 	sleep 120
 	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
-		-e "safe_build_infrastructure_repo_owner=maidsafe" \
-		-e "safe_build_infrastructure_repo_branch=master" \
+		-e "aws_access_key_id=$$aws_access_key_id" \
+		-e "aws_secret_access_key=$$aws_secret_access_key" \
+		-e "ansible_vault_password=$$ansible_vault_password" \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
 		-u ansible ansible/ansible-provisioner.yml
+	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
-ifndef JENKINS_WINDOWS_SLAVE_PASSWORD
-	@echo "The JENKINS_WINDOWS_SLAVE_PASSWORD variable must be set."
-	@exit 1
-endif
-ifndef JENKINS_MASTER_HOSTNAME
-	@echo "The JENKINS_MASTER_HOSTNAME variable must be set."
-	@exit 1
-endif
-ifndef SLAVE_SUBNET_ID
-	@echo "The SLAVE_SUBNET_ID variable must be set."
-	@exit 1
-endif
 	./scripts/install_external_java_role.sh
-	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-		--limit=jenkins_master \
-		--vault-password-file=~/.ansible/vault-pass \
-		-e "cloud_environment=true" \
-		-e "slave_vpc_subnet_id=${SLAVE_SUBNET_ID}" \
-		-u ansible ansible/jenkins-master.yml
+	./scripts/sh/run_ansible_against_jenkins_master.sh
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
 provision-rust_slave-macos-mojave-x86_64:
-	# Pipelining must be enabled to get around a problem with permissions and temporary files on OSX:
-	# https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
-	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-rust-slave.yml
+	./scripts/sh/run_ansible_against_mac_slave.sh
 
 clean-rust_slave-macos-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml

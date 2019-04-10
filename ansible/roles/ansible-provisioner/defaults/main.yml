@@ -6,3 +6,5 @@ safe_build_infrastructure_repo_url: "https://github.com/{{ safe_build_infrastruc
 safe_build_infrastructure_repo_path: "/home/{{ provisioning_user }}/safe-build-infrastructure"
 virtualenv_name: venv
 virtualenv_path: "{{ safe_build_infrastructure_repo_path }}/{{ virtualenv_name }}"
+jq_url: "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
+jq_install_path: "/usr/local/bin/jq"

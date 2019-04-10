@@ -17,7 +17,7 @@
       "run_tags": {
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",
-        "group": "slaves",
+        "group": "linux_slaves",
         "environment": "prod"
       }
     }
@@ -27,7 +27,7 @@
       "type": "ansible",
       "playbook_file": "ansible/docker-slave.yml",
       "inventory_directory": "environments/prod",
-      "groups": "slaves"
+      "groups": "linux_slaves"
     }
   ]
 }

@@ -68,7 +68,7 @@ jenkins:
             retryWaitTime: 15
         name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
         labelString: "docker"
-        numExecutors: 2
+        numExecutors: 1
         remoteFS: "/home/jenkins"
 {% endfor %}
 {% endif %}
@@ -83,10 +83,11 @@ jenkins:
               internalDir: "remoting"
         name: "{{ hostvars[slave]['ec2_tag_full_name'] }}"
         labelString: "windows"
-        numExecutors: 2
+        numExecutors: 1
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
 {% endfor %}
+{% if cloud_environment == "prod" %}
     - permanent:
         launcher:
           sSHLauncher:
@@ -98,8 +99,9 @@ jenkins:
             retryWaitTime: 15
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
-        numExecutors: 2
+        numExecutors: 1
         remoteFS: "/Users/jenkins"
+{% endif %}
 {% else %}
     - permanent:
         launcher:
@@ -112,7 +114,7 @@ jenkins:
             retryWaitTime: 15
         name: "{{ docker_slave_full_name }}"
         labelString: "docker"
-        numExecutors: 2
+        numExecutors: 1
         remoteFS: "/home/jenkins"
     - permanent:
         launcher:
@@ -123,7 +125,7 @@ jenkins:
               internalDir: "remoting"
         name: "{{ windows_rust_slave_full_name }}"
         labelString: "windows"
-        numExecutors: 2
+        numExecutors: 1
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
     - permanent:
@@ -137,10 +139,10 @@ jenkins:
             retryWaitTime: 15
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
-        numExecutors: 2
+        numExecutors: 1
         remoteFS: "/Users/jenkins"
 {% endif %}
-  numExecutors: 2
+  numExecutors: 1
   primaryView:
     all:
       name: "all"
