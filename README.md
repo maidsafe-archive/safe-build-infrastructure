@@ -50,19 +50,18 @@ A Jenkins environment is declared in this repository. It runs in a Docker contai
 
 To get a local Jenkins environment, simply run `make env-jenkins-dev-vbox`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
 
-### AWS Development Provision
+### AWS Provision
 
-It's possible to get an environment on AWS, but there is some setup required.
+It's possible to get an environment on AWS, but there is some setup required on the host you're running the environment creation and provisioning process from:
 
-**Important note:** at the moment this provision will only run from a Linux host. There is an [issue](https://github.com/ansible/ansible/issues/32499) with Python on macOS that prevents Ansible provisioning the Windows host. Unfortunately, the suggested workaround doesn't seem to work for this particular case (though we did see it working for other cases).
-
-First, do the following:
-
+* Install [Terraform](https://www.terraform.io/) on your distribution. Terraform is distributed as a single binary file, so you can either just extract it to somewhere on PATH, or put it somewhere and then symlink it to a location on PATH.
 * Install [jq](https://stedolan.github.io/jq/) on your platform.
 * Install the AWSCLI on your platform. It's very easy to install with pip: `sudo pip install awscli`.
 * The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
+* Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
+* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
@@ -71,7 +70,9 @@ First, do the following:
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
-After that you can run `make env-jenkins-dev-aws`. This creates:
+#### Development Infrastructure
+
+To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
@@ -87,29 +88,17 @@ At the end the Jenkins URL will be printed to the console. As with the local env
 
 When you're finished, you can tear the environment down by running `make clean-jenkins-dev-aws`.
 
-### AWS Production Provision
+#### Production Infrastructure
 
-Our production infrastructure for Jenkins runs in its own VPC, with a public subnet containing the Jenkins master and a Bastion host, and a private subnet containing the slaves. Producing this environment is a semi-automated process with 2 parts: the infrastructure is created, then we SSH to the Bastion host to provision the machines.
+Our production infrastructure for Jenkins runs in its own VPC, with a public subnet containing the Jenkins master and a Bastion host, and a private subnet containing the slaves. We also have our internal macOS slave connected to the environment via a [WireGuard](https://www.wireguard.com/) VPN connection. Producing this environment is a semi-automated process with 2 parts: the infrastructure is created, then we SSH to the Bastion host to provision the machines.
 
-#### Setup Prerequisites
-
-On your development host:
-
-* Install [Terraform](https://www.terraform.io/) on your distribution. Terraform is distributed as a single binary file, so you can either just extract it to somewhere on PATH, or put it somewhere and then symlink it to a location on PATH.
-* Terraform needs to connect to AWS, so you need to supply your keys:
-  - `export AWS_ACCESS_KEY_ID=<your access key id>`
-  - `export AWS_SECRET_ACCESS_KEY=<your secret access key>`
-* Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
-* Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
-* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
-  
-#### Creating the Infrastructure
+##### Creating the Infrastructure
 
 We can now bring up the infrastructure by running `make env-jenkins-prod-aws`. You will be prompted to supply your AWS keys and the vault password, which will be copied to the Bastion host for convenience.
 
 After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure. For convenience, the SSH command to access the Bastion will be printed to the console.
 
-#### Provisioning the Infrastructure
+##### Provisioning the Infrastructure
 
 Among other things, the provisioning for the Bastion cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
 
@@ -120,7 +109,7 @@ Now perform the following steps on the Bastion host:
 
 The `provision-jenkins-prod-aws` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision.
 
-#### Provisioning the macOS Slave
+##### Provisioning the macOS Slave
 
 The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. If you go back to your development host, you can provision it by running `make provision-rust_slave-macos-mojave-x86_64`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
 
