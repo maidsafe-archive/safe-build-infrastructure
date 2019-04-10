@@ -4,6 +4,6 @@
   roles:
     - pip
     - docker
-    - wireguard
-    - wireguard-server
+    - { role: wireguard, when: cloud_environment == "prod" }
+    - { role: wireguard-server, when: cloud_environment == "prod" }
     - jenkins-master
