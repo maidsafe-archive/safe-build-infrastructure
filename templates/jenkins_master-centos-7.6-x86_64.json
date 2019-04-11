@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "generated_ami_name": "jenkins_master-centos-7.6-x86_64"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_access_key`}}",
+      "ssh_username": "centos",
+      "instance_type": "t2.micro",
+      "region": "eu-west-2",
+      "source_ami": "ami-0eab3a90fc693af19",
+      "ami_name": "{{user `generated_ami_name`}}",
+      "run_tags": {
+        "Name": "jenkins_master",
+        "full_name": "{{user `generated_ami_name`}}",
+        "group": "masters",
+        "environment": "prod"
+      }
+    },
+    {
+      "type": "virtualbox-iso",
+      "boot_command": "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+      "guest_os_type": "RedHat_64",
+      "headless": false,
+      "http_directory": "templates/http",
+      "iso_url": "iso/CentOS-7-x86_64-Minimal-1810.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "jenkins_master-centos-7.6-x86_64"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/jenkins-master.yml",
+      "inventory_directory": "environments/vagrant",
+      "groups": "masters",
+      "extra_arguments": [
+        "--extra-vars", "cloud_environment=none",
+        "--vault-password-file", "~/.ansible/vault-pass"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "./scripts/sh/configure_vagrant_public_key.sh"
+    },
+    {
+      "type": "shell",
+      "environment_vars": ["vbox_version={{.Version}}"],
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "./scripts/sh/install_guest_additions.sh"
+    },
+    {
+      "type": "shell",
+      "environment_vars": ["vbox_version={{.Version}}"],
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "./scripts/sh/setup_ansible.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "packer_output/jenkins_master-centos-7.6-x86_64.box",
+      "type": "vagrant"
+    }
+  ]
+}

@@ -22,17 +22,45 @@ box-travis_slave-windows-2016-vbox:
 	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
 	if [ -f "packer_output/travis_slave-windows-2016-virtualbox-x86_64.box" ]; then rm packer_output/travis_slave-windows-2016-virtualbox-x86_64.box; fi
 	packer validate templates/travis_slave-windows-2016-virtualbox-x86_64.json
-	packer build templates/travis_slave-windows-2016-virtualbox-x86_64.json
+	packer build -only=amazon-ebs templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
-	packer validate templates/docker_slave-centos-7.6-aws-x86_64.json
-	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-aws-x86_64.json
+	packer validate templates/docker_slave-centos-7.6-x86_64.json
+	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-x86_64.json
+
+box-docker_slave-centos-7.6-x86_64-vbox:
+	rm -rf output-virtualbox-iso
+	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
+	if [ -f "packer_output/docker_slave-centos-7.6-x86_64.box" ]; then \
+		rm packer_output/docker_slave-centos-7.6-x86_64.box; \
+	fi
+	packer validate templates/docker_slave-centos-7.6-x86_64.json
+	packer build -only=virtualbox-iso templates/docker_slave-centos-7.6-x86_64.json
+	vagrant box add --name "maidsafe/docker_slave-centos-7.6-x86_64" \
+		packer_output/docker_slave-centos-7.6-x86_64.box --force
+	aws s3 cp \
+		packer_output/docker_slave-centos-7.6-x86_64.box \
+		s3://safe-vagrant-boxes/docker_slave-centos-7.6-x86_64.box
+
+box-jenkins_master-centos-7.6-x86_64-vbox:
+	rm -rf output-virtualbox-iso
+	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
+	if [ -f "packer_output/jenkins_master-centos-7.6-x86_64.box" ]; then \
+		rm packer_output/jenkins_master-centos-7.6-x86_64.box; \
+	fi
+	packer validate templates/jenkins_master-centos-7.6-x86_64.json
+	packer build -only=virtualbox-iso templates/jenkins_master-centos-7.6-x86_64.json
+	vagrant box add --name "maidsafe/jenkins_master-centos-7.6-x86_64" \
+		packer_output/jenkins_master-centos-7.6-x86_64.box --force
+	aws s3 cp \
+		packer_output/jenkins_master-centos-7.6-x86_64.box \
+		s3://safe-vagrant-boxes/jenkins_master-centos-7.6-x86_64.box
 
 vm-jenkins_master-centos-7.6-x86_64-vbox: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 vm-jenkins_master-centos-7.6-x86_64-vbox: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 vm-jenkins_master-centos-7.6-x86_64-vbox:
-	vagrant up jenkins_master-centos-7.6-x86_64 --provision
+	vagrant up jenkins_master_packer-centos-7.6-x86_64 --provision
 
 vm-rust_slave-centos-7.6-x86_64-vbox:
 	vagrant up rust_slave-centos-7.6-x86_64 --provision
@@ -76,7 +104,7 @@ env-jenkins-dev-vbox: \
 	vagrant reload jenkins_rust_slave-windows-2016-x86_64
 
 env-jenkins-dev-aws:
-	./scripts/install_external_java_role.sh
+	./scripts/sh/install_external_java_role.sh
 	cd terraform/dev && terraform init && terraform apply -auto-approve
 	cd ../..
 	@echo "Sleep for 3 minutes to allow SSH to become available and yum updates on Linux instances..."
@@ -129,7 +157,7 @@ endif
 	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
-	./scripts/install_external_java_role.sh
+	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/run_ansible_against_jenkins_master.sh
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 

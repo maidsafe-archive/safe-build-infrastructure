@@ -6,7 +6,8 @@ function install_pip() {
 }
 
 function install_ansible() {
-    pip install -U cffi
+    pip install setuptools==39.0.1
+    pip install cffi --upgrade
     pip install ansible
 }
 
