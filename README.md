@@ -18,23 +18,27 @@ To get the VMs up and running, you need some things installed on your developmen
 * The easiest way to get machines running are via the convenience targets in the Makefile. Most Linux distros will probably have `make` installed via other packages like `build-essentials`. Google for how to install it on your distro. On Windows you can get access to `make` by installing [MSYS2](http://www.msys2.org/) then running `pacman -S make`; after this add `c:\msys64\usr\bin` to your `PATH` variable to have `make` accessible via `cmd.exe`. On macOS you can install via the [Apple Developer Tools](http://developer.apple.com/) and there's also a package available for [Homebrew](https://formulae.brew.sh/formula/make).
 * Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
 
+Of course, for everything here that's installed via pip, you can considering using a [virtualenv](https://virtualenv.pypa.io/en/latest/) (and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) is even better). This is a good solution for running experimental versions of Ansible. You can have a different virtualenv for each installation.
+
+**Important note**: if you're running macOS, there's an [issue](https://github.com/ansible/ansible/issues/32499) with using Ansible to provision Windows hosts. You can work around this issue by setting an environment variable: `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`. Add this to your `~/.bashrc` to prevent having to set it all the time.
+
 If you want to build the Windows boxes you will need a [Packer](https://packer.io/) installation; however this isn't necessary for running the Vagrant boxes, as the boxes will be hosted on S3.
 
 ## VMs
 
-What follows is a list of some of the VMs available in this repository. There are more machines defined in the Vagrantfile, but some of them have very specific purposes for things like demo environments and so wouldn't be generally useful. This list has the machines we consider to be the most useful:
+What follows is a list of some of the VMs available in this repository. The names here correspond to the targets in the Makefile, so you can run `make <name>` to produce any of these machines:
 
-| Name                                       | OS              | Description                                                                                                                                                                                          | Installed Contents                                                                                                                                                                              |
-| ----                                       | --              | -----------                                                                                                                                                                                          | --------                                                                                                                                                                                        |
-| jenkins_master-centos-7.6-x86_64           | CentOS 7.6      | Use as a Jenkins host. Jenkins is hosted in a Docker container. At the moment this will come up with a minimal setup.                                                                                | Docker, docker-compose                                                                                                                                                                          |
-| docker_slave-centos-7.6-x86_64             | CentOS 7.6      | Use as a build slave for Jenkins. This only has Docker installed on it and a jenkins user that allows Jenkins to connect to the slave.                                                               | Java, Docker, docker-compose                                                                                                                                                                    |
-| rust_slave-ubuntu-trusty-x86_64            | Ubuntu 14.04    | Use for building Rust applications on Ubuntu. This version of Ubuntu matches the version in use on Travis, so it should be very similar to their environment.                                        | gcc, libssl-dev, pkg-config, musl-dev, musl-tools, rust 1.32.0, x86_64-unknown-linux-musl target, cargo-script                                                                                  |
-| rust_slave-centos-7.6-x86_64               | CentOS 7.6      | Use for building Rust applications on CentOS. Currently it won't build due to a weird issue with openssl.                                                                                            | gcc, openssl-devel, musl compiled from source (no packages on available on CentOS), rust 1.32.0, x86_64-unknown-linux-musl target, cargo-script                                                 |
-| base-windows-2012_r2-x86_64                | Windows 2012 R2 | Use as a base box when you need a completely clean machine.                                                                                                                                          | Only the base operating system.                                                                                                                                                                 |
-| rust_slave_git_bash-windows-2012_r2-x86_64 | Windows 2012 R2 | Use for building Crust on Windows. This is setup to use MinGW rather than MSVC.                                                                                                                      | MSYS2, mingw-w64-x86_64-gcc, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                             |
-| rust_slave_msys2-windows-2012_r2-x86_64    | Windows 2012 R2 | Use for debugging issues running Windows builds on Travis, which uses Git Bash as a shell. The reason why it's a separate box is because sometimes Git Bash and MSYS2 can interfere with each other. | Git Bash, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                                                |
-| jenkins_rust_slave-windows-2016-x86_64     | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis. Also functions as a Jenkins slave, so this needs to be used in combination with a Jenkins master.         | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows), Jenkins slave agent. |
-| travis_rust_slave-windows-2016-x86_64      | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis.                                                                                                           | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                      |
+| Name                                               | OS              | Description                                                                                                                                                                                          | Installed Contents                                                                                                                                                                              |
+| ----                                               | --              | -----------                                                                                                                                                                                          | --------                                                                                                                                                                                        |
+| vm-jenkins_master-centos-7.6-x86_64-vbox           | CentOS 7.6      | Use as a Jenkins host. Jenkins is hosted in a Docker container. At the moment this will come up with a minimal setup.                                                                                | Docker, docker-compose                                                                                                                                                                          |
+| vm-docker_slave-centos-7.6-x86_64-vbox             | CentOS 7.6      | Use as a build slave for Jenkins. This only has Docker installed on it and a jenkins user that allows Jenkins to connect to the slave.                                                               | Java, Docker, docker-compose                                                                                                                                                                    |
+| vm-rust_slave-ubuntu-trusty-x86_64-vbox            | Ubuntu 14.04    | Use for building Rust applications on Ubuntu. This version of Ubuntu matches the version in use on Travis, so it should be very similar to their environment.                                        | gcc, libssl-dev, pkg-config, musl-dev, musl-tools, rust 1.32.0, x86_64-unknown-linux-musl target, cargo-script                                                                                  |
+| vm-rust_slave-centos-7.6-x86_64-vbox               | CentOS 7.6      | Use for building Rust applications on CentOS. Currently it won't build due to a weird issue with openssl.                                                                                            | gcc, openssl-devel, musl compiled from source (no packages on available on CentOS), rust 1.32.0, x86_64-unknown-linux-musl target, cargo-script                                                 |
+| vm-base-windows-2012_r2-x86_64-vbox                | Windows 2012 R2 | Use as a base box when you need a completely clean machine.                                                                                                                                          | Only the base operating system.                                                                                                                                                                 |
+| vm-rust_slave_git_bash-windows-2012_r2-x86_64-vbox | Windows 2012 R2 | Use for building Crust on Windows. This is setup to use MinGW rather than MSVC.                                                                                                                      | MSYS2, mingw-w64-x86_64-gcc, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                             |
+| vm-rust_slave_msys2-windows-2012_r2-x86_64-vbox    | Windows 2012 R2 | Use for debugging issues running Windows builds on Travis, which uses Git Bash as a shell. The reason why it's a separate box is because sometimes Git Bash and MSYS2 can interfere with each other. | Git Bash, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                                                |
+| vm-jenkins_rust_slave-windows-2016-x86_64-vbox     | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis. Also functions as a Jenkins slave, so this needs to be used in combination with a Jenkins master.         | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows), Jenkins slave agent. |
+| vm-travis_rust_slave-windows-2016-x86_64-vbox      | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis.                                                                                                           | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                      |
 
 The Linux boxes here use the official, publicly available Vagrant base boxes. There aren't really any reliable base boxes available for Windows, so this repo contains a [Packer](https://www.packer.io/intro/) template for building the Windows box.
 
@@ -44,23 +48,22 @@ A Jenkins environment is declared in this repository. It runs in a Docker contai
 
 ### Local Provision
 
-To get a local Jenkins environment, simply run `make jenkins-environment`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
+To get a local Jenkins environment, simply run `make env-jenkins-dev-vbox`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100:8080`. You can login with the user `chriso` - speak to someone in QA to get the password.
 
-### AWS Development Provision
+### AWS Provision
 
-It's possible to get an environment on AWS, but there is some setup required.
+It's possible to get an environment on AWS, but there is some setup required on the host you're running the environment creation and provisioning process from:
 
-**Important note:** at the moment this provision will only run from a Linux host. There is an [issue](https://github.com/ansible/ansible/issues/32499) with Python on macOS that prevents Ansible provisioning the Windows host. Unfortunately, the suggested workaround doesn't seem to work for this particular case (though we did see it working for other cases).
-
-First, do the following:
-
+* Install [Terraform](https://www.terraform.io/) on your distribution. Terraform is distributed as a single binary file, so you can either just extract it to somewhere on PATH, or put it somewhere and then symlink it to a location on PATH.
 * Install [jq](https://stedolan.github.io/jq/) on your platform.
 * Install the AWSCLI on your platform. It's very easy to install with pip: `sudo pip install awscli`.
 * The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
-* Install the [vagrant-aws](https://github.com/mitchellh/vagrant-aws) plugin with `vagrant plugin install vagrant-aws`.
-* Install the 'dummy' AWS box for Vagrant with `vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box`.
+* Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
+* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
+* Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
+* Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
 * Set `export AWS_KEYPAIR_NAME=jenkins_env`.
@@ -68,7 +71,9 @@ First, do the following:
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
-After that you can run `make jenkins-environment-aws`. This creates:
+#### Development Infrastructure
+
+To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
@@ -76,60 +81,46 @@ After that you can run `make jenkins-environment-aws`. This creates:
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
-Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make clean-aws` followed by `make jenkins-environment-aws`.
+Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make env-jenkins-dev-aws`.
 
 This setup is intended *only* for development. The machines are all running on the default VPC and Jenkins doesn't have HTTPS enabled.
 
 At the end the Jenkins URL will be printed to the console. As with the local environment, see someone in QA to get the admin password for Jenkins.
 
-When you're finished, you can tear the environment down by running `make clean-aws`.
+When you're finished, you can tear the environment down by running `make clean-jenkins-dev-aws`.
 
-### AWS Production Provision
+#### Production Infrastructure
 
-Our production infrastructure for Jenkins runs in its own VPC, with a public subnet containing the Jenkins master and a Bastion host, and a private subnet containing the slaves. Producing this environment is a semi-automated process with 2 parts: the infrastructure is created, then we SSH to the Bastion host to provision the machines.
+Our production infrastructure for Jenkins runs in its own VPC, with a public subnet containing the Jenkins master and a Bastion host, and a private subnet containing the slaves. We also have our internal macOS slave connected to the environment via a [WireGuard](https://www.wireguard.com/) VPN connection. Producing this environment is a semi-automated process with 2 parts: the infrastructure is created, then we SSH to the Bastion host to provision the machines.
 
-#### Setup Prerequisites
+##### Creating the Infrastructure
 
-On your development host:
+We can now bring up the infrastructure by running `make env-jenkins-prod-aws`.
 
-* Install [Terraform](https://www.terraform.io/) on your distribution. Terraform is distributed as a single binary file, so you can either just extract it to somewhere on PATH, or put it somewhere and then symlink it to a location on PATH.
-* Terraform needs to connect to AWS, so you need to supply your keys:
-  - `export AWS_ACCESS_KEY_ID=<your access key id>`
-  - `export AWS_SECRET_ACCESS_KEY=<your secret access key>`
-* Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
-* Get a copy of the Ansible SSH key from someone in QA and save this somewhere like `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
-  
-#### Creating the Infrastructure
+After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure. For convenience, the SSH command to access the Bastion will be printed to the console.
 
-After setting up Terraform and providing the AWS details, we can bring up the infrastructure by running `make create-prod-jenkins-environment-aws`.
+##### Provisioning the Infrastructure
 
-After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure.
+Among other things, the provisioning for the Bastion cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
 
-#### Provisioning the Infrastructure
+Now perform the following steps on the Bastion host:
 
-Log into the AWS GUI or use the CLI to retrieve the public hostname of the Bastion. The machine is tagged with `Name=ansible_bastion`, which you can see in the GUI. SSH to this machine using the Ansible key referred to earlier: `ssh -i ~/.ssh/ansible ansible@<public hostname>`.
-
-The provisioning for this machine cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
-
-Now perform the following steps (all of these have to be applied to the Bastion host):
-
-* Set your AWS access key ID: `export AWS_ACCESS_KEY_ID=<access key id>`
-* Set your AWS secret key: `export AWS_SECRET_ACCESS_KEY=<secret access key>`
-* Get the Jenkins IP address from the AWS GUI and set that: `export JENKINS_MASTER_HOSTNAME=<ip address of jenkins master>`
-* Get the Windows password from the AWS GUI and set that: `export JENKINS_WINDOWS_SLAVE_PASSWORD='<windows password>'` (note the password must go inside single quotes to prevent Bash from interpreting special characters)
-* Get the ID of the private subnet for the slaves and set that:
-    - In the AWS GUI go to Services -> VPC -> Subnets -> jenkins_environment-private-eu-west-2 and copy the ID of the subnet
-    - `export SLAVE_SUBNET_ID=<private subnet ID>`
-* Get a copy of the Ansible vault password from someone in QA and save it to `~/.ansible/vault-pass`
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
-* Run the provisioning: `make provision-prod-jenkins-environment-aws`
-* Finally, after the provisioning has completed, go into the AWS GUI and issue a restart for the Windows slave.
+* Run the provisioning: `make provision-jenkins-prod-aws`
 
-After the provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open `http://<jenkins master hostname>:8080/` in your browser. Log in using the same details as usual.
+The `provision-jenkins-prod-aws` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision.
+
+When you're finished, you can tear the production environment down by running `make clean-jenkins-prod-aws`. Note though, as the Linux slaves are spun up and down dynamically as and when required, they will NOT be removed by the `make clean-jenkins-prod-aws` command - Jenkins will destroy them after 30 minutes (configurable) of inactivity *unless you run the `make clean-jenkins-prod-aws` command before that 30 minutes is up*. The `make clean-jenkins-prod-aws` command will attempt to remove, amongst other things, `aws_security_group.linux_slaves`, the VPC and the VPC subnet - these will fail if the Linux slaves have not already been destroyed. Should you wish to remove these boxes before allowing Jenkins to have 30 minutes of inactivity then you need to destroy them manually via AWS. After this you can run (or re-run) the `make clean-jenkins-prod-aws` command to remove the remaining security group, VPC and VPC subnet.
+
+##### Provisioning the macOS Slave
+
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
 
 ### Configure Jenkins
 
-After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running.
+After the production provisioning is complete, go to the AWS GUI and get the address of the Jenkins master, then open http://<jenkins master hostname>:8080/ in your browser. Log in using the same details as usual.
+
+Whether you've provisioned the environment locally or on AWS, it needs a little bit of manual configuration to get things running.
 
 If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
 

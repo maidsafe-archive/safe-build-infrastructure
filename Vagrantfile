@@ -1,122 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-module OS
-  def OS.windows?
-    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-  end
-  def OS.mac?
-    (/darwin/ =~ RUBY_PLATFORM) != nil
-  end
-  def OS.unix?
-    !OS.windows?
-  end
-  def OS.linux?
-    OS.unix? and not OS.mac?
-  end
-end
-
 Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
-  if OS.mac?
-    config.vm.allowed_synced_folder_types = [:rsync]
-  end
-
-  config.vm.define "wgserver-ubuntu-bionic-x86_64-aws" do |wireguard_server|
-    wireguard_server.vm.box = "dummy"
-    wireguard_server.vm.provider :aws do |aws, override|
-      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
-      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
-      aws.region = "eu-west-2"
-      aws.ami = "ami-0883141bc92a74917"
-      aws.instance_type = "t2.micro"
-      aws.security_groups = ["wg-dev"]
-      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
-      aws.tags = { 'Name' => 'wgserver' }
-      override.ssh.username = "ubuntu"
-      override.ssh.private_key_path = "~/.ssh/id_rsa"
-    end
-    wireguard_server.vm.provision "shell", inline: "apt-get update -y"
-    wireguard_server.vm.provision "shell", inline: "apt-get install -y python"
-  end
-
-  config.vm.define "wgclient-ubuntu-bionic-x86_64" do |wireguard_client|
-    wireguard_client.vm.box = "ubuntu/bionic64"
-    wireguard_client.vm.box_version = "20190225.0.0"
-    # The inventory file that's used with this machine needs to have a known port for SSH.
-    wireguard_client.vm.network :forwarded_port, guest: 22, host: 2322, id: "ssh"
-    wireguard_client.vm.provision "file", source: "~/.ssh/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"
-    wireguard_client.vm.provision "shell", inline: "apt-get update -y"
-    wireguard_client.vm.provision "shell", inline: "apt-get install -y python"
-    wireguard_client.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--audio", "none"]
-    end
-  end
-
-  config.vm.define "jenkins_master-ubuntu-bionic-x86_64-aws" do |jenkins_master_aws|
-    jenkins_master_aws.vm.box = "dummy"
-    jenkins_master_aws.vm.provider :aws do |aws, override|
-      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
-      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
-      aws.region = "eu-west-2"
-      aws.ami = "ami-0883141bc92a74917"
-      aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins_master-dev"]
-      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
-      aws.tags = {
-        'Name' => 'jenkins_master',
-        'full_name' => 'jenkins_master-ubuntu-bionic-x86_64',
-        'group' => 'masters',
-        'environment' => 'dev'
-      }
-      override.ssh.username = "ubuntu"
-      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
-    end
-    jenkins_master_aws.vm.provision "shell", inline: "apt-get update -y"
-    jenkins_master_aws.vm.provision "shell", inline: "apt-get install -y python"
-  end
-
-  config.vm.define "docker_slave_001-centos-7.6-x86_64-aws" do |docker_slave_aws|
-    docker_slave_aws.vm.box = "dummy"
-    docker_slave_aws.vm.provider :aws do |aws, override|
-      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
-      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
-      aws.region = "eu-west-2"
-      aws.ami = "ami-0eab3a90fc693af19"
-      aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins_master-dev"]
-      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
-      aws.tags = {
-        'Name' => 'docker_slave_001',
-        'full_name' => 'docker_slave_001-centos-7.6-x86_64',
-        'group' => 'slaves',
-        'environment' => 'dev'
-      }
-      override.ssh.username = "centos"
-      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
-    end
-  end
-
-  config.vm.define "docker_slave_002-centos-7.6-x86_64-aws" do |docker_slave_aws|
-    docker_slave_aws.vm.box = "dummy"
-    docker_slave_aws.vm.provider :aws do |aws, override|
-      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
-      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
-      aws.region = "eu-west-2"
-      aws.ami = "ami-0eab3a90fc693af19"
-      aws.instance_type = "t2.micro"
-      aws.security_groups = ["jenkins_master-dev"]
-      aws.keypair_name = "#{ENV['AWS_KEYPAIR_NAME']}"
-      aws.tags = {
-        'Name' => 'docker_slave_002',
-        'full_name' => 'docker_slave_002-centos-7.6-x86_64',
-        'group' => 'slaves',
-        'environment' => 'dev'
-      }
-      override.ssh.username = "centos"
-      override.ssh.private_key_path = "#{ENV['AWS_PRIVATE_KEY_PATH']}"
-    end
-  end
 
   config.vm.define "jenkins_master-centos-7.6-x86_64" do |jenkins_master|
     jenkins_master.vm.box = "centos/7"
@@ -127,6 +13,7 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/jenkins-master.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
+      ansible.extra_vars = { cloud_environment: "none" }
     end
     jenkins_master.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
@@ -182,6 +69,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "base-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -197,6 +85,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "base-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2016"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2016-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -212,6 +101,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "rust_slave_git_bash-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows
@@ -230,6 +120,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "jenkins_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
@@ -254,6 +145,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "travis_rust_slave-windows-2016-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "maidsafe/windows-2016-travis_slave"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/travis_slave-windows-2016-virtualbox-x86_64.box"
     windows_slave.vm.guest = :windows
@@ -279,6 +171,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "rust_slave_msys2-windows-2012_r2-x86_64" do |windows_slave|
+    windows_slave.vm.synced_folder '.', '/vagrant', disabled: true
     windows_slave.vm.box = "windows2012_r2"
     windows_slave.vm.box_url = "https://s3.amazonaws.com/safe-vagrant-boxes/windows2012r2-virtualbox.box"
     windows_slave.vm.guest = :windows

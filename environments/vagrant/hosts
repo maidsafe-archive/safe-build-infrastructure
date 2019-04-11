@@ -4,7 +4,7 @@ jenkins_master-centos-7.6-x86_64 ansible_connection=local
 [wireguard]
 jenkins_master-centos-7.6-x86_64 ansible_connection=local
 
-[slaves]
+[linux_slaves]
 docker_slave-centos-7.6-x86_64 ansible_connection=local
 
 [windows_slaves]

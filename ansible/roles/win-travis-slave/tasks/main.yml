@@ -25,6 +25,7 @@
     - jq
     - llvm
     - microsoft-build-tools
+    - mingw
     - ruby
     - visualstudio2017buildtools
     - wget

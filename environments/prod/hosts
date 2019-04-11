@@ -1,7 +1,7 @@
 [provisioners]
 ansible_bastion
 
-[slaves]
+[linux_slaves]
 docker_slave_001
 docker_slave_002
 

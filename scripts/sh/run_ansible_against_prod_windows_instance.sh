@@ -1,11 +1,64 @@
 #!/usr/bin/env bash
 
-# This script exists just because there are problems with the windows slave password
-# variable if it has a dollar in it and you try to reference that in the Makefile.
+set -e
 
-EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
-    --vault-password-file=~/.ansible/vault-pass \
-    -e "cloud_environment=true" \
-    -e "ansible_password=$JENKINS_WINDOWS_SLAVE_PASSWORD" \
-    -e "jenkins_master_url=$JENKINS_MASTER_HOSTNAME" \
-    ansible/win-jenkins-slave.yml
+function get_instance_id() {
+    instance_id=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=windows_slave_001" \
+        "Name=tag:environment,Values=prod" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .InstanceId' \
+        | sed 's/\"//g')
+}
+
+function get_instance_password() {
+    local response
+    response=$(aws ec2 get-password-data \
+        --region eu-west-2 \
+        --instance-id "$instance_id" \
+        --priv-launch-key ~/.ssh/jenkins_env_key)
+    password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
+    while [[ $password == "" ]]
+    do
+        response=$(aws ec2 get-password-data \
+            --region eu-west-2 \
+            --instance-id "$instance_id" \
+            --priv-launch-key ~/.ssh/jenkins_env_key)
+        password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
+        echo "Password for instance not yet available. Waiting for 5 seconds before retry."
+        sleep 5
+    done
+    echo "Password retrieved for Windows instance."
+}
+
+function get_jenkins_url() {
+    jenkins_master_url=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=jenkins_master" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+        | sed 's/\"//g')
+    echo "Jenkins master is at $jenkins_master_url"
+}
+
+function run_ansible() {
+    EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+        --vault-password-file=~/.ansible/vault-pass \
+        -e "cloud_environment=true" \
+        -e "ansible_password=$password" \
+        -e "jenkins_master_url=$jenkins_master_url" \
+        ansible/win-jenkins-slave.yml
+}
+
+function reboot_instance() {
+    echo "Rebooting instance for necessary changes to take effect."
+    echo "The Jenkins GUI will indicate when the machine becomes available again."
+    aws ec2 reboot-instances --region eu-west-2 --instance-ids "$instance_id"
+}
+
+get_instance_id
+get_instance_password
+get_jenkins_url
+run_ansible
+reboot_instance
