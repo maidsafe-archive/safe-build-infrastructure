@@ -43,6 +43,7 @@ durable-task:1.28
 ec2:1.42
 email-ext:2.63
 favorite:2.3.2
+ghprb:1.42.0
 git:3.9.1
 git-client:2.7.4
 github:1.29.3
