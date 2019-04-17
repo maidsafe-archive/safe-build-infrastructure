@@ -189,7 +189,7 @@ credentials:
             id: "github_maidsafe_credentials"
             password: ${secret_github_access_token}
             scope: GLOBAL
-            username: "jacderida"
+            username: "maidsafe"
         - aws:
             accessKey: "AKIAVVODCRMSJYOPDR5R"
             description: "User for controlling the EC2 plugin."

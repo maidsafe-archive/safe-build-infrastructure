@@ -121,6 +121,14 @@
     group: root
     mode: 0644
 
+- name: 'copy github token secret'
+  copy:
+    content: "{{ secret_github_access_token }}"
+    dest: "{{ secret_github_access_token_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
 - name: 'refresh systemd to load jenkins service file'
   command: systemctl daemon-reload
   when: service_file_result.changed
