@@ -116,7 +116,9 @@ The macOS slave needs to be provisioned after the Jenkins master, because the Wi
 
 ### Configure Jenkins
 
-After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running.
+After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running. Even although we're using the [CASC Plugin](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md), unfortunately it doesn't yet support settings for all plugins, so there are some things that need to be configured manually.
+
+The Github Pull Request Builder plugin needs to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and change the Credentials selection to use `github_maidsafe_token_secret_text`.
 
 If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
 
