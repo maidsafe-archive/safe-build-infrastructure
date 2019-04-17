@@ -116,14 +116,8 @@ env-jenkins-dev-aws:
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
-	@echo "Attempting Ansible run against Jenkins master...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
-		--limit=jenkins_master \
-		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_env_key \
-		-e "cloud_environment=dev" \
-		-u ubuntu ansible/jenkins-master.yml
+	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
 	./scripts/sh/run_ansible_against_windows_instance.sh
 
 .ONESHELL:
@@ -158,7 +152,7 @@ endif
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
-	./scripts/sh/run_ansible_against_jenkins_master.sh
+	./scripts/sh/run_ansible_against_jenkins_master.sh "prod"
 	./scripts/sh/run_ansible_against_prod_windows_instance.sh
 
 provision-rust_slave-macos-mojave-x86_64:

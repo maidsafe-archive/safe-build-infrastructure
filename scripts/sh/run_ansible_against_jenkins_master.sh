@@ -2,6 +2,23 @@
 
 set -e
 
+cloud_environment=$1
+if [[ -z "$cloud_environment" ]]; then
+    echo "A value must be supplied for the target environment. Valid values are 'dev' or 'prod'."
+    exit 1
+fi
+
+function get_jenkins_master_dns() {
+    jenkins_master_dns=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=jenkins_master" \
+        "Name=tag:environment,Values=$cloud_environment" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+        | sed 's/\"//g')
+    echo "Jenkins master is at $jenkins_master_dns"
+}
+
 function get_subnet_id() {
     subnet_id=$(aws ec2 describe-subnets \
         --filters \
@@ -14,13 +31,16 @@ function get_subnet_id() {
 function run_ansible() {
     rm -rf ~/.ansible/tmp
     echo "Running Ansible against Jenkins master... (can be 10+ seconds before output)"
-    EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+    EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i "environments/$cloud_environment" \
+        --private-key=~/.ssh/ansible \
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
-        -e "cloud_environment=prod" \
+        -e "cloud_environment=$cloud_environment" \
+        -e "jenkins_master_url=http://$jenkins_master_dns:8080/" \
         -e "slave_vpc_subnet_id=$subnet_id" \
         -u ansible ansible/jenkins-master.yml
 }
 
-get_subnet_id
+get_jenkins_master_dns
+[[ "$cloud_environment" == "prod" ]] && get_subnet_id
 run_ansible
