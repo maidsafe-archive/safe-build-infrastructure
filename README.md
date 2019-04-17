@@ -95,7 +95,7 @@ Our production infrastructure for Jenkins runs in its own VPC, with a public sub
 
 ##### Creating the Infrastructure
 
-We can now bring up the infrastructure by running `make env-jenkins-prod-aws`. You will be prompted to supply your AWS keys and the vault password, which will be copied to the Bastion host for convenience.
+We can now bring up the infrastructure by running `make env-jenkins-prod-aws`.
 
 After the infrastructure is created with Terraform, the Bastion host will be provisioned with Ansible. Before that 2nd step occurs, there's a sleep for 2 minutes to allow a yum update to complete (this is initiated with a user data script when the instance launches). When this target finishes we then need to SSH into the Bastion host and provision the created infrastructure. For convenience, the SSH command to access the Bastion will be printed to the console.
 
@@ -109,6 +109,8 @@ Now perform the following steps on the Bastion host:
 * Run the provisioning: `make provision-jenkins-prod-aws`
 
 The `provision-jenkins-prod-aws` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision.
+
+When you're finished, you can tear the production environment down by running `make clean-jenkins-prod-aws`. Note though, as the Linux slaves are spun up and down dynamically as and when required, they will NOT be removed by the `make clean-jenkins-prod-aws` command - Jenkins will destroy them after 30 minutes (configurable) of inactivity *unless you run the `make clean-jenkins-prod-aws` command before that 30 minutes is up*. The `make clean-jenkins-prod-aws` command will attempt to remove, amongst other things, `aws_security_group.linux_slaves`, the VPC and the VPC subnet - these will fail if the Linux slaves have not already been destroyed. Should you wish to remove these boxes before allowing Jenkins to have 30 minutes of inactivity then you need to destroy them manually via AWS. After this you can run (or re-run) the `make clean-jenkins-prod-aws` command to remove the remaining security group, VPC and VPC subnet.
 
 ##### Provisioning the macOS Slave
 
