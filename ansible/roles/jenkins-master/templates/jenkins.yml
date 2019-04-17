@@ -186,7 +186,7 @@ credentials:
             scope: GLOBAL
             username: "{{ aws_jenkins_access_key }}"
         - usernamePassword:
-            id: "github_maidsafe_credentials"
+            id: "github_maidsafe_token_credentials"
             password: ${secret_github_access_token}
             scope: GLOBAL
             username: "maidsafe"
@@ -196,3 +196,16 @@ credentials:
             id: "jenkins-ec2"
             scope: GLOBAL
             secretKey: "{{ secret_aws_jenkins_ec2_user_secret_access_key }}"
+        - string:
+            id: "github_maidsafe_token_secret_text"
+            scope: GLOBAL
+            secret: ${secret_github_access_token}
+unclassified:
+  githubpluginconfig:
+    configs:
+    - apiUrl: "https://api.github.com"
+      credentialsId: "github_maidsafe_token_secret_text"
+      name: "maidsafe"
+  location:
+    url: "{{ jenkins_master_url  }}"
+    adminAddress: "qa@maidsafe.net"
