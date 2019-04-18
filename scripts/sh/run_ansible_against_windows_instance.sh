@@ -61,7 +61,7 @@ function run_ansible() {
         ansible-playbook -i "environments/$cloud_environment" \
         --vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
-        -e "cloud_environment=true" \
+        -e "cloud_environment=$cloud_environment" \
         -e "ansible_password=$password" \
         -e "jenkins_master_dns=$jenkins_master_dns" \
         ansible/win-jenkins-slave.yml
