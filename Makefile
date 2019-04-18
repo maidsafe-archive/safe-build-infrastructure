@@ -139,7 +139,7 @@ endif
 	rm -rf ~/.ansible/tmp
 	echo "Sleep for 2 minutes to allow yum update to complete"
 	sleep 120
-	EC2_INI_PATH=environments/prod/ec2.ini ansible-playbook -i environments/prod \
+	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
 		-e "cloud_environment=prod" \
@@ -153,8 +153,8 @@ endif
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
-	./scripts/sh/run_ansible_against_jenkins_master.sh "prod"
-	./scripts/sh/run_ansible_against_windows_instance.sh "prod"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
 provision-rust_slave-macos-mojave-x86_64:
 	./scripts/sh/run_ansible_against_mac_slave.sh

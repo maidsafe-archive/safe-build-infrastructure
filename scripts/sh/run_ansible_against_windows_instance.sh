@@ -8,6 +8,11 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
+ec2_ini_file=$2
+if [[ -z "$ec2_ini_file" ]]; then
+    ec2_ini_file="ec2.ini"
+fi
+
 function get_instance_id() {
     instance_id=$(aws ec2 describe-instances \
         --filters \
@@ -52,7 +57,8 @@ function get_jenkins_url() {
 function run_ansible() {
     echo "Attempting Ansible run against Windows slave... (can be 10+ seconds before output)"
     rm -rf ~/.ansible/tmp
-    EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
+    EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
+        ansible-playbook -i "environments/$cloud_environment" \
         --vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
         -e "cloud_environment=true" \
