@@ -31,7 +31,8 @@ function get_subnet_id() {
 function run_ansible() {
     rm -rf ~/.ansible/tmp
     echo "Running Ansible against Jenkins master... (can be 10+ seconds before output)"
-    EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i "environments/$cloud_environment" \
+    EC2_INI_PATH="environments/$cloud_environment/ec2.ini" \
+        ansible-playbook -i "environments/$cloud_environment" \
         --private-key=~/.ssh/ansible \
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \

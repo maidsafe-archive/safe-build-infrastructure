@@ -27,7 +27,7 @@ box-travis_slave-windows-2016-vbox:
 box-docker_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-x86_64.json
-	EC2_INI_PATH=/etc/ansible/ec2.ini packer build templates/docker_slave-centos-7.6-x86_64.json
+	EC2_INI_PATH=environments/prod/ec2.ini packer build templates/docker_slave-centos-7.6-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-vbox:
 	rm -rf output-virtualbox-iso
@@ -60,7 +60,7 @@ box-jenkins_master-centos-7.6-x86_64-vbox:
 vm-jenkins_master-centos-7.6-x86_64-vbox: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
 vm-jenkins_master-centos-7.6-x86_64-vbox: export JENKINS_MASTER_URL := ${JENKINS_MASTER_URL}
 vm-jenkins_master-centos-7.6-x86_64-vbox:
-	vagrant up jenkins_master_packer-centos-7.6-x86_64 --provision
+	vagrant up jenkins_master-centos-7.6-x86_64 --provision
 
 vm-rust_slave-centos-7.6-x86_64-vbox:
 	vagrant up rust_slave-centos-7.6-x86_64 --provision
@@ -111,14 +111,14 @@ env-jenkins-dev-aws:
 	@sleep 180
 	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
 	rm -rf ~/.ansible/tmp
 	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
-	./scripts/sh/run_ansible_against_windows_instance.sh
+	./scripts/sh/run_ansible_against_windows_instance.sh "dev"
 
 .ONESHELL:
 env-jenkins-prod-aws:
@@ -137,11 +137,12 @@ else
 endif
 	cd ../..
 	rm -rf ~/.ansible/tmp
-	#echo "Sleep for 2 minutes to allow yum update to complete"
-	#sleep 120
-	EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/prod \
+	echo "Sleep for 2 minutes to allow yum update to complete"
+	sleep 120
+	EC2_INI_PATH=environments/prod/ec2.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible \
+		-e "cloud_environment=prod" \
 		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
@@ -153,7 +154,7 @@ endif
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod"
-	./scripts/sh/run_ansible_against_prod_windows_instance.sh
+	./scripts/sh/run_ansible_against_windows_instance.sh "prod"
 
 provision-rust_slave-macos-mojave-x86_64:
 	./scripts/sh/run_ansible_against_mac_slave.sh
