@@ -73,4 +73,4 @@ get_jenkins_url
 run_ansible
 reboot_instance
 
-echo "You can connect to Jenkins at http://$jenkins_master_dns:8080/."
+echo "You can connect to Jenkins at http://$jenkins_master_dns/."

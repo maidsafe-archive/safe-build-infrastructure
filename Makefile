@@ -147,7 +147,7 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=vpn_connectivity" \
+		-e "safe_build_infrastructure_repo_branch=dns" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 

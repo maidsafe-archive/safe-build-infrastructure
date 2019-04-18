@@ -1,4 +1,4 @@
-$jenkins_master_url = "http://{{ jenkins_master_dns }}:8080"
+$jenkins_master_url = "http://{{ jenkins_master_dns }}"
 $jenkins_user = "{{ jenkins_admin_user }}"
 $jenkins_password = "{{ secret_jenkins_admin_user_password }}"
 $slave_name = "{{ windows_rust_slave_full_name }}"

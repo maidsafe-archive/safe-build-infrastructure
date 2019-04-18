@@ -37,7 +37,7 @@ function run_ansible() {
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
         -e "cloud_environment=$cloud_environment" \
-        -e "jenkins_master_url=http://$jenkins_master_dns:8080/" \
+        -e "jenkins_master_url=http://$jenkins_master_dns/" \
         -e "slave_vpc_subnet_id=$subnet_id" \
         -u ansible ansible/jenkins-master.yml
 }

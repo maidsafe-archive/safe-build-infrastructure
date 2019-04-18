@@ -38,8 +38,8 @@ resource "aws_security_group" "jenkins_master" {
   }
 
   ingress {
-    from_port = 8080
-    to_port = 8080
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -114,8 +114,8 @@ resource "aws_security_group" "windows_slaves" {
   }
 
   egress {
-    from_port = 8080
-    to_port = 8080
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
