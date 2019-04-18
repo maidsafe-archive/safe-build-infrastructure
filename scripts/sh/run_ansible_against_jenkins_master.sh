@@ -8,6 +8,11 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
+ec2_ini_file=$2
+if [[ -z "$ec2_ini_file" ]]; then
+    ec2_ini_file="ec2.ini"
+fi
+
 function get_jenkins_master_dns() {
     jenkins_master_dns=$(aws ec2 describe-instances \
         --filters \
@@ -31,7 +36,7 @@ function get_subnet_id() {
 function run_ansible() {
     rm -rf ~/.ansible/tmp
     echo "Running Ansible against Jenkins master... (can be 10+ seconds before output)"
-    EC2_INI_PATH="environments/$cloud_environment/ec2.ini" \
+    EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
         ansible-playbook -i "environments/$cloud_environment" \
         --private-key=~/.ssh/ansible \
         --limit=jenkins_master \
