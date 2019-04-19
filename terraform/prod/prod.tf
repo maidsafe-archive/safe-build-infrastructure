@@ -16,6 +16,10 @@ module "vpc" {
   enable_dns_support = true
 }
 
+data "aws_eip" "jenkins_elastic_ip" {
+  id = "${var.jenkins_elastic_ip}"
+}
+
 resource "aws_instance" "jenkins_master" {
   ami = "${lookup(var.jenkins_master_ami, var.region)}"
   instance_type = "${var.jenkins_master_instance_type}"
@@ -32,6 +36,11 @@ resource "aws_instance" "jenkins_master" {
     group = "masters"
     environment = "prod"
   }
+}
+
+resource "aws_eip_association" "jenkins_master_eip_association" {
+  instance_id = "${aws_instance.jenkins_master.id}"
+  allocation_id = "${data.aws_eip.jenkins_elastic_ip.id}"
 }
 
 resource "aws_instance" "ansible" {

@@ -3,6 +3,11 @@ variable "region" {
   description = "The AWS region to use"
 }
 
+variable "jenkins_elastic_ip" {
+  default = "eipalloc-0d02a5ea729669b98"
+  description = ""
+}
+
 variable "availability_zones" {
   default = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
   description = "The availability zones to use"
