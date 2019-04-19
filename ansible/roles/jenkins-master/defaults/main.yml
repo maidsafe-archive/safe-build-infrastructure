@@ -7,7 +7,7 @@ jenkins_home_path: "{{ jenkins_data_mount_path }}/jenkins_home"
 jenkins_image_name: jenkins/jenkins
 jenkins_image_tag: 2.138.2
 jenkins_slave_port: 50000
-jenkins_web_port: 8080
+jenkins_web_port: 80
 jenkins_casc_path: "{{ jenkins_home_path }}/casc"
 jenkins_container_home_path: "/var/jenkins_home"
 jenkins_container_casc_path: "{{ jenkins_container_home_path }}/casc"

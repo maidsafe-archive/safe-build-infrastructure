@@ -76,7 +76,7 @@
     group: root
 
 - name: 'copy ec2.ini for dynamic inventory'
-  copy:
+  template:
     src: ec2.ini
     dest: /etc/ansible/ec2.ini
     owner: root

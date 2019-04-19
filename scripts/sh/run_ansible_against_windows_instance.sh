@@ -2,11 +2,22 @@
 
 set -e
 
+cloud_environment=$1
+if [[ -z "$cloud_environment" ]]; then
+    echo "A value must be supplied for the target environment. Valid values are 'dev' or 'prod'."
+    exit 1
+fi
+
+ec2_ini_file=$2
+if [[ -z "$ec2_ini_file" ]]; then
+    ec2_ini_file="ec2.ini"
+fi
+
 function get_instance_id() {
     instance_id=$(aws ec2 describe-instances \
         --filters \
         "Name=tag:Name,Values=windows_slave_001" \
-        "Name=tag:environment,Values=dev" \
+        "Name=tag:environment,Values=$cloud_environment" \
         "Name=instance-state-name,Values=running" \
         | jq '.Reservations | .[0] | .Instances | .[0] | .InstanceId' \
         | sed 's/\"//g')
@@ -32,22 +43,27 @@ function get_instance_password() {
     echo "Password retrieved for Windows instance."
 }
 
-function run_ansible() {
-    jenkins_master_url=$(aws ec2 describe-instances \
+function get_jenkins_url() {
+    jenkins_master_dns=$(aws ec2 describe-instances \
         --filters \
         "Name=tag:Name,Values=jenkins_master" \
+        "Name=tag:environment,Values=$cloud_environment" \
         "Name=instance-state-name,Values=running" \
         | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
         | sed 's/\"//g')
-    echo "Jenkins master is at $jenkins_master_url"
+    echo "Jenkins master is at $jenkins_master_dns"
+}
+
+function run_ansible() {
     echo "Attempting Ansible run against Windows slave... (can be 10+ seconds before output)"
     rm -rf ~/.ansible/tmp
-    EC2_INI_PATH=/etc/ansible/ec2.ini ansible-playbook -i environments/dev \
+    EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
+        ansible-playbook -i "environments/$cloud_environment" \
         --vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/jenkins_env_key \
-        -e "cloud_environment=true" \
+        -e "cloud_environment=$cloud_environment" \
         -e "ansible_password=$password" \
-        -e "jenkins_master_url=$jenkins_master_url" \
+        -e "jenkins_master_dns=$jenkins_master_dns" \
         ansible/win-jenkins-slave.yml
 }
 
@@ -59,7 +75,8 @@ function reboot_instance() {
 
 get_instance_id
 get_instance_password
+get_jenkins_url
 run_ansible
 reboot_instance
 
-echo "You can connect to Jenkins at http://$jenkins_master_url:8080/."
+echo "You can connect to Jenkins at http://$jenkins_master_dns/."
