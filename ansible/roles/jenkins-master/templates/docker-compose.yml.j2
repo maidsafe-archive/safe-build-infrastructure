@@ -40,6 +40,7 @@ services:
       - secret_aws_jenkins_secret_key
       - secret_aws_jenkins_ec2_secret_key
       - secret_github_access_token
+      - secret_github_auth_token
 secrets:
   secret_jenkins_admin_user_password:
     file: {{ secret_jenkins_admin_user_password_path }}
