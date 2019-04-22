@@ -7,12 +7,33 @@ jenkins:
     - "JNLP4-connect"
     - "Ping"
   authorizationStrategy:
+{% if cloud_environment == "prod" %}
+    globalMatrix:
+      grantedPermissions:
+      - "Overall/Read:authenticated"
+      - "Overall/Read:Administrators"
+      - "Overall/Administer:maidsafe*QA"
+      - "Overall/Administer:Administrators"
+      - "Overall/Administer:chriso"
+      - "Job/Workspace:maidsafe*developers"
+      - "Job/Cancel:maidsafe*developers"
+      - "Job/Read:maidsafe*developers"
+      - "Job/Build:maidsafe*developers"
+      - "Job/Discover:maidsafe*developers"
+      - "Run/Update:maidsafe*developers"
+      - "Run/Replay:maidsafe*developers"
+      - "View/Delete:maidsafe*developers"
+      - "View/Configure:maidsafe*developers"
+      - "View/Read:maidsafe*developers"
+      - "View/Create:maidsafe*developers"
+{% else %}
     globalMatrix:
       grantedPermissions:
         - "Overall/Read:authenticated"
         - "Overall/Read:Administrators"
         - "Overall/Administer:chriso"
         - "Overall/Administer:Administrators"
+{% endif %}
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -149,12 +170,21 @@ jenkins:
   quietPeriod: 5
   scmCheckoutRetryCount: 0
   securityRealm:
+{% if cloud_environment == "prod" %}
+    github:
+      clientID: "abaa53fe6351f33ece06"
+      clientSecret: ${secret_jenkins_auth_key}
+      githubApiUri: "https://api.github.com"
+      githubWebUri: "https://github.com"
+      oauthScopes: "read:org,user:email,repo"
+{% else %}
     local:
       allowsSignup: false
       enableCaptcha: false
       users:
         - id: "{{ jenkins_admin_user }}"
           password: ${secret_jenkins_admin_user_password}
+{% endif %}
   slaveAgentPort: 50000
   views:
     - all:
