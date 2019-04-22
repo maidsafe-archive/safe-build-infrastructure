@@ -14,13 +14,17 @@ if [[ -z "$ec2_ini_file" ]]; then
 fi
 
 function get_jenkins_master_dns() {
-    jenkins_master_dns=$(aws ec2 describe-instances \
-        --filters \
-        "Name=tag:Name,Values=jenkins_master" \
-        "Name=tag:environment,Values=$cloud_environment" \
-        "Name=instance-state-name,Values=running" \
-        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
-        | sed 's/\"//g')
+    if [[ "$cloud_environment" == "prod" ]]; then
+        jenkins_master_dns="jenkins.maidsafe.net"
+    else
+        jenkins_master_dns=$(aws ec2 describe-instances \
+            --filters \
+            "Name=tag:Name,Values=jenkins_master" \
+            "Name=tag:environment,Values=$cloud_environment" \
+            "Name=instance-state-name,Values=running" \
+            | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+            | sed 's/\"//g')
+    fi
     echo "Jenkins master is at $jenkins_master_dns"
 }
 
