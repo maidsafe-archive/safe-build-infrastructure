@@ -43,7 +43,7 @@ function get_instance_password() {
     echo "Password retrieved for Windows instance."
 }
 
-function get_jenkins_url() {
+function get_jenkins_dns() {
     if [[ "$cloud_environment" == "prod" ]]; then
         jenkins_master_dns="jenkins.maidsafe.net"
     else
