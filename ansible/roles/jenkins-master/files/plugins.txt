@@ -49,6 +49,7 @@ git-client:2.7.4
 github:1.29.3
 github-api:1.92
 github-branch-source:2.4.1
+github-oauth:0.32
 git-server:1.7
 gradle:1.29
 handlebars:1.1.1
