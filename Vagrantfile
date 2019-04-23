@@ -13,7 +13,10 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/jenkins-master.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
-      ansible.extra_vars = { cloud_environment: "none" }
+      ansible.extra_vars = {
+        cloud_environment: "vagrant",
+        jenkins_master_url: "http://#{ENV['JENKINS_MASTER_IP_ADDRESS']}/"
+      }
     end
     jenkins_master.vm.provider "virtualbox" do |vb|
       vb.memory = 2048

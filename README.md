@@ -120,9 +120,21 @@ The macOS slave needs to be provisioned after the Jenkins master, because the Wi
 
 After you've provisioned the environment either locally or on AWS, it needs a little bit of manual configuration to get things running. Even although we're using the [CASC Plugin](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md), unfortunately it doesn't yet support settings for all plugins, so there are some things that need to be configured manually.
 
-The Github Pull Request Builder plugin needs to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and change the Credentials selection to use `github_maidsafe_token_secret_text`.
+*Important note*: wait for any provisioning to completely finish before configuring Jenkins. The Windows slave has to call a URL to get a key to register itself as an agent, and this uses the basic authentication admin user. This means the basic authentication security realm needs to be in use at this time until it is changed to GitHub OAuth.
+
+To perform this configuration you need to login with the initial admin user. The login details for this are in the QA Keepass database.
+
+#### GitHub
+
+We are using the [GitHub OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+OAuth+Plugin) for authentication with Jenkins. This needs to be configured manually after first login. Go to Manage Jenkins -> Configure Global Security -> Security Realm. Change this to 'GitHub Authentication Plugin', then provide the client ID and secret; they can both be found in the QA Keypass database. After this, click on the Save button. You should now be able to log out of Jenkins, and when you log back in you should be able to authenticate using OAuth through your GitHub account. Note that if this is the first time you have logged into Jenkins via GitHub then GitHub will ask you to authorise Jenkins.
+
+The GitHub Pull Request Builder plugin also needs to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and change the Credentials selection to use `github_maidsafe_token_secret_text`.
+
+#### EC2
 
 If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
+
+#### Job DSL Plugin
 
 The instance is using the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-plugin) to define all the jobs in code. This requires a 'seed' job to be created manually. After that's created, all the other job definitions will be created from the seed. When Jenkins is up and running you need to create this seed job. After logging in, perform the following steps:
 
