@@ -24,11 +24,11 @@
         state: absent
     - name: 'uninstall java'
       homebrew_cask:
-        name: java8
+        name: homebrew/cask-versions/adoptopenjdk8
         state: absent
       become: yes
-      become_user: qa
+      become_user: qamaidsafe
     - name: 'uninstall caskroom/versions'
       homebrew_tap:
-        name: caskroom/versions
+        name: homebrew/cask-versions
         state: absent
