@@ -7,12 +7,34 @@ jenkins:
     - "JNLP4-connect"
     - "Ping"
   authorizationStrategy:
+{% if cloud_environment == "prod" %}
+    globalMatrix:
+      grantedPermissions:
+      - "Overall/Read:authenticated"
+      - "Overall/Read:Administrators"
+      - "Overall/Read:maidsafe*QA"
+      - "Overall/Administer:maidsafe*QA"
+      - "Overall/Administer:Administrators"
+      - "Overall/Administer:chriso"
+      - "Job/Workspace:maidsafe*developers"
+      - "Job/Cancel:maidsafe*developers"
+      - "Job/Read:maidsafe*developers"
+      - "Job/Build:maidsafe*developers"
+      - "Job/Discover:maidsafe*developers"
+      - "Run/Update:maidsafe*developers"
+      - "Run/Replay:maidsafe*developers"
+      - "View/Delete:maidsafe*developers"
+      - "View/Configure:maidsafe*developers"
+      - "View/Read:maidsafe*developers"
+      - "View/Create:maidsafe*developers"
+{% else %}
     globalMatrix:
       grantedPermissions:
         - "Overall/Read:authenticated"
         - "Overall/Read:Administrators"
         - "Overall/Administer:chriso"
         - "Overall/Administer:Administrators"
+{% endif %}
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
