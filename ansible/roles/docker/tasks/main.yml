@@ -9,10 +9,6 @@
     name: docker
     extra_args: '--ignore-installed requests'
 
-- name: 'install docker'
-  package:
-    name: "{{ docker_package_name }}"
-
 - name: 'create docker group'
   group:
     name: docker
@@ -42,3 +38,5 @@
     group: docker
     mode: '0755'
     force: yes
+
+- include: storage.yml

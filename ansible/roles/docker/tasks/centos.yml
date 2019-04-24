@@ -11,6 +11,21 @@
   notify:
     - restart docker
 
-- name: 'set docker package name (CentOS)'
-  set_fact:
-    docker_package_name: docker
+- name: 'install prerequisite packages (centos)'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: 'add docker-ce repository (centos)'
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: 'install docker (centos)'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
