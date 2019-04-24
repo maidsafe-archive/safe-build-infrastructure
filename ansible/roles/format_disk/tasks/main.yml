@@ -1,0 +1,48 @@
+---
+- fail:
+    msg: "a value such us /dev/sdb must be supplied for block_device"
+  when: block_device is not defined
+
+- fail:
+    msg: "a mount_info dictionary must be supplied"
+  when: mount_info is not defined
+
+- name: 'create partition'
+  shell: echo -e "n\np\n1\n\n\nw\n" | fdisk "{{ block_device }}"
+  args:
+    creates: "{{ block_device }}1"
+
+- name: 'check if partition formatted'
+  shell: blkid "{{ block_device }}1"
+  register: blkid_result
+  failed_when: false
+
+- name: 'format parition'
+  shell: mkfs.ext4 "{{ block_device }}1"
+  when: blkid_result.stdout == "" 
+
+- name: 'create mount point'
+  file:
+    name: "{{ mount_info.name }}"
+    owner: "{{ mount_info.owner }}"
+    group: "{{ mount_info.group }}"
+    mode: 0755
+    state: directory
+
+- name: 'temporary mount to get disk uid'
+  command: mount -t "ext4" "{{ block_device }}1" "{{ mount_info.name }}"
+  args:
+    warn: False
+  failed_when: False
+
+- name: 'get uuid for {{ block_device }}1'
+  shell: blkid -o export {{ block_device }}1 | grep "^UUID=.*" | sed 's/UUID=//g'
+  register: uuid
+
+- name: 'mount {{ block_device }}1 to {{ mount_info.name }}'
+  mount:
+    name: "{{ mount_info.name }}"
+    src: "UUID={{ uuid.stdout }}"
+    fstype: ext4
+    state: mounted
+    fstab: /etc/fstab
