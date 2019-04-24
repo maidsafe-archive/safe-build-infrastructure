@@ -27,7 +27,11 @@ box-travis_slave-windows-2016-vbox:
 box-docker_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2.ini packer build templates/docker_slave-centos-7.6-x86_64.json
+	EC2_INI_PATH=environments/dev/ec2.ini \
+		packer build \
+		-only=amazon-ebs \
+		-var='cloud_environment=dev' \
+		templates/docker_slave-centos-7.6-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-vbox:
 	rm -rf output-virtualbox-iso
@@ -92,6 +96,15 @@ vm-jenkins_rust_slave-windows-2016-x86_64-vbox:
 
 vm-travis_rust_slave-windows-2016-x86_64-vbox:
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
+
+vm-docker_slave-centos-7.6-x86_64-aws:
+	vagrant up docker_slave-centos-7.6-x86_64-aws --provision --provider=aws
+	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/vagrant \
+		--limit=docker_slave_001 \
+		-e "cloud_environment=dev" \
+		-u centos ansible/docker-slave.yml
 
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 env-jenkins-dev-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
