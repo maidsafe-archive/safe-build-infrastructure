@@ -24,8 +24,8 @@
 - name: 'create mount point'
   file:
     name: "{{ mount_info.name }}"
-    owner: "{{ mount_info.owner }}"
-    group: "{{ mount_info.group }}"
+    owner: "root"
+    group: "root"
     mode: 0755
     state: directory
 
@@ -46,3 +46,14 @@
     fstype: ext4
     state: mounted
     fstab: /etc/fstab
+
+# This needs to take place here rather than when the directory is created.
+# It seems that doing the actual mount changes the permissions to the root user
+# so they need to be changed back after the mount.
+- name: 'change mount point permissions'
+  file:
+    name: "{{ mount_info.name }}"
+    owner: "{{ mount_info.owner }}"
+    group: "{{ mount_info.group }}"
+    mode: 0755
+    state: directory

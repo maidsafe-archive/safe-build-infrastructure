@@ -65,7 +65,7 @@ jenkins:
             monitoring: false
             numExecutors: 1
             remoteAdmin: "jenkins"
-            remoteFS: "/home/jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
             securityGroups: "{{ linux_slaves_security_group_name }}"
             stopOnTerminate: false
             subnetId: "{{ slave_vpc_subnet_id }}"
