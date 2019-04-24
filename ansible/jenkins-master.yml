@@ -19,9 +19,9 @@
     - { role: wireguard-server, when: cloud_environment == "prod" }
     - {
         role: format_disk,
-        block_device: "{{ jenkins_workspace_block_device }}",
+        block_device: "{{ jenkins_master_block_device }}",
         mount_info: {
-          name: "{{ jenkins_workspace_mount_point }}",
+          name: "{{ jenkins_master_mount_point }}",
           owner: "root",
           group: "root",
           mode: 0755
