@@ -1,0 +1,5 @@
+---
+jenkins_master_block_device: /dev/xvdb
+jenkins_master_mount_point: /mnt/jenkins
+docker_storage_block_device: /dev/xvdc
+docker_storage_mount_point: /var/lib/docker

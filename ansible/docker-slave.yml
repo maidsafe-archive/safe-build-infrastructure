@@ -13,7 +13,7 @@
           group: "root",
           mode: 0755
         },
-        when: cloud_environment is defined
+        when: cloud_environment == "prod"
       }
     - docker
     - jenkins-slave
@@ -26,6 +26,6 @@
           group: "jenkins",
           mode: 0755
         },
-        when: cloud_environment is defined
+        when: cloud_environment == "prod"
       }
     - docker-slave-images
