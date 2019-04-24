@@ -1,0 +1,5 @@
+---
+docker_storage_block_device: /dev/xvdb
+docker_storage_mount_point: /mnt/docker_storage
+jenkins_workspace_block_device: /dev/xvdb
+jenkins_workspace_mount_point: /mnt/jenkins_workspace

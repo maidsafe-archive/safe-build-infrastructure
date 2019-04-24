@@ -2,6 +2,28 @@
 - hosts: linux_slaves
   become: True
   roles:
+    - {
+        role: format_disk,
+        block_device: "{{ docker_storage_block_device }}",
+        mount_info: {
+          name: "{{ docker_storage_mount_point }}",
+          owner: "root",
+          group: "root",
+          mode: 0755
+        },
+        when: cloud_environment is defined
+      }
+    - {
+        role: format_disk,
+        block_device: "{{ jenkins_workspace_block_device }}",
+        mount_info: {
+          name: "{{ jenkins_workspace_mount_point }}",
+          owner: "root",
+          group: "root",
+          mode: 0755
+        },
+        when: cloud_environment is defined
+      }
     - pip
     - java
     - docker
