@@ -36,6 +36,18 @@ resource "aws_instance" "jenkins_master" {
     group = "masters"
     environment = "prod"
   }
+  ebs_block_device {
+    device_name = "/dev/sdb"
+    volume_size = 500
+    volume_type = "gp2"
+    delete_on_termination = false
+  }
+  ebs_block_device {
+    device_name = "/dev/sdc"
+    volume_size = 50
+    volume_type = "gp2"
+    delete_on_termination = false
+  }
 }
 
 resource "aws_eip_association" "jenkins_master_eip_association" {

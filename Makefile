@@ -30,7 +30,7 @@ box-docker_slave-centos-7.6-x86_64-aws:
 	EC2_INI_PATH=environments/dev/ec2.ini \
 		packer build \
 		-only=amazon-ebs \
-		-var='cloud_environment=dev' \
+		-var='cloud_environment=prod' \
 		templates/docker_slave-centos-7.6-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-vbox:
