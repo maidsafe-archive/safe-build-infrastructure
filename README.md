@@ -66,7 +66,6 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
-* Set `export AWS_KEYPAIR_NAME=jenkins_env`.
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
@@ -131,7 +130,7 @@ The GitHub Pull Request Builder plugin also needs to be configured manually. Go 
 
 #### EC2
 
-If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
+If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `docker_slave_prod` private key and click on 'Save'.
 
 #### Job DSL Plugin
 

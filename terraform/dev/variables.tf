@@ -19,7 +19,7 @@ variable "availability_zones" {
 }
 
 variable "key_pair" {
-  default = "jenkins_env"
+  default = "jenkins-dev"
   description = "The key pair to use for resources"
 }
 

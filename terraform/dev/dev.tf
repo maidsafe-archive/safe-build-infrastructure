@@ -2,6 +2,11 @@ provider "aws" {
   region = "${var.region}"
 }
 
+resource "aws_key_pair" "jenkins_dev" {
+  key_name = "jenkins-dev"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW+gx3axoFvvafQX5camHzGGvu+AExYdKOwN3o1aXmbSpBmgmtcY9eQyukId7al9yoTkCIWB2PjBwpmcGBPQIIsEfaw1kD6JhV6a4OxWp9uRbPNMPnJJTZo/c9Vzze7d02zRh8x0zJ1+NsIWxfFr5jXli9xeKeIQV6e5GLrMV0QRRXy+xglrNg9bJdvfw1eBGOwxYh169ug+Mzp2MEtz+PggAMECV37vNX4w6a0ahJrLs5bfDtAZTRvikgJ6w6CQwVidBlY3XAWC+Q4fHe8DvSS6sN8F0U6gjvdXhS/AvuVLnqeZywUCkYkm3gfW0SKyLw8zKJJ6wiEk7NSArdRJpH"
+}
+
 resource "aws_instance" "jenkins_master" {
   ami = "${lookup(var.jenkins_master_ami, var.region)}"
   instance_type = "${var.jenkins_master_instance_type}"
