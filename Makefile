@@ -126,7 +126,7 @@ env-jenkins-dev-aws:
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_env_key \
+		--private-key=~/.ssh/jenkins_dev \
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
 	rm -rf ~/.ansible/tmp

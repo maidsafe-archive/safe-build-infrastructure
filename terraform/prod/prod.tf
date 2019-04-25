@@ -26,7 +26,7 @@ resource "aws_instance" "jenkins_master" {
   key_name = "${var.key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
-  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
+  user_data = "${file("../../scripts/sh/setup_ansible_user_prod.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_master.id}"
   ]
@@ -61,7 +61,7 @@ resource "aws_instance" "ansible" {
   key_name = "${var.key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
-  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
+  user_data = "${file("../../scripts/sh/setup_ansible_user_prod.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.ansible.id}"
   ]

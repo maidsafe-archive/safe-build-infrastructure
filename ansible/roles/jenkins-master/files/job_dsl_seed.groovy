@@ -19,7 +19,7 @@ multibranchPipelineJob('pipeline-jenkins_sample_lib') {
     }
 }
 
-multibranchPipelineJob('pipeline-jenkins_sample_lib') {
+multibranchPipelineJob('pipeline-safe_client_libs') {
     branchSources {
         github {
             checkoutCredentialsId('github_maidsafe_token_credentials')

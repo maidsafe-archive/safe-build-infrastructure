@@ -61,13 +61,12 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
 * Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
-* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
+* Get a copy of the `jenkins_dev` and `jenkins_prod` SSH keys from someone in QA and save them to `~/.ssh/jenkins_dev` and `~/.ssh/jenkins_prod`, then run `chmod 0400` on them.
 * Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
 * Set `export AWS_KEYPAIR_NAME=jenkins_env`.
-* Set `export AWS_PRIVATE_KEY_PATH=~/.ssh/jenkins_env_key` (get a copy of the key from someone in QA).
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 

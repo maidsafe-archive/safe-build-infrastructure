@@ -8,7 +8,7 @@ resource "aws_instance" "jenkins_master" {
   key_name = "${var.key_pair}"
   subnet_id = "${var.default_subnet_id}"
   associate_public_ip_address = true
-  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
+  user_data = "${file("../../scripts/sh/setup_ansible_user_dev.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_master.id}"
   ]
@@ -26,7 +26,7 @@ resource "aws_instance" "docker_slave" {
   key_name = "${var.key_pair}"
   subnet_id = "${var.default_subnet_id}"
   associate_public_ip_address = true
-  user_data = "${file("../../scripts/sh/setup_ansible_user.sh")}"
+  user_data = "${file("../../scripts/sh/setup_ansible_user_dev.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.linux_slaves.id}"
   ]
