@@ -3,7 +3,7 @@
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "generated_ami_name": "docker_slave-centos-7.6-x86_64",
-    "ansible_inventory_directory": "environments/dev"
+    "ansible_inventory_directory": "environments/prod"
   },
   "builders": [
     {
@@ -19,7 +19,7 @@
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",
         "group": "linux_slaves",
-        "environment": "dev"
+        "environment": "prod"
       },
       "ami_block_device_mappings": [
         {

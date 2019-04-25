@@ -27,7 +27,7 @@ box-travis_slave-windows-2016-vbox:
 box-docker_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-x86_64.json
-	EC2_INI_PATH=environments/dev/ec2.ini \
+	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
