@@ -115,7 +115,7 @@
 
 - name: 'copy ssh key for docker build slave'
   copy:
-    src: ../../../../ssh_keys/docker_build_slave_key
+    content: "{{ docker_slave_ssh_key }}"
     dest: "{{ secret_docker_slave_ssh_key_path }}"
     owner: root
     group: root

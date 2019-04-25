@@ -54,7 +54,7 @@
   authorized_key:
     user: "{{ build_user }}"
     state: present
-    key: "{{ lookup('file', '../../../../ssh_keys/docker_build_slave_key.pub')}}"
+    key: "{{ docker_slave_ssh_public_key }}"
     manage_dir: false
 
 - name: 'add jenkins_dev ec2 key pair authorized key'
