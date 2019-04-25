@@ -12,6 +12,11 @@ resource "aws_key_pair" "windows_slave_prod" {
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbqVexd8nzku6hYYHYQMqP2x8JuRU81IbIKkMG8b/g1Er63tXy7w/QFTYSW11dLyjpN1nPzl+/NljxnWs/yFmztEIlBb2vL94Sp8SyQeWgmEHFGCrA9EaneWU6DFQJ8SptMwfE9rBzY5d/ouo90fYopPJYkG4kGcadIWR+g3Fx/t8tQf0T8ogrknWJmaAAsIi+BVINnXYyTmSLOc63ZoA9K1dCOps4YBVNmgxitrrGa+Lo0fB6Aza8m7dfweM7nwSOpSHEsXC/aA85czOd9dWzbaXAEFqAJYzSACubSM55R6telSkJhE6YIZ0p8C+YdZQmQPOweeCSZs31G3sN7pdj"
 }
 
+resource "aws_key_pair" "docker_slave_prod" {
+  key_name = "docker_slave-prod"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeXRo+ENDr9I8uFQwuRP0cghcjX+6Q8XnmuxWiVEpGakluP3URWr8+bfL4SQ8bqoAFf6Lb/PjpdxWopQoW72N9Mej7Z5Y2+koa1Hh5IaHl+PuzEDnhlm1Y7gYuTj9+ZdhlDzX+98pwPTzdPVpxpz0MEibPe+XEe+TKeBK/3gJO2Gu22HC5yewoy0nShhHcAgBRXrjJJJ9vcuslOv/rTkWqSiFLAvibq869Nl80aP8YQdy0Kwl2wsvDb4qkfEXiW8P2/DwLiNGpr4kY5qQA4Adr83j+NT25kh7LLqWot/vAYwaAwmfZ+y6lAwiC5OXHGtIVF6gA19HGDQkIOx4aqny9"
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "1.59.0"
