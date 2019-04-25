@@ -86,7 +86,7 @@ resource "aws_instance" "ansible" {
 resource "aws_instance" "windows_slave" {
   ami = "${lookup(var.windows_ami, var.region)}"
   instance_type = "${var.windows_instance_type}"
-  key_name = "${var.windows_key_pair}"
+  key_name = "${var.windows_slave_key_pair}"
   subnet_id = "${module.vpc.private_subnets[0]}"
   associate_public_ip_address = false
   user_data = "${file("../../scripts/ps/setup_winrm.ps1")}"
