@@ -1,6 +1,4 @@
 ---
-jenkins_master_block_device: /dev/xvdb
-jenkins_master_mount_point: /mnt/jenkins
 jenkins_workspace_block_device: /dev/xvdb
 jenkins_workspace_mount_point: /mnt/jenkins_workspace
 docker_storage_block_device: /dev/xvdc
