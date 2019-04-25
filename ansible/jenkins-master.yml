@@ -3,17 +3,6 @@
   become: True
   roles:
     - pip
-    - {
-        role: format_disk,
-        block_device: "{{ docker_storage_block_device }}",
-        mount_info: {
-          name: "{{ docker_storage_mount_point }}",
-          owner: "root",
-          group: "root",
-          mode: 0755
-        },
-        when: cloud_environment == "prod"
-      }
     - docker
     - { role: wireguard, when: cloud_environment == "prod" }
     - { role: wireguard-server, when: cloud_environment == "prod" }
