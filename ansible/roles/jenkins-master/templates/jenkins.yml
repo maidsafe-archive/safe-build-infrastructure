@@ -15,7 +15,7 @@ jenkins:
       - "Overall/Read:maidsafe*QA"
       - "Overall/Administer:maidsafe*QA"
       - "Overall/Administer:Administrators"
-      - "Overall/Administer:chriso"
+      - "Overall/Administer:{{ jenkins_admin_user }}"
       - "Job/Workspace:maidsafe*developers"
       - "Job/Cancel:maidsafe*developers"
       - "Job/Read:maidsafe*developers"
@@ -32,7 +32,7 @@ jenkins:
       grantedPermissions:
         - "Overall/Read:authenticated"
         - "Overall/Read:Administrators"
-        - "Overall/Administer:chriso"
+        - "Overall/Administer:{{ jenkins_admin_user }}"
         - "Overall/Administer:Administrators"
 {% endif %}
   crumbIssuer:

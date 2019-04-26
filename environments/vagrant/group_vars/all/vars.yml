@@ -12,7 +12,7 @@ windows_rust_slave_working_path: "c:\\jenkins-work"
 osx_rust_slave_ip_address: 192.168.1.190
 osx_rust_slave_full_name: rust_slave-osx-mojave-x86_64
 osx_rust_slave_host_url: rust_slave.centos.local
-jenkins_admin_user: chriso
+jenkins_admin_user: qa
 secret_jenkins_admin_user_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   62343932623532633537653833303661643466396661353134353230633738303535323133616535

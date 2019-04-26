@@ -10,7 +10,7 @@ windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
 windows_rust_slave_host_url: rust_slave.centos.local
 windows_rust_slave_working_path: "c:\\jenkins-work"
-jenkins_admin_user: chriso
+jenkins_admin_user: qa
 secret_jenkins_admin_user_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   62343932623532633537653833303661643466396661353134353230633738303535323133616535
