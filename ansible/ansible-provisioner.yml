@@ -3,5 +3,4 @@
   become: True
   roles:
     - pip
-    - ansible-user-key
     - ansible-provisioner

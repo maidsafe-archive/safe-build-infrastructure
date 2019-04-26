@@ -154,7 +154,7 @@ endif
 	sleep 120
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/ansible \
+		--private-key=~/.ssh/ansible_prod \
 		-e "cloud_environment=prod" \
 		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \

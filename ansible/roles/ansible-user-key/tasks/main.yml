@@ -1,8 +1,0 @@
----
-- name: 'copy private key for ansible provisioning'
-  copy:
-    src: ansible_key
-    dest: /home/ansible/.ssh/ansible
-    mode: 0400
-    owner: ansible
-    group: ansible
