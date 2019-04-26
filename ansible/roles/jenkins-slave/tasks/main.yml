@@ -1,9 +1,4 @@
 ---
-- name: 'fail if cloud_environment is not set'
-  fail:
-    msg: "A value must be supplied for cloud_environment. Current valid values are dev, prod or none."
-  when: cloud_environment is not defined
-
 - name: 'install git'
   package:
     name: git
