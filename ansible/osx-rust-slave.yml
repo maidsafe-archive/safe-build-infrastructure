@@ -4,7 +4,7 @@
   roles:
     - osx-pip
     - osx-java
-    - wireguard
-    - wireguard-client
+    - { role: wireguard, when: cloud_environment != "none" }
+    - { role: wireguard-client, when: cloud_environment != "none" }
     - jenkins-slave
     - rust

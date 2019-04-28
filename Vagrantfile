@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
       ansible.extra_vars = {
-        cloud_environment: "vagrant",
+        cloud_environment: "none",
         jenkins_master_url: "http://#{ENV['JENKINS_MASTER_IP_ADDRESS']}/"
       }
     end
@@ -49,6 +49,7 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/docker-slave.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
+      ansible.extra_vars = { cloud_environment: "none" }
     end
     docker_slave_centos.vm.provider "virtualbox" do |vb|
       vb.cpus = 2
