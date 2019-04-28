@@ -15,4 +15,5 @@ ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/prod/hosts \
     --vault-password-file=~/.ansible/vault-pass \
     --private-key=~/.ssh/id_rsa \
     -e "wg_server_endpoint=$jenkins_master_dns" \
+    -e "cloud_environment=prod" \
     ansible/osx-rust-slave.yml
