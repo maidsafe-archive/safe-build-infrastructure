@@ -9,7 +9,7 @@ windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
 windows_rust_slave_host_url: rust_slave.centos.local
 windows_rust_slave_working_path: "c:\\jenkins-work"
-osx_rust_slave_ip_address: 192.168.1.190
+osx_rust_slave_ip_address: 192.168.1.17
 osx_rust_slave_full_name: rust_slave-osx-mojave-x86_64
 osx_rust_slave_host_url: rust_slave.centos.local
 jenkins_admin_user: qa
@@ -21,5 +21,6 @@ secret_jenkins_admin_user_password: !vault |
   3565643362343234370a346662383561383938316464616661663235633766383864353563613961
   38626264653832666538666335616334623462373131396534346264336534316235353666393437
   3863643464643932626265303062356131636533316265383433
-rust_version: 1.32.0
+rust_version: stable
 linux_slaves_security_group_name: linux_slaves
+docker_slave_ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkKreOrqHVOsvuHR2af52CfzwR/HShejDzuwz+qCq1g2FJWQfvOYlV6U31rJ9QzaSKdUhdLg4O2WQS5Y2D5z36fn/Nwd/bgG7dKl0/1Mb8AELrCa5E3NUl5bEiEEbw5O/KPk/eOygD8LqbkaBTSpC8WpAAdpU4ulElXpVbdCkTh0+YgMOFjrMts8qhFWJ94d3jatW4l2egJlPBVpftTs/4fYfJOaPMqDLFMg0hpiJ1gIItkPrbmAdjERR8Va5C7jpJ8PG+qiO4faWJqjj6hHY8nXSfs1CgGx/dkOF2Cp2E+YR+/xfsydyxc6Fz1gaPBK4JxU3UCbzeZMWNQNa1IrXJ
