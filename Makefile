@@ -169,7 +169,15 @@ provision-jenkins-prod-aws:
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
-provision-rust_slave-macos-mojave-x86_64:
+provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
+	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
+		--limit=rust_slave-osx-mojave-x86_64 \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/id_rsa \
+		-e "cloud_environment=none" \
+		ansible/osx-rust-slave.yml
+
+provision-rust_slave-macos-mojave-x86_64-prod-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 
 clean-rust_slave-macos-mojave-x86_64:
