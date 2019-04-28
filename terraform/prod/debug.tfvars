@@ -11,3 +11,4 @@ windows_ami = { eu-west-2 = "ami-0186531b707ced2ef" }
 windows_instance_type = "t3.small"
 windows_bastion_count = 1
 windows_slave_key_pair = "windows_slave-prod"
+windows_bastion_key_pair = "windows_bastion-prod"

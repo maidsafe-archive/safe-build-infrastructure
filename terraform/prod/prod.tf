@@ -12,6 +12,11 @@ resource "aws_key_pair" "windows_slave_prod" {
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbqVexd8nzku6hYYHYQMqP2x8JuRU81IbIKkMG8b/g1Er63tXy7w/QFTYSW11dLyjpN1nPzl+/NljxnWs/yFmztEIlBb2vL94Sp8SyQeWgmEHFGCrA9EaneWU6DFQJ8SptMwfE9rBzY5d/ouo90fYopPJYkG4kGcadIWR+g3Fx/t8tQf0T8ogrknWJmaAAsIi+BVINnXYyTmSLOc63ZoA9K1dCOps4YBVNmgxitrrGa+Lo0fB6Aza8m7dfweM7nwSOpSHEsXC/aA85czOd9dWzbaXAEFqAJYzSACubSM55R6telSkJhE6YIZ0p8C+YdZQmQPOweeCSZs31G3sN7pdj"
 }
 
+resource "aws_key_pair" "windows_bastion_prod" {
+  key_name = "windows_bastion-prod"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTFIv1T40+T+xwuD/2BhO2+jgv/iKQ1qadkE9gm3hGG4xziyqsD2YUZ6+o8o0wfhAuTUDh/p1vXrm6PYJpA6ncYovmEJ6/ZlLDl2XDAoV8gpZAovCjHqIOd1zegE5vQYKl7P5kbdCgDzyKXfUd++C5l3zIY/WQCutUxoEw5m/Wy6ILDnBT0+Y7pmkFGQyzhgVgkqvYbxUQsQXTkuJiGtzlrOlApDY7yeJneN4g3rUzaTg1vUyep6yUfh5IVEXZ69eCIuoXS5wLd38BTAIfCc7lwEcnjmAVMjJqTxV0thvIGNlhwbgxhcrB7U9q9agsGCQBLAsHxE9h9OcRkcllj1qR"
+}
+
 resource "aws_key_pair" "docker_slave_prod" {
   key_name = "docker_slave-prod"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeXRo+ENDr9I8uFQwuRP0cghcjX+6Q8XnmuxWiVEpGakluP3URWr8+bfL4SQ8bqoAFf6Lb/PjpdxWopQoW72N9Mej7Z5Y2+koa1Hh5IaHl+PuzEDnhlm1Y7gYuTj9+ZdhlDzX+98pwPTzdPVpxpz0MEibPe+XEe+TKeBK/3gJO2Gu22HC5yewoy0nShhHcAgBRXrjJJJ9vcuslOv/rTkWqSiFLAvibq869Nl80aP8YQdy0Kwl2wsvDb4qkfEXiW8P2/DwLiNGpr4kY5qQA4Adr83j+NT25kh7LLqWot/vAYwaAwmfZ+y6lAwiC5OXHGtIVF6gA19HGDQkIOx4aqny9"
@@ -109,7 +114,7 @@ resource "aws_instance" "windows_slave" {
 resource "aws_instance" "windows_bastion" {
   ami = "${lookup(var.windows_ami, var.region)}"
   instance_type = "${var.windows_instance_type}"
-  key_name = "${var.jenkins_key_pair}"
+  key_name = "${var.windows_bastion_key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
   user_data = "${file("../../scripts/ps/setup_winrm.ps1")}"

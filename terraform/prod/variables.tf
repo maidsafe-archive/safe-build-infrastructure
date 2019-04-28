@@ -23,6 +23,11 @@ variable "windows_slave_key_pair" {
   description = "The key pair for any Windows slaves"
 }
 
+variable "windows_bastion_key_pair" {
+  default = "windows_bastion-prod"
+  description = "The key pair for the Windows bastion"
+}
+
 variable "jenkins_master_ami" {
   default = {
     eu-west-2 = "ami-0883141bc92a74917"
