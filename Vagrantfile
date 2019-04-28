@@ -39,6 +39,16 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "docker_slave_quick-centos-7.6-x86_64" do |docker_slave_quick|
+    docker_slave_quick.vm.box = "maidsafe/docker_slave-centos-7.6-x86_64"
+    docker_slave_quick.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"
+    docker_slave_quick.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = 2048
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+  end
+
   config.vm.define "docker_slave-centos-7.6-x86_64" do |docker_slave_centos|
     docker_slave_centos.vm.box = "centos/7"
     docker_slave_centos.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"

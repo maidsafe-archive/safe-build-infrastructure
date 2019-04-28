@@ -77,6 +77,11 @@ vm-docker_slave-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAV
 vm-docker_slave-centos-7.6-x86_64-vbox:
 	vagrant up docker_slave-centos-7.6-x86_64 --provision
 
+vm-docker_slave_quick-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
+vm-docker_slave_quick-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
+vm-docker_slave_quick-centos-7.6-x86_64-vbox:
+	vagrant up docker_slave_quick-centos-7.6-x86_64
+
 vm-base-windows-2012_r2-x86_64-vbox:
 	vagrant up base-windows-2012_r2-x86_64 --provision
 
