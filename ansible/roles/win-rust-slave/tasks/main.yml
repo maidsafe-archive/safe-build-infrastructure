@@ -1,9 +1,4 @@
 ---
-- name: 'install make'
-  win_chocolatey:
-    name: make
-    state: present
-
 # I tried to use the 'win_tempfile' module for this, which worked on the local VM
 # but not on the EC2 instance. The directory it created didn't exist by the time
 # the installer script came to execute, so I'm just going to use a known location.
@@ -11,6 +6,60 @@
   win_file:
     path: "C:\\Temp"
     state: directory
+
+- name: 'install make'
+  win_chocolatey:
+    name: make
+    state: present
+
+- name: 'check if libsodium has already been extracted'
+  win_stat:
+    path: "{{ libsodium_path }}"
+  register: libsodium_path_result
+
+- name: 'download libsodium'
+  win_get_url:
+    url: "{{ libsodium_url }}"
+    dest: "C:\\Temp\\{{ libsodium_archive_name }}"
+  when: libsodium_path_result.stat.exists == False
+
+- name: 'create libsodium directory'
+  win_file:
+    path: "{{ libsodium_path }}"
+    state: directory
+  when: libsodium_path_result.stat.exists == False
+
+# The win_unzip module is not used here because it can't extract a
+# tar archive unless you install 'PSCX', the Powershell Community Extensions.
+# I looked into this and it seems there isn't a way to install this
+# using a mechansim that doesn't require user input. I also seen posts
+# on Stackoverflow with people saying they were having trouble getting Powershell
+# to pick up the modules in PSCX. For this reason, for now I just extract
+# the archive manually. 7z doesn't automatically unpack the tar inside the
+# tar.gz, hence the reason for explicitly extracting both.
+- name: 'extract libsodium tar.gz'
+  win_command: "7z x -oC:\\Temp C:\\Temp\\{{ libsodium_archive_name }}"
+  when: libsodium_path_result.stat.exists == False
+
+- name: 'extract libsodium tar'
+  win_command: "7z x -oC:\\Temp C:\\Temp\\libsodium-{{ libsodium_version }}-mingw.tar"
+  when: libsodium_path_result.stat.exists == False
+
+- name: 'copy extracted libsodium contents to {{ libsodium_path }}'
+  win_command: "xcopy /s /e C:\\Temp\\libsodium-win64 {{ libsodium_path }}"
+
+- name: 'remove downloaded libsodium archives'
+  win_file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "C:\\Temp\\libsodium.tar.gz"
+    - "C:\\Temp\\libsodium-{{ libsodium_version }}-mingw.tar"
+    - "C:\\Temp\\libsodium-win32"
+    - "C:\\Temp\\libsodium-win64"
+
+- name: 'set RUST_SODIUM_LIB_DIR environment variable'
+  win_command: 'cmd.exe /c setx /M RUST_SODIUM_LIB_DIR "{{ libsodium_path }}\\lib"'
 
 - name: 'copy the rust installer'
   win_template:
