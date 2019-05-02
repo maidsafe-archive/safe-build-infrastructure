@@ -2,7 +2,8 @@
   "variables": {
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "generated_ami_name": "docker_slave-centos-7.6-x86_64"
+    "generated_ami_name": "docker_slave-centos-7.6-x86_64",
+    "ansible_inventory_directory": "environments/prod"
   },
   "builders": [
     {
@@ -19,7 +20,39 @@
         "full_name": "{{user `generated_ami_name`}}",
         "group": "linux_slaves",
         "environment": "prod"
-      }
+      },
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sdb",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        },
+        {
+          "device_name": "/dev/sdc",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sdb",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        },
+        {
+          "device_name": "/dev/sdc",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        }
+      ]
     },
     {
       "type": "virtualbox-iso",
@@ -44,25 +77,31 @@
     {
       "type": "ansible",
       "playbook_file": "ansible/docker-slave.yml",
-      "inventory_directory": "environments/vagrant",
-      "groups": "linux_slaves"
+      "inventory_directory": "{{user `ansible_inventory_directory`}}",
+      "groups": "linux_slaves",
+      "extra_arguments": [
+        "--extra-vars", "cloud_environment={{ user `cloud_environment` }}"
+      ]
     },
     {
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/configure_vagrant_public_key.sh"
+      "script": "./scripts/sh/configure_vagrant_public_key.sh",
+      "only": ["virtualbox-iso"]
     },
     {
       "type": "shell",
       "environment_vars": ["vbox_version={{.Version}}"],
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/install_guest_additions.sh"
+      "script": "./scripts/sh/install_guest_additions.sh",
+      "only": ["virtualbox-iso"]
     },
     {
       "type": "shell",
       "environment_vars": ["vbox_version={{.Version}}"],
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/setup_ansible.sh"
+      "script": "./scripts/sh/setup_ansible.sh",
+      "only": ["virtualbox-iso"]
     }
   ],
   "post-processors": [

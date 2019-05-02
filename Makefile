@@ -27,7 +27,11 @@ box-travis_slave-windows-2016-vbox:
 box-docker_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
 	packer validate templates/docker_slave-centos-7.6-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2.ini packer build templates/docker_slave-centos-7.6-x86_64.json
+	EC2_INI_PATH=environments/prod/ec2.ini \
+		packer build \
+		-only=amazon-ebs \
+		-var='cloud_environment=prod' \
+		templates/docker_slave-centos-7.6-x86_64.json
 
 box-docker_slave-centos-7.6-x86_64-vbox:
 	rm -rf output-virtualbox-iso
@@ -73,6 +77,11 @@ vm-docker_slave-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAV
 vm-docker_slave-centos-7.6-x86_64-vbox:
 	vagrant up docker_slave-centos-7.6-x86_64 --provision
 
+vm-docker_slave_quick-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
+vm-docker_slave_quick-centos-7.6-x86_64-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
+vm-docker_slave_quick-centos-7.6-x86_64-vbox:
+	vagrant up docker_slave_quick-centos-7.6-x86_64
+
 vm-base-windows-2012_r2-x86_64-vbox:
 	vagrant up base-windows-2012_r2-x86_64 --provision
 
@@ -92,6 +101,15 @@ vm-jenkins_rust_slave-windows-2016-x86_64-vbox:
 
 vm-travis_rust_slave-windows-2016-x86_64-vbox:
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
+
+vm-docker_slave-centos-7.6-x86_64-aws:
+	vagrant up docker_slave-centos-7.6-x86_64-aws --provision --provider=aws
+	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/vagrant \
+		--limit=docker_slave_001 \
+		-e "cloud_environment=dev" \
+		-u centos ansible/docker-slave.yml
 
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 env-jenkins-dev-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
@@ -113,7 +131,7 @@ env-jenkins-dev-aws:
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_env_key \
+		--private-key=~/.ssh/jenkins_dev \
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
 	rm -rf ~/.ansible/tmp
@@ -141,13 +159,13 @@ endif
 	sleep 120
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/ansible \
+		--private-key=~/.ssh/ansible_prod \
 		-e "cloud_environment=prod" \
 		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=github_auth" \
+		-e "safe_build_infrastructure_repo_branch=scl_end_to_end_build" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 
@@ -156,7 +174,15 @@ provision-jenkins-prod-aws:
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
-provision-rust_slave-macos-mojave-x86_64:
+provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
+	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
+		--limit=rust_slave-osx-mojave-x86_64 \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/id_rsa \
+		-e "cloud_environment=none" \
+		ansible/osx-rust-slave.yml
+
+provision-rust_slave-macos-mojave-x86_64-prod-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh
 
 clean-rust_slave-macos-mojave-x86_64:

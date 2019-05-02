@@ -1,3 +1,7 @@
 ---
 ps_exec_url: https://download.sysinternals.com/files/PSTools.zip
 ps_exec_path: "C:\\ps_exec"
+libsodium_version: 1.0.17
+libsodium_archive_name: "libsodium-{{ libsodium_version }}-mingw.tar.gz"
+libsodium_url: "https://download.libsodium.org/libsodium/releases/libsodium-{{ libsodium_version }}-mingw.tar.gz"
+libsodium_path: "C:\\libsodium-{{ libsodium_version }}"

@@ -18,9 +18,14 @@ variable "availability_zones" {
   description = "The availability zones to use"
 }
 
-variable "key_pair" {
-  default = "jenkins_env"
-  description = "The key pair to use for resources"
+variable "jenkins_key_pair" {
+  default = "jenkins-dev"
+  description = "The key pair for the Jenkins master"
+}
+
+variable "windows_slave_key_pair" {
+  default = "windows_slave-dev"
+  description = "The key pair for Windows slaves"
 }
 
 variable "jenkins_master_ami" {

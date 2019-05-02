@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
       ansible.extra_vars = {
-        cloud_environment: "vagrant",
+        cloud_environment: "none",
         jenkins_master_url: "http://#{ENV['JENKINS_MASTER_IP_ADDRESS']}/"
       }
     end
@@ -39,6 +39,16 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "docker_slave_quick-centos-7.6-x86_64" do |docker_slave_quick|
+    docker_slave_quick.vm.box = "maidsafe/docker_slave-centos-7.6-x86_64"
+    docker_slave_quick.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"
+    docker_slave_quick.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = 2048
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+    end
+  end
+
   config.vm.define "docker_slave-centos-7.6-x86_64" do |docker_slave_centos|
     docker_slave_centos.vm.box = "centos/7"
     docker_slave_centos.vm.network :private_network, :ip => "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}"
@@ -49,6 +59,7 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/docker-slave.yml"
       ansible.inventory_path = "environments/vagrant/hosts"
       ansible.raw_arguments = "--vault-pass /home/vagrant/.ansible/vault-pass"
+      ansible.extra_vars = { cloud_environment: "none" }
     end
     docker_slave_centos.vm.provider "virtualbox" do |vb|
       vb.cpus = 2
@@ -189,6 +200,41 @@ Vagrant.configure("2") do |config|
       vb.gui = true
       vb.customize ["modifyvm", :id, "--audio", "none"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    end
+  end
+
+  config.vm.define "docker_slave-centos-7.6-x86_64-aws" do |docker_slave_aws|
+    docker_slave_aws.vm.box = "dummy"
+    docker_slave_aws.vm.provider :aws do |aws, override|
+      aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
+      aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
+      aws.region = "eu-west-2"
+      aws.ami = "ami-0eab3a90fc693af19"
+      aws.instance_type = "t2.micro"
+      aws.security_groups = ["vagrant"]
+      aws.keypair_name = "vagrant"
+      aws.block_device_mapping = [
+        {
+          'DeviceName' => '/dev/sdb',
+          'Ebs.VolumeSize' => 50,
+          'Ebs.DeleteOnTermination' => true,
+          'Ebs.VolumeType' => 'gp2'
+        },
+        {
+          'DeviceName' => '/dev/sdc',
+          'Ebs.VolumeSize' => 50,
+          'Ebs.DeleteOnTermination' => true,
+          'Ebs.VolumeType' => 'gp2'
+        }
+      ]
+      aws.tags = {
+        'Name' => 'docker_slave_001',
+        'full_name' => 'docker_slave-centos-7.6-x86_64',
+        'group' => 'slaves',
+        'environment' => 'dev'
+      }
+      override.ssh.username = "centos"
+      override.ssh.private_key_path = "~/.ssh/vagrant"
     end
   end
 

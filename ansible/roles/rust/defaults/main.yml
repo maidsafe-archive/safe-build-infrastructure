@@ -1,6 +1,6 @@
 ---
 build_user: jenkins
-rust_version: 1.32.0
+rust_version: stable
 cargo_bin_path: "{{ build_user_home_path }}/.cargo/bin"
 cargo_path: "{{ cargo_bin_path }}/cargo"
 cargo_script_path: "{{ cargo_bin_path }}/cargo-script"

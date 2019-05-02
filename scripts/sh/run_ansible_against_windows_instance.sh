@@ -8,6 +8,8 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
+windows_slave_key_path="$HOME/.ssh/windows_slave_$cloud_environment"
+
 ec2_ini_file=$2
 if [[ -z "$ec2_ini_file" ]]; then
     ec2_ini_file="ec2.ini"
@@ -28,14 +30,14 @@ function get_instance_password() {
     response=$(aws ec2 get-password-data \
         --region eu-west-2 \
         --instance-id "$instance_id" \
-        --priv-launch-key ~/.ssh/jenkins_env_key)
+        --priv-launch-key "$windows_slave_key_path")
     password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
     while [[ $password == "" ]]
     do
         response=$(aws ec2 get-password-data \
             --region eu-west-2 \
             --instance-id "$instance_id" \
-            --priv-launch-key ~/.ssh/jenkins_env_key)
+            --priv-launch-key "$windows_slave_key_path")
         password=$(jq '.PasswordData' <<< "$response" | sed 's/\"//g')
         echo "Password for instance not yet available. Waiting for 5 seconds before retry."
         sleep 5
@@ -64,7 +66,7 @@ function run_ansible() {
     EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
         ansible-playbook -i "environments/$cloud_environment" \
         --vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_env_key \
+		--private-key="$windows_slave_key_path" \
         -e "cloud_environment=$cloud_environment" \
         -e "ansible_password=$password" \
         -e "jenkins_master_dns=$jenkins_master_dns" \

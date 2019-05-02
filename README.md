@@ -48,7 +48,7 @@ A Jenkins environment is declared in this repository. It runs in a Docker contai
 
 ### Local Provision
 
-To get a local Jenkins environment, simply run `make env-jenkins-dev-vbox`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100`. You can login with the user `chriso` - speak to someone in QA to get the password.
+To get a local Jenkins environment, simply run `make env-jenkins-dev-vbox`. This will bring up the Jenkins master, along with a Linux and a Windows slave. Note that at the end of this process, the Windows machine will be rebooted to allow PATH related changes to take effect. The Linux slave only really has Docker on it, but the Windows machine replicates the [Travis Windows environment](https://docs.travis-ci.com/user/reference/windows/). The Windows machine comes up after the Jenkins master, since the master needs to be available for the Jenkins slave service to start successfully. After the provisioning process is complete, Jenkins should be accessible in your browser at `192.168.10.100`. You can login with the user `qa` - get the password from the QA Keepass database.
 
 ### AWS Provision
 
@@ -60,14 +60,13 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
-* Get a copy of the Ansible SSH key from someone in QA and save to `~/.ssh/ansible`, then run `chmod 0400 ~/.ssh/ansible`.
-* Get a copy of the `jenkins_env` SSH key from someone in QA and save this to `~/.ssh/jenkins_env_key`, then run `chmod 0400 ~/.ssh/jenkins_env_key`.
-* Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
+* Get a copy of the `ansible_dev` and `ansible_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/ansible_dev` and `ansible_prod`, then run `chmod 0400` on both.
+* Get a copy of the `jenkins_dev` and `jenkins_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/jenkins_dev` and `~/.ssh/jenkins_prod`, then run `chmod 0400` on both.
+* Get a copy of the `windows_slave_dev` and `windows_slave_prod` SSH keys from someone in QA and save them to `~/.ssh/windows_slave_dev` and `~/.ssh/windows_slave_prod`, then run `chmod 0400` on both.
+* Get a copy of the Ansible vault password from the QA Keepass database, then put that in `~/.ansible/vault-pass` on the host.
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
-* Set `export AWS_KEYPAIR_NAME=jenkins_env`.
-* Set `export AWS_PRIVATE_KEY_PATH=~/.ssh/jenkins_env_key` (get a copy of the key from someone in QA).
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
@@ -114,7 +113,7 @@ When you're finished, you can tear the production environment down by running `m
 
 ##### Provisioning the macOS Slave
 
-The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
 
 ### Configure Jenkins
 
@@ -132,7 +131,7 @@ The GitHub Pull Request Builder plugin also needs to be configured manually. Go 
 
 #### EC2
 
-If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `jenkins_env` private key and click on 'Save'.
+If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `docker_slave_prod` private key and click on 'Save'.
 
 #### Job DSL Plugin
 

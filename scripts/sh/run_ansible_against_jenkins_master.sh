@@ -8,6 +8,8 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
+ansible_ssh_key="$HOME/.ssh/ansible_$cloud_environment"
+
 ec2_ini_file=$2
 if [[ -z "$ec2_ini_file" ]]; then
     ec2_ini_file="ec2.ini"
@@ -42,7 +44,7 @@ function run_ansible() {
     echo "Running Ansible against Jenkins master... (can be 10+ seconds before output)"
     EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
         ansible-playbook -i "environments/$cloud_environment" \
-        --private-key=~/.ssh/ansible \
+        --private-key="$ansible_ssh_key" \
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
         -e "cloud_environment=$cloud_environment" \

@@ -15,7 +15,7 @@ jenkins:
       - "Overall/Read:maidsafe*QA"
       - "Overall/Administer:maidsafe*QA"
       - "Overall/Administer:Administrators"
-      - "Overall/Administer:chriso"
+      - "Overall/Administer:{{ jenkins_admin_user }}"
       - "Job/Workspace:maidsafe*developers"
       - "Job/Cancel:maidsafe*developers"
       - "Job/Read:maidsafe*developers"
@@ -32,7 +32,7 @@ jenkins:
       grantedPermissions:
         - "Overall/Read:authenticated"
         - "Overall/Read:Administrators"
-        - "Overall/Administer:chriso"
+        - "Overall/Administer:{{ jenkins_admin_user }}"
         - "Overall/Administer:Administrators"
 {% endif %}
   crumbIssuer:
@@ -65,7 +65,7 @@ jenkins:
             monitoring: false
             numExecutors: 1
             remoteAdmin: "jenkins"
-            remoteFS: "/home/jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
             securityGroups: "{{ linux_slaves_security_group_name }}"
             stopOnTerminate: false
             subnetId: "{{ slave_vpc_subnet_id }}"

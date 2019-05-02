@@ -1,20 +1,31 @@
 ---
-- name: 'add docker gpg key (Ubuntu)'
+- name: 'install prerequisite packages (ubuntu)'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+
+- name: 'add docker gpg key (ubuntu)'
   apt_key:
     url: "{{ docker_gpg_key }}"
     state: present
 
-- name: 'setup the docker repository (Ubuntu)'
+- name: 'setup the docker repository (ubuntu)'
   apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
 
-- name: 'apt update (Ubuntu)'
+- name: 'apt update (ubuntu)'
   command: apt-get update -y
 
-- name: 'ensure correct package source is used (Ubuntu)'
-  command: apt-cache policy docker-ce
-
-- name: 'set docker package name (Ubuntu)'
-  set_fact:
-    docker_package_name: docker-ce
+- name: 'install docker (ubuntu)'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io

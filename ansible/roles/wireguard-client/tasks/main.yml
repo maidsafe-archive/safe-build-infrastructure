@@ -31,7 +31,3 @@
 - name: 'start wireguard (macOS)'
   command: wg-quick up wg0
   when: ansible_distribution == 'MacOSX'
-
-- name: 'remove the 128/1 route (macOS)'
-  command: route -n delete 128.0/1
-  when: ansible_distribution == 'MacOSX'

@@ -4,14 +4,26 @@
 - include: centos.yml
   when: ansible_distribution == 'CentOS'
 
+- name: 'create /etc/docker'
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: 'copy daemon configuration'
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+
 - name: 'install python docker library for ansible docker modules'
   pip:
     name: docker
     extra_args: '--ignore-installed requests'
-
-- name: 'install docker'
-  package:
-    name: "{{ docker_package_name }}"
 
 - name: 'create docker group'
   group:

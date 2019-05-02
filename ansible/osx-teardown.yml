@@ -1,5 +1,5 @@
 ---
-- hosts: jenkins-osx-slaves
+- hosts: osx_slaves
   become: True
   tasks:
     - name: 'uninstall awscli'
@@ -24,11 +24,18 @@
         state: absent
     - name: 'uninstall java'
       homebrew_cask:
-        name: java8
+        name: homebrew/cask-versions/adoptopenjdk8
         state: absent
       become: yes
-      become_user: qa
+      become_user: qamaidsafe
     - name: 'uninstall caskroom/versions'
       homebrew_tap:
-        name: caskroom/versions
+        name: homebrew/cask-versions
+        state: absent
+    - name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
+      command: wg-quick down wg0
+      ignore_errors: yes
+    - name: 'uninstall wireguard'
+      homebrew:
+        name: wireguard-tools
         state: absent
