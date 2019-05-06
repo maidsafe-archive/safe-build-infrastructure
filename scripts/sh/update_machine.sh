@@ -10,8 +10,7 @@ fi
 
 key_name=$2
 if [[ -z "$key_name" ]]; then
-    echo "A value for the key name must be supplied."
-    exit 1
+    key_name="ansible_prod"
 fi
 
 function get_machine_location() {
@@ -29,11 +28,11 @@ function get_machine_location() {
 }
 
 function wait_for_ssh() {
-    ssh -i ~/.ssh/ansible_prod -o StrictHostKeyChecking=no ansible@"$location" ls
+    ssh -i "$HOME/.ssh/$key_name" -o StrictHostKeyChecking=no ansible@"$location" ls
     rc=$?
     while [[ $rc != 0 ]]
     do
-        ssh -i ~/.ssh/ansible_prod -o StrictHostKeyChecking=no ansible@"$location" ls
+        ssh -i "$HOME/.ssh/$key_name" -o StrictHostKeyChecking=no ansible@"$location" ls
         rc=$?
         echo "SSH not yet available on $location, sleeping for 5 seconds before retry..."
     done

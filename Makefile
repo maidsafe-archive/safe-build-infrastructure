@@ -154,7 +154,7 @@ else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
 	cd ../..
-	./scripts/sh/update_machine.sh "ansible_bastion" "ansible_prod"
+	./scripts/sh/update_machine.sh "ansible_bastion"
 	rm -rf ~/.ansible/tmp
 	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
@@ -171,7 +171,7 @@ endif
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
-	./scripts/sh/update_machine.sh "jenkins_master" "jenkins_prod"
+	./scripts/sh/update_machine.sh "jenkins_master"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
