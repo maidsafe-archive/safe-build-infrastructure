@@ -1,0 +1,5 @@
+---
+- hosts: proxies:wireguard
+  become: True
+  roles:
+    - haproxy

@@ -1,0 +1,3 @@
+---
+haproxy_repository: ppa:vbernat/haproxy-1.8
+haproxy_config_path: /etc/haproxy/haproxy.cfg

@@ -1,3 +1,6 @@
+[proxies]
+haproxy
+
 [provisioners]
 ansible_bastion
 

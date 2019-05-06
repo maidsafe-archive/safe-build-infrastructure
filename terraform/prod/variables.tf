@@ -71,9 +71,9 @@ variable "ansible_instance_type" {
 
 variable "haproxy_ami" {
   default = {
-    eu-west-2 = "ami-0eab3a90fc693af19"
+    eu-west-2 = "ami-0883141bc92a74917"
   }
-  description = "AMI for HAProxy (CentOS 7.6)"
+  description = "AMI for HAProxy (Ubuntu 18.04)"
 }
 
 variable "haproxy_instance_type" {
