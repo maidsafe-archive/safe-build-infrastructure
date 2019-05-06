@@ -172,6 +172,7 @@ endif
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master"
+	./scripts/sh/update_machine.sh "haproxy"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
