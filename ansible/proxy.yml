@@ -3,3 +3,5 @@
   become: True
   roles:
     - haproxy
+    - { role: wireguard, when: cloud_environment == "prod" }
+    - { role: wireguard-server, when: cloud_environment == "prod" }

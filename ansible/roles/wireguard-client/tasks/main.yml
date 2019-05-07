@@ -10,7 +10,7 @@
 
 - name: 'copy configuration'
   template:
-    src: wg0.conf
+    src: "{{ inventory_hostname }}.conf"
     dest: "{{ wg_config_path }}/wg0.conf"
     mode: 0644
     owner: "{{ root_user }}"

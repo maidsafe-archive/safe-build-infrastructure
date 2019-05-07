@@ -179,7 +179,7 @@ provision-jenkins-prod-aws:
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
-		--limit=rust_slave-osx-mojave-x86_64 \
+		--limit=macos_rust_slave \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/id_rsa \
 		-e "cloud_environment=none" \
