@@ -20,7 +20,7 @@ secret_jenkins_admin_user_password: !vault |
   63396666633534313061663432623333653535666531336233333262323539633466373130643330
   6163333262643165313762333962653239356633613132653933
 rust_version: stable
-osx_rust_slave_full_name: macos_rust_slave
+osx_rust_slave_full_name: rust_slave-macos-mojave-x86_64
 linux_slaves_security_group_name: linux_slaves-prod
 jenkins_workspace_block_device: /dev/xvdb
 jenkins_workspace_mount_point: /mnt/jenkins_workspace

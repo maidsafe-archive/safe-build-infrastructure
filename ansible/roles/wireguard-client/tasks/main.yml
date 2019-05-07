@@ -13,8 +13,8 @@
     path: "{{ wg_config_path }}"
     state: directory
     mode: 0755
-    owner: root
-    group: root
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
 
 - name: 'copy configuration'
   template:
@@ -29,13 +29,13 @@
     name: wg-quick@wg0
     state: started
     enabled: yes
-  when: ansible_distribution != 'MacOSX' and wg_run_on_host == True
+  when: ansible_distribution != 'MacOSX' and wg_run_on_host == 'True'
 
 - name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
   command: wg-quick down wg0
   ignore_errors: yes
-  when: ansible_distribution == 'MacOSX' and wg_run_on_host == True
+  when: ansible_distribution == 'MacOSX' and wg_run_on_host == 'True'
 
 - name: 'start wireguard (macOS)'
   command: wg-quick up wg0
-  when: ansible_distribution == 'MacOSX' and wg_run_on_host == True
+  when: ansible_distribution == 'MacOSX' and wg_run_on_host == 'True'
