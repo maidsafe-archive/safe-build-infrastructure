@@ -75,7 +75,7 @@ function run_ansible() {
 		--private-key="$windows_slave_key_path" \
         -e "cloud_environment=$cloud_environment" \
         -e "ansible_password=$password" \
-        -e "jenkins_master_location=$jenkins_master_location" \
+        -e "jenkins_master_dns=$jenkins_master_location" \
         ansible/win-jenkins-slave.yml
 }
 
