@@ -1,14 +1,20 @@
 #!/bin/bash
 
-set -e
+nc -z -vvv jenkins.maidsafe.net 80
+rc=$?
 
-proxy_dns=$(aws ec2 describe-instances \
-    --filters \
-    "Name=tag:Name,Values=haproxy" \
-    "Name=tag:environment,Values=prod" \
-    "Name=instance-state-name,Values=running" \
-    | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
-    | sed 's/\"//g')
+if [[ $rc == 0 ]]; then
+    proxy_dns="jenkins.maidsafe.net"
+else
+    proxy_dns=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=haproxy" \
+        "Name=tag:environment,Values=prod" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+        | sed 's/\"//g')
+fi
+
 echo "Jenkins master is at $proxy_dns"
 echo "Attempting Ansible run against macOS slave... (can be 10+ seconds before output)"
 ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/prod/hosts \
