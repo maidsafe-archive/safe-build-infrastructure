@@ -27,7 +27,7 @@ secret_wg_jenkins_master_private_key: !vault |
   3736643463393837343238323565313861663531333931656230
 wg_jenkins_master_ip_address: 10.192.122.2
 wg_jenkins_master_ip_address_with_mask: "{{ wg_jenkins_master_ip_address }}/32"
-wg_jenkins_master_allowed_ip_range: "{{ wg_haproxy_ip_address }}/24"
+wg_jenkins_master_allowed_ip_range: "{{ wg_server_ip_address }}/24"
 
 wg_macos_rust_slave_public_key: U8XlgU77cLgcUWQahWP9Nwm+b9AdeYLaasPzgsv17U8=
 secret_wg_macos_rust_slave_private_key: !vault |
@@ -38,7 +38,7 @@ secret_wg_macos_rust_slave_private_key: !vault |
   3033653862623832310a333039363930386239653866336437623862383530656239363939346131
   36356362646663383265346139346233616562326134653563363730653130393763396235663237
   3736643463393837343238323565313861663531333931656230
-wg_macos_rust_slave_ip_address: 10.192.122.2
+wg_macos_rust_slave_ip_address: 10.192.122.3
 wg_macos_rust_slave_ip_address_with_mask: "{{ wg_macos_rust_slave_ip_address }}/32"
 wg_macos_rust_slave_allowed_ip_range: "0.0.0.0/0"
 osx_rust_slave_ip_address: "{{ wg_macos_rust_slave_ip_address }}"
