@@ -2,7 +2,8 @@
 - hosts: masters:wireguard
   become: True
   roles:
-    - pip
-    - docker
+    #- pip
+    #- docker
+    - { role: wireguard, when: cloud_environment == "prod" }
     - { role: wireguard-client, when: cloud_environment == "prod" }
-    - jenkins-master
+    #- jenkins-master
