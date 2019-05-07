@@ -7,11 +7,13 @@ services:
     restart: 'unless-stopped'
     cap_add:
       - net_admin 
+      - sys_module 
     ports:
       - {{ jenkins_web_port }}:8080
       - {{ jenkins_slave_port }}:50000
     volumes:
       - /etc/wireguard:/etc/wireguard
+      - /lib/modules:/lib/modules
 {% endif %}
   jenkins:
     image: {{ customised_jenkins_image_name }}

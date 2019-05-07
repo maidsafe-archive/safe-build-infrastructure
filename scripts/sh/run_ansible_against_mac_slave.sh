@@ -23,4 +23,5 @@ ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/prod/hosts \
     --private-key=~/.ssh/id_rsa \
     -e "wg_server_endpoint=$proxy_dns" \
     -e "cloud_environment=prod" \
+    -e "wg_run_on_host=True" \
     ansible/osx-rust-slave.yml
