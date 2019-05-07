@@ -129,6 +129,18 @@ resource "aws_security_group" "jenkins_master" {
   vpc_id = "${module.vpc.vpc_id}"
 }
 
+# This rule is necessary for WireGuard to work correctly. If it's not enabled
+# the Jenkins Master machine can't contact the correct port and the whole network
+# doesn't seem to work correctly.
+resource "aws_security_group_rule" "jenkins_master_egress_51820" {
+  type = "egress"
+  from_port = 51820
+  to_port = 51820
+  protocol = "udp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}
+
 resource "aws_security_group_rule" "jenkins_master_ingress_ssh_from_ansible" {
   type = "ingress"
   from_port = 22

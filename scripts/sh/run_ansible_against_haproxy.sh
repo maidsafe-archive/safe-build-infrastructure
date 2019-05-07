@@ -23,4 +23,5 @@ EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
     --limit=haproxy \
     --vault-password-file=~/.ansible/vault-pass \
     -e "cloud_environment=$cloud_environment" \
+    -e "wg_run_on_host=True" \
     -u ansible ansible/proxy.yml
