@@ -45,7 +45,7 @@ function run_ansible() {
     EC2_INI_PATH="environments/$cloud_environment/$ec2_ini_file" \
         ansible-playbook -i "environments/$cloud_environment" \
         --private-key="$ansible_ssh_key" \
-        --limit=haproxy \
+        --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
         -e "cloud_environment=$cloud_environment" \
         -e "jenkins_master_url=http://$proxy_dns/" \
