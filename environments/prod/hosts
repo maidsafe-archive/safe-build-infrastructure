@@ -18,7 +18,6 @@ windows_slave_001 ansible_become_pass="{{ ansible_password }}"
 macos_rust_slave ansible_host=192.168.1.190 ansible_user=qamaidsafe
 
 [wireguard]
+haproxy
 jenkins_master
 macos_rust_slave ansible_host=192.168.1.190 ansible_user=qamaidsafe
-wgserver
-wgclient-ubuntu-bionic-x86_64 ansible_host=localhost ansible_port=2322
