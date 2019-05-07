@@ -1,2 +1,3 @@
 ---
 wg_running_on_host: True
+wg_config_path: /etc/wireguard
