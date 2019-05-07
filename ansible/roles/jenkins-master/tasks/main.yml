@@ -3,6 +3,7 @@
   docker_image:
     name: "{{ item }}"
   with_items:
+    - "{{ wg_image_name }}:{{ wg_image_tag }}"
     - "{{ jenkins_image_name }}:{{ jenkins_image_tag }}"
     - "{{ postfix_image_name }}:{{ postfix_image_tag }}"
     - "{{ wg_image_name }}:{{ wg_image_tag }}"
