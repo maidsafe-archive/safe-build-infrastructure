@@ -51,7 +51,7 @@ function run_ansible() {
         -e "jenkins_master_url=http://$proxy_dns/" \
         -e "slave_vpc_subnet_id=$subnet_id" \
         -e "wg_server_endpoint=$proxy_dns" \
-        -e "wg_run_on_host=True" \
+        -e "wg_run_on_host=False" \
         -u ansible ansible/jenkins-master.yml
 }
 
