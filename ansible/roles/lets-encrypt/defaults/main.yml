@@ -1,0 +1,5 @@
+---
+certbot_repository: ppa:certbot/certbot
+register_url: jenkins.maidsafe.net
+jenkins_ssl_cert_directory_path: "/etc/ssl/{{ register_url }}"
+jenkins_ssl_cert_path: "{{ jenkins_ssl_cert_directory_path }}/crt.pem"
