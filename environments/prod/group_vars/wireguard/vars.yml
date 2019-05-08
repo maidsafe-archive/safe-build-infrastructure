@@ -12,9 +12,12 @@ secret_wg_server_private_key: !vault |
 wg_server_listen_port: 51820
 wg_server_ip_address: 10.192.122.1
 wg_server_ip_address_with_mask: "{{ wg_server_ip_address }}/24"
-wg_server_allowed_ip_range: "{{ wg_client_ip_address }}/32"
-wg_client_public_key: U8XlgU77cLgcUWQahWP9Nwm+b9AdeYLaasPzgsv17U8=
-secret_wg_client_private_key: !vault |
+wg_server_allowed_ip_range: "{{ wg_macos_rust_slave_ip_address }}/32"
+wg_server_jenkins_master_allowed_ip_range: "{{ wg_jenkins_master_ip_address }}/32"
+wg_server_macos_rust_slave_allowed_ip_range: "{{ wg_macos_rust_slave_ip_address }}/32"
+
+wg_jenkins_master_public_key: U8XlgU77cLgcUWQahWP9Nwm+b9AdeYLaasPzgsv17U8=
+secret_wg_jenkins_master_private_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   35376332353566336162353234623265313137633762336133343433383530316630623966353639
   3031353239653263316462623462663831346662626365310a663934356330623465643835646436
@@ -22,7 +25,20 @@ secret_wg_client_private_key: !vault |
   3033653862623832310a333039363930386239653866336437623862383530656239363939346131
   36356362646663383265346139346233616562326134653563363730653130393763396235663237
   3736643463393837343238323565313861663531333931656230
-wg_client_ip_address: 10.192.122.2
-wg_client_ip_address_with_mask: "{{ wg_client_ip_address }}/32"
-wg_client_allowed_ip_range: "0.0.0.0/0"
-osx_rust_slave_ip_address: "{{ wg_client_ip_address }}"
+wg_jenkins_master_ip_address: 10.192.122.2
+wg_jenkins_master_ip_address_with_mask: "{{ wg_jenkins_master_ip_address }}/32"
+wg_jenkins_master_allowed_ip_range: "{{ wg_server_ip_address }}/24"
+
+wg_macos_rust_slave_public_key: +cRauKagZPB0gbFxTMbfnqSZbIhCemJ0woJc1GSmzFQ=
+secret_wg_macos_rust_slave_private_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  33326233623433343838306332613363313063366534303831613262666236333262333636666466
+  6137653062336634353130313432343964333864326333300a393765653037306563326361326634
+  31363539633236633032393932376262396162306632353161333463366661393934656165336162
+  6463343137306661310a346565396335393133626537313434336234333630383066666130663662
+  31306134396132373536323362626163386166623130633761303235636539353432663434663036
+  3262356665393433373434643661643635656337396564666437
+wg_macos_rust_slave_ip_address: 10.192.122.3
+wg_macos_rust_slave_ip_address_with_mask: "{{ wg_macos_rust_slave_ip_address }}/32"
+wg_macos_rust_slave_allowed_ip_range: "0.0.0.0/0"
+osx_rust_slave_ip_address: "{{ wg_macos_rust_slave_ip_address }}"

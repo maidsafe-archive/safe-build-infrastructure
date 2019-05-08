@@ -2,6 +2,11 @@ provider "aws" {
   region = "${var.region}"
 }
 
+resource "aws_key_pair" "haproxy_prod" {
+  key_name = "haproxy-prod"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCdbI8UCzJb95JQ7c3mvkSVy1mo79tjr+YP+bd3LvPpRSu53YjwWMsxQIzhuMqqQjHccWWrRMCVsv9rIRIHskS9TsrX31g7F8Sc0C7nsFWMMfxTGPE1RWRfvcN7ohh6a/N0vrc7zT4YQ1yj/9ZXTDAAdwzAMjZV9dbydJ4DLXQRf+fxtbUq1/zNOOrLAsK/PAFXkaiVoQ4Jp1Ndsd2dfLVa+cz+irLaK/acbU5dePY9A37KKfV15ly2xD8/ukrNXfVMVxc+IcmOIEXL1VminaYNX5m6hj/1x7JZCFt+jOiEqf/EcJF+ly2+UWGNvZBqQMHrRkGIzyh8KRIUz7K6Qr//"
+}
+
 resource "aws_key_pair" "jenkins_prod" {
   key_name = "jenkins-prod"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW+gx3axoFvvafQX5camHzGGvu+AExYdKOwN3o1aXmbSpBmgmtcY9eQyukId7al9yoTkCIWB2PjBwpmcGBPQIIsEfaw1kD6JhV6a4OxWp9uRbPNMPnJJTZo/c9Vzze7d02zRh8x0zJ1+NsIWxfFr5jXli9xeKeIQV6e5GLrMV0QRRXy+xglrNg9bJdvfw1eBGOwxYh169ug+Mzp2MEtz+PggAMECV37vNX4w6a0ahJrLs5bfDtAZTRvikgJ6w6CQwVidBlY3XAWC+Q4fHe8DvSS6sN8F0U6gjvdXhS/AvuVLnqeZywUCkYkm3gfW0SKyLw8zKJJ6wiEk7NSArdRJpH"
@@ -44,8 +49,8 @@ resource "aws_instance" "jenkins_master" {
   ami = "${lookup(var.jenkins_master_ami, var.region)}"
   instance_type = "${var.jenkins_master_instance_type}"
   key_name = "${var.jenkins_key_pair}"
-  subnet_id = "${module.vpc.public_subnets[0]}"
-  associate_public_ip_address = true
+  subnet_id = "${module.vpc.private_subnets[0]}"
+  associate_public_ip_address = false
   user_data = "${file("../../scripts/sh/setup_ansible_user_prod.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_master.id}"
@@ -71,7 +76,7 @@ resource "aws_instance" "jenkins_master" {
 }
 
 resource "aws_eip_association" "jenkins_master_eip_association" {
-  instance_id = "${aws_instance.jenkins_master.id}"
+  instance_id = "${aws_instance.haproxy.id}"
   allocation_id = "${data.aws_eip.jenkins_elastic_ip.id}"
 }
 
@@ -88,6 +93,24 @@ resource "aws_instance" "ansible" {
   tags {
     Name = "ansible_bastion"
     full_name = "ansible_bastion-centos-7.6-x86_64"
+    group = "provisioners"
+    environment = "prod"
+  }
+}
+
+resource "aws_instance" "haproxy" {
+  ami = "${lookup(var.haproxy_ami, var.region)}"
+  instance_type = "${var.haproxy_instance_type}"
+  key_name = "${var.haproxy_key_pair}"
+  subnet_id = "${module.vpc.public_subnets[0]}"
+  associate_public_ip_address = true
+  user_data = "${file("../../scripts/sh/setup_ansible_user_prod.sh")}"
+  vpc_security_group_ids = [
+    "${aws_security_group.haproxy.id}"
+  ]
+  tags {
+    Name = "haproxy"
+    full_name = "haproxy-centos-7.6-x86_64"
     group = "provisioners"
     environment = "prod"
   }

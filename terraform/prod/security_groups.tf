@@ -1,3 +1,72 @@
+resource "aws_security_group" "haproxy" {
+  name = "haproxy-prod"
+  description = "Connectivity for HAProxy."
+  vpc_id = "${module.vpc.vpc_id}"
+}
+
+resource "aws_security_group_rule" "haproxy_ingress_51820" {
+  type = "ingress"
+  from_port = 51820
+  to_port = 51820
+  protocol = "udp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "haproxy_ingress_http" {
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "haproxy_ingress_https" {
+  type = "ingress"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "haproxy_egress_http" {
+  type = "egress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "haproxy_egress_https" {
+  type = "egress"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "haproxy_ingress_ssh_from_ansible" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.ansible.id}"
+  security_group_id = "${aws_security_group.haproxy.id}"
+}
+
+resource "aws_security_group_rule" "ansible_egress_ssh_to_haproxy" {
+  type = "egress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.haproxy.id}"
+  security_group_id = "${aws_security_group.ansible.id}"
+}
+
 /*
   Any machines in the Linux slaves group will have SSH access from the Jenkins master, and
   because this is a private subnet, egress HTTP and HTTPS rules allow these instances to have
@@ -54,17 +123,22 @@ resource "aws_security_group_rule" "linux_slaves_egress_ssh" {
   security_group_id = "${aws_security_group.linux_slaves.id}"
 }
 
-/*
-  The Jenkins master group is for machines on the public subnet. Right now
-
-  It enables inbound access for HTTP, HTTPs and SSH, but the SSH access should be removed
-  in favour of using a Bastion host. The 'all traffic' rules are what enables communication
-  between the public and private subnets.
-*/
 resource "aws_security_group" "jenkins_master" {
   name = "jenkins_master-prod"
   description = "Connectivity for the Jenkins master."
   vpc_id = "${module.vpc.vpc_id}"
+}
+
+# This rule is necessary for WireGuard to work correctly. If it's not enabled
+# the Jenkins Master machine can't contact the correct port and the whole network
+# doesn't seem to work correctly.
+resource "aws_security_group_rule" "jenkins_master_egress_51820" {
+  type = "egress"
+  from_port = 51820
+  to_port = 51820
+  protocol = "udp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
 resource "aws_security_group_rule" "jenkins_master_ingress_ssh_from_ansible" {
@@ -76,21 +150,12 @@ resource "aws_security_group_rule" "jenkins_master_ingress_ssh_from_ansible" {
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
-resource "aws_security_group_rule" "jenkins_master_ingress_http" {
+resource "aws_security_group_rule" "jenkins_master_ingress_http_from_haproxy" {
   type = "ingress"
   from_port = 80
   to_port = 80
   protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.jenkins_master.id}"
-}
-
-resource "aws_security_group_rule" "jenkins_master_ingress_51820" {
-  type = "ingress"
-  from_port = 51820
-  to_port = 51820
-  protocol = "udp"
-  cidr_blocks = ["0.0.0.0/0"]
+  source_security_group_id = "${aws_security_group.haproxy.id}"
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
 
@@ -98,15 +163,6 @@ resource "aws_security_group_rule" "jenkins_master_ingress_50000" {
   type = "ingress"
   from_port = 50000
   to_port = 50000
-  protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.jenkins_master.id}"
-}
-
-resource "aws_security_group_rule" "jenkins_master_ingress_https" {
-  type = "ingress"
-  from_port = 443
-  to_port = 443
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.jenkins_master.id}"

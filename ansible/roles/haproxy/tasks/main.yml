@@ -1,0 +1,23 @@
+---
+- name: 'setup the haproxy repository'
+  apt_repository:
+    repo: "{{ haproxy_repository }}"
+    state: present
+
+- name: 'install haproxy'
+  package:
+    name: haproxy
+
+- name: 'copy haproxy config'
+  template:
+    src: haproxy.cfg
+    dest: "{{ haproxy_config_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'start haproxy'
+  service:
+    name: haproxy
+    state: restarted
+    enabled: yes

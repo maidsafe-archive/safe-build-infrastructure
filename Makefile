@@ -154,9 +154,9 @@ else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
 	cd ../..
+	./scripts/sh/update_machine.sh "ansible_bastion"
 	rm -rf ~/.ansible/tmp
-	echo "Sleep for 2 minutes to allow yum update to complete"
-	sleep 120
+	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/ansible_prod \
@@ -165,18 +165,21 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=scl_end_to_end_build" \
+		-e "safe_build_infrastructure_repo_branch=proxy" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master"
+	./scripts/sh/update_machine.sh "haproxy"
+	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
-		--limit=rust_slave-osx-mojave-x86_64 \
+		--limit=macos_rust_slave \
 		--vault-password-file=~/.ansible/vault-pass \
 		--private-key=~/.ssh/id_rsa \
 		-e "cloud_environment=none" \

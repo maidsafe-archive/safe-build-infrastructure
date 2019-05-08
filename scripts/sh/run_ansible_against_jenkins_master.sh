@@ -15,19 +15,19 @@ if [[ -z "$ec2_ini_file" ]]; then
     ec2_ini_file="ec2.ini"
 fi
 
-function get_jenkins_master_dns() {
+function get_proxy_dns() {
     if [[ "$cloud_environment" == "prod" ]]; then
-        jenkins_master_dns="jenkins.maidsafe.net"
+        proxy_dns="jenkins.maidsafe.net"
     else
-        jenkins_master_dns=$(aws ec2 describe-instances \
+        proxy_dns=$(aws ec2 describe-instances \
             --filters \
-            "Name=tag:Name,Values=jenkins_master" \
+            "Name=tag:Name,Values=haproxy" \
             "Name=tag:environment,Values=$cloud_environment" \
             "Name=instance-state-name,Values=running" \
             | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
             | sed 's/\"//g')
     fi
-    echo "Jenkins master is at $jenkins_master_dns"
+    echo "Jenkins master is at $proxy_dns"
 }
 
 function get_subnet_id() {
@@ -48,11 +48,13 @@ function run_ansible() {
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
         -e "cloud_environment=$cloud_environment" \
-        -e "jenkins_master_url=http://$jenkins_master_dns/" \
+        -e "jenkins_master_url=http://$proxy_dns/" \
         -e "slave_vpc_subnet_id=$subnet_id" \
+        -e "wg_server_endpoint=$proxy_dns" \
+        -e "wg_run_on_host=False" \
         -u ansible ansible/jenkins-master.yml
 }
 
-get_jenkins_master_dns
+get_proxy_dns
 [[ "$cloud_environment" == "prod" ]] && get_subnet_id
 run_ansible

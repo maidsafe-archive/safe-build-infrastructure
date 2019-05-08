@@ -13,6 +13,11 @@ variable "availability_zones" {
   description = "The availability zones to use"
 }
 
+variable "haproxy_key_pair" {
+  default = "haproxy-prod"
+  description = "The key pair for the HAProxy instance"
+}
+
 variable "jenkins_key_pair" {
   default = "jenkins-prod"
   description = "The key pair for the Jenkins master instance"
@@ -62,6 +67,18 @@ variable "ansible_ami" {
 variable "ansible_instance_type" {
   default = "t2.micro"
   description = "Instance type for Ansible machine"
+}
+
+variable "haproxy_ami" {
+  default = {
+    eu-west-2 = "ami-0883141bc92a74917"
+  }
+  description = "AMI for HAProxy (Ubuntu 18.04)"
+}
+
+variable "haproxy_instance_type" {
+  default = "t2.micro"
+  description = "Instance type for HAProxy machine"
 }
 
 variable "windows_ami" {

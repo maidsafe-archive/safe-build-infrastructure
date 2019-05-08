@@ -8,9 +8,17 @@
     msg: "An IP address or hostname must be supplied for wg_server_endpoint. Run Ansible again and pass the server endpoint with -e."
   when: wg_server_endpoint is not defined or wg_server_endpoint == ""
 
+- name: 'create wireguard config directory'
+  file:
+    path: "{{ wg_config_path }}"
+    state: directory
+    mode: 0755
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+
 - name: 'copy configuration'
   template:
-    src: wg0.conf
+    src: "{{ inventory_hostname }}.conf"
     dest: "{{ wg_config_path }}/wg0.conf"
     mode: 0644
     owner: "{{ root_user }}"
@@ -21,13 +29,13 @@
     name: wg-quick@wg0
     state: started
     enabled: yes
-  when: ansible_distribution != 'MacOSX'
+  when: ansible_distribution != 'MacOSX' and wg_run_on_host == 'True'
 
 - name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
   command: wg-quick down wg0
   ignore_errors: yes
-  when: ansible_distribution == 'MacOSX'
+  when: ansible_distribution == 'MacOSX' and wg_run_on_host == 'True'
 
 - name: 'start wireguard (macOS)'
   command: wg-quick up wg0
-  when: ansible_distribution == 'MacOSX'
+  when: ansible_distribution == 'MacOSX' and wg_run_on_host == 'True'

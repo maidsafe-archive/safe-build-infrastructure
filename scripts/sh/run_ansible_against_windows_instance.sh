@@ -45,11 +45,17 @@ function get_instance_password() {
     echo "Password retrieved for Windows instance."
 }
 
-function get_jenkins_dns() {
+function get_jenkins_location() {
     if [[ "$cloud_environment" == "prod" ]]; then
-        jenkins_master_dns="jenkins.maidsafe.net"
+        jenkins_master_location=$(aws ec2 describe-instances \
+            --filters \
+            "Name=tag:Name,Values=jenkins_master" \
+            "Name=tag:environment,Values=$cloud_environment" \
+            "Name=instance-state-name,Values=running" \
+            | jq '.Reservations | .[0] | .Instances | .[0] | .PrivateIpAddress' \
+            | sed 's/\"//g')
     else
-        jenkins_master_dns=$(aws ec2 describe-instances \
+        jenkins_master_location=$(aws ec2 describe-instances \
             --filters \
             "Name=tag:Name,Values=jenkins_master" \
             "Name=tag:environment,Values=$cloud_environment" \
@@ -57,7 +63,7 @@ function get_jenkins_dns() {
             | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
             | sed 's/\"//g')
     fi
-    echo "Jenkins master is at $jenkins_master_dns"
+    echo "Jenkins master is at $jenkins_master_location"
 }
 
 function run_ansible() {
@@ -69,7 +75,7 @@ function run_ansible() {
 		--private-key="$windows_slave_key_path" \
         -e "cloud_environment=$cloud_environment" \
         -e "ansible_password=$password" \
-        -e "jenkins_master_dns=$jenkins_master_dns" \
+        -e "jenkins_master_dns=$jenkins_master_location" \
         ansible/win-jenkins-slave.yml
 }
 
@@ -81,8 +87,6 @@ function reboot_instance() {
 
 get_instance_id
 get_instance_password
-get_jenkins_dns
+get_jenkins_location
 run_ansible
 reboot_instance
-
-echo "You can connect to Jenkins at http://$jenkins_master_dns/."
