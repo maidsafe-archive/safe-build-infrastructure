@@ -2,25 +2,8 @@
 
 set -e
 
-function centos_setup_ansible_user() {
-    adduser --password "" ansible
-}
-
-function debian_setup_ansible_user() {
-    adduser --disabled-password --gecos "" ansible
-}
-
-if [[ -f "/etc/redhat-release" ]]; then
-    # Sometimes the yum update appears to fail and I think it might be due to connectivity.
-    sleep 30
-    yum update -y
-    centos_setup_ansible_user
-fi
-if [[ -f "/etc/debian_version" ]]; then
-    apt-get update -y
-    apt-get install -y python
-    debian_setup_ansible_user
-fi
+[[ -f "/etc/redhat-release" ]] && adduser --password "" ansible
+[[ -f "/etc/debian_version" ]] && adduser --disabled-password --gecos "" ansible
 
 mkdir /home/ansible/.ssh
 chown ansible:ansible /home/ansible/.ssh

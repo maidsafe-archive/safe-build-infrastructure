@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 cloud_environment=$1
 if [[ -z "$cloud_environment" ]]; then
     echo "A value must be supplied for the target environment. Valid values are 'dev' or 'prod'."
@@ -16,12 +14,22 @@ if [[ -z "$ec2_ini_file" ]]; then
 fi
 
 function get_proxy_dns() {
-    if [[ "$cloud_environment" == "prod" ]]; then
+    nc -z -vvv jenkins.maidsafe.net 80
+    rc=$?
+    if [[ "$rc" == 0 ]]; then
         proxy_dns="jenkins.maidsafe.net"
-    else
+    elif [[ "$cloud_environment" == "prod" ]]; then
         proxy_dns=$(aws ec2 describe-instances \
             --filters \
             "Name=tag:Name,Values=haproxy" \
+            "Name=tag:environment,Values=$cloud_environment" \
+            "Name=instance-state-name,Values=running" \
+            | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+            | sed 's/\"//g')
+    else
+        proxy_dns=$(aws ec2 describe-instances \
+            --filters \
+            "Name=tag:Name,Values=jenkins_master" \
             "Name=tag:environment,Values=$cloud_environment" \
             "Name=instance-state-name,Values=running" \
             | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \

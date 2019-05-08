@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#set -e
-
 machine_name=$1
 if [[ -z "$machine_name" ]]; then
     echo "A value for the machine name must be supplied."
