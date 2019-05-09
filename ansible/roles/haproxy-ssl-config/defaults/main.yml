@@ -1,0 +1,3 @@
+---
+letsencrypt_cert_path: "/etc/letsencrypt/live/{{ jenkins_url }}/"
+cert_path: "/etc/ssl/{{ jenkins_url }}/full.pem"

@@ -165,16 +165,25 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=proxy" \
+		-e "safe_build_infrastructure_repo_branch=ssl" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
-	./scripts/sh/update_machine.sh "jenkins_master"
-	./scripts/sh/update_machine.sh "haproxy"
+	./scripts/sh/update_machine.sh "jenkins_master" "prod"
+	./scripts/sh/update_machine.sh "haproxy" "prod"
 	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
+		ansible-playbook -i "environments/prod" \
+		--private-key="~/.ssh/ansible_prod" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=prod" \
+		-u ansible ansible/haproxy-ssl-config.yml
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
