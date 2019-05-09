@@ -13,7 +13,7 @@
   shell: |
     cat {{ letsencrypt_cert_path }}/fullchain.pem \
     {{ letsencrypt_cert_path }}/privkey.pem \
-    | tee {{ cert_path }}/full.pem
+    | tee {{ cert_path }}
 
 - name: 'copy haproxy config'
   template:
