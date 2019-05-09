@@ -16,6 +16,21 @@
     group: root
     mode: 0644
 
+- name: 'copy renew script'
+  template:
+    src: update_certificates
+    dest: "{{ update_certificates_script_path }}"
+    owner: root
+    group: root
+    mode: 0744
+
+- name: 'cron job for renewing certificates'
+  cron:
+    name: update_certificates
+    hour: 2
+    minute: 0
+    job: "{{ update_certificates_script_path }}"
+
 - name: 'start haproxy'
   service:
     name: haproxy
