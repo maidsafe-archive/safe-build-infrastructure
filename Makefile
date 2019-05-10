@@ -154,7 +154,7 @@ else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
 	cd ../..
-	./scripts/sh/update_machine.sh "ansible_bastion"
+	./scripts/sh/update_machine.sh "ansible_bastion" "prod"
 	rm -rf ~/.ansible/tmp
 	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
