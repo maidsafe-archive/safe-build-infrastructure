@@ -131,9 +131,9 @@ env-jenkins-dev-aws:
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_dev \
+		--private-key=~/.ssh/ansible_dev \
 		-e "cloud_environment=dev" \
-		-u centos ansible/docker-slave.yml
+		-u ansible ansible/docker-slave.yml
 	./scripts/sh/update_machine.sh "jenkins_master" "dev"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
 	./scripts/sh/run_ansible_against_windows_instance.sh "dev"

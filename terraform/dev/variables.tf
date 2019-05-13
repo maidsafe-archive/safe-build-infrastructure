@@ -42,9 +42,9 @@ variable "jenkins_master_instance_type" {
 
 variable "docker_slave_ami" {
   default = {
-    eu-west-2 = "ami-0eab3a90fc693af19"
+    eu-west-2 = "ami-0883141bc92a74917"
   }
-  description = "AMI for Docker slaves (CentOS 7.6)"
+  description = "AMI for Docker slaves (Ubuntu 18.04)"
 }
 
 variable "docker_slave_instance_type" {
