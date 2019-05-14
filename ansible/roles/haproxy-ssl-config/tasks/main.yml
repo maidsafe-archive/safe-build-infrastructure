@@ -3,6 +3,7 @@
   command: |
     certbot certonly \
     --standalone \
+    --server {{ letsencrypt_server }} \
     -d {{ jenkins_url }} \
     --non-interactive \
     --agree-tos \
