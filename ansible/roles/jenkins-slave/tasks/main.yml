@@ -1,7 +1,10 @@
 ---
-- name: 'install git'
+- name: 'install packages'
   package:
-    name: git
+    name: "{{ item }}"
+  with_items:
+    - git
+    - make
   when: ansible_distribution != 'MacOSX'
 
 - name: 'load os specific variables'
