@@ -2,8 +2,9 @@
   "variables": {
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "generated_ami_name": "docker_slave-centos-7.6-x86_64",
-    "ansible_inventory_directory": "environments/prod"
+    "generated_ami_name": "docker_slave-ubuntu-bionic-x86_64",
+    "ansible_inventory_directory": "environments/prod",
+    "ssh_pass": "vagrant"
   },
   "builders": [
     {
@@ -56,40 +57,103 @@
     },
     {
       "type": "virtualbox-iso",
-      "boot_command": "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
-      "guest_os_type": "RedHat_64",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=gb<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_GB<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=gb<wait>",
+        " keyboard-configuration/layout=GB<wait>",
+        " keyboard-configuration/variant=GB<wait>",
+        " locale=en_GB<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<wait>",
+        " -- <wait>",
+        "<enter><wait>"
+      ],
+      "guest_os_type": "Ubuntu_64",
       "headless": false,
       "http_directory": "templates/http",
-      "iso_url": "iso/CentOS-7-x86_64-Minimal-1810.iso",
+      "iso_url": "iso/ubuntu-18.04.1-server-amd64.iso",
       "iso_checksum_type": "sha256",
-      "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
+      "iso_checksum": "a5b0ea5918f850124f3d72ef4b85bda82f0fcd02ec721be19c1a6952791c8ee8",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+      "ssh_pty": "true",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
-      "vm_name": "docker_slave-centos-7.6-x86_64"
+      "vm_name": "docker_slave-ubuntu-bionic-x86_64"
     }
   ],
   "provisioners": [
     {
       "type": "shell",
+      "execute_command": "echo '{{user `ssh_pass` }}' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "inline": ["echo '%sudo    ALL=(ALL)  NOPASSWD:ALL' >> /etc/sudoers"],
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
       "inline": [
         "apt-get update -y",
-        "apt-get install -y python"
+        "apt-get install -y python",
+        "apt-get install -y python-pip"
       ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "./scripts/sh/setup_ansible.sh",
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "file",
+      "source": "./",
+      "destination": "/tmp/",
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "file",
+      "source": "~/.ansible/vault-pass",
+      "destination": "/tmp/vault-pass",
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "cd /tmp/safe-build-infrastructure && ansible-playbook -i environments/vagrant/hosts --vault-password-file /tmp/vault-pass ansible/docker-slave.yml",
+      "only": ["virtualbox-iso"]
     },
     {
       "type": "ansible",
       "playbook_file": "ansible/docker-slave.yml",
       "inventory_directory": "{{user `ansible_inventory_directory`}}",
       "groups": "linux_slaves",
-      "extra_arguments": [
-        "--extra-vars", "cloud_environment={{ user `cloud_environment` }}"
-      ]
+      "extra_arguments": ["--extra-vars", "cloud_environment={{ user `cloud_environment` }}"],
+      "only": ["amazon-ebs"]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/docker-slave.yml",
+      "role_paths": "ansible",
+      "inventory_groups": "linux_slaves",
+      "extra_arguments": ["--extra-vars", "cloud_environment={{ user `cloud_environment` }}"],
+      "only": ["virtualbox-iso"]
     },
     {
       "type": "shell",
@@ -120,7 +184,7 @@
   ],
   "post-processors": [
     {
-      "output": "packer_output/docker_slave-centos-7.6-x86_64.box",
+      "output": "packer_output/docker_slave-ubuntu-bionic-x86_64.box",
       "type": "vagrant"
     }
   ]
