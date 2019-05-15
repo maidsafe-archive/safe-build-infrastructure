@@ -2,6 +2,28 @@
 - hosts: masters:wireguard
   become: True
   roles:
+    - {
+        role: format_disk,
+        block_device: "{{ docker_storage_block_device }}",
+        mount_info: {
+          name: "{{ docker_storage_mount_point }}",
+          owner: "root",
+          group: "root",
+          mode: 0755
+        },
+        when: cloud_environment == "prod"
+      }
+    - {
+        role: format_disk,
+        block_device: "{{ jenkins_master_block_device }}",
+        mount_info: {
+          name: "{{ jenkins_master_mount_point }}",
+          owner: "jenkins",
+          group: "jenkins",
+          mode: 0755
+        },
+        when: cloud_environment == "prod"
+      }
     - pip
     - docker
     - { role: wireguard-client, when: cloud_environment == "prod" }
