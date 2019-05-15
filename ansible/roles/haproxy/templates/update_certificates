@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+certbot renew --force-renewal --tls-sni-01-port=8888 --server {{ letsencrypt_server }}
+
+cat /etc/letsencrypt/live/{{ jenkins_url }}/fullchain.pem \
+    /etc/letsencrypt/live/{{ jenkins_url }}/privkey.pem > \
+    /etc/ssl/{{ jenkins_url }}/full.pem
+
+systemctl restart haproxy

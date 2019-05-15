@@ -1,14 +1,14 @@
 ---
 jenkins_master_ip_address: 192.168.10.100
-jenkins_master_full_name: jenkins_master-centos-7.6-x86_64
-jenkins_master_host_url: jenkins_master.centos.local
+jenkins_master_full_name: jenkins_master-ubuntu-bionic-x86_64
+jenkins_master_host_url: jenkins_master.ubuntu.local
 docker_slave_ip_address: 192.168.10.101
-docker_slave_full_name: docker_slave-centos-7.6-x86_64
-docker_slave_host_url: docker-slave.centos.local
-docker_slave_ami_id: ami-0ddb259791a60bbf8
+docker_slave_full_name: docker_slave-ubuntu-bionic-x86_64
+docker_slave_host_url: docker-slave.ubuntu.local
+docker_slave_ami_id: ami-0521997da36717665
 windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
-windows_rust_slave_host_url: rust_slave.centos.local
+windows_rust_slave_host_url: rust_slave.ubuntu.local
 windows_rust_slave_working_path: "c:\\jenkins-work"
 jenkins_admin_user: qa
 secret_jenkins_admin_user_password: !vault |

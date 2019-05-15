@@ -1,0 +1,30 @@
+---
+- name: 'generate certificates'
+  command: |
+    certbot certonly \
+    --standalone \
+    --server {{ letsencrypt_server }} \
+    -d {{ jenkins_url }} \
+    --non-interactive \
+    --agree-tos \
+    --email qa@maidsafe.net \
+    --http-01-port=8888
+
+- name: 'concatenate full chain and private keys'
+  shell: |
+    cat {{ letsencrypt_cert_path }}/fullchain.pem \
+    {{ letsencrypt_cert_path }}/privkey.pem \
+    | tee {{ cert_path }}
+
+- name: 'copy haproxy config'
+  template:
+    src: haproxy.cfg
+    dest: "{{ haproxy_config_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'restart haproxy'
+  service:
+    name: haproxy
+    state: restarted

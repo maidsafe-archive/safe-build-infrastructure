@@ -69,7 +69,7 @@ resource "aws_instance" "jenkins_master" {
   }
   ebs_block_device {
     device_name = "/dev/sdc"
-    volume_size = 50
+    volume_size = 500
     volume_type = "gp2"
     delete_on_termination = false
   }

@@ -1,0 +1,5 @@
+---
+- hosts: proxies
+  become: True
+  roles:
+    - haproxy-ssl-config

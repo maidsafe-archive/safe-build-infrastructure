@@ -1,0 +1,17 @@
+---
+- name: 'setup the certbot repository'
+  apt_repository:
+    repo: "{{ certbot_repository }}"
+    state: present
+
+- name: 'install certbot'
+  package:
+    name: certbot
+
+- name: 'create ssl directory'
+  file:
+    path: "{{ jenkins_ssl_cert_directory_path }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root

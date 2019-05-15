@@ -24,28 +24,37 @@ box-travis_slave-windows-2016-vbox:
 	packer validate templates/travis_slave-windows-2016-virtualbox-x86_64.json
 	packer build -only=amazon-ebs templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
-box-docker_slave-centos-7.6-x86_64-aws:
+box-docker_slave-ubuntu-bionic-x86_64-aws:
 	rm -rf ~/.ansible/tmp
-	packer validate templates/docker_slave-centos-7.6-x86_64.json
+	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
 	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
-		templates/docker_slave-centos-7.6-x86_64.json
+		templates/docker_slave-ubuntu-bionic-x86_64.json
 
-box-docker_slave-centos-7.6-x86_64-vbox:
+box-docker_slave-ubuntu-bionic-x86_64-vbox:
+	if [ ! -f "iso/ubuntu-18.04.1-server-amd64.iso" ]; then \
+		cd iso; \
+		curl -O http://old-releases.ubuntu.com/releases/bionic/ubuntu-18.04.1-server-amd64.iso; \
+		cd ..; \
+	fi
 	rm -rf output-virtualbox-iso
 	if [ ! -d "packer_output" ]; then mkdir packer_output; fi
-	if [ -f "packer_output/docker_slave-centos-7.6-x86_64.box" ]; then \
-		rm packer_output/docker_slave-centos-7.6-x86_64.box; \
+	if [ -f "packer_output/docker_slave-ubuntu-bionic-x86_64.box" ]; then \
+		rm packer_output/docker_slave-ubuntu-bionic-x86_64.box; \
 	fi
-	packer validate templates/docker_slave-centos-7.6-x86_64.json
-	packer build -only=virtualbox-iso templates/docker_slave-centos-7.6-x86_64.json
-	vagrant box add --name "maidsafe/docker_slave-centos-7.6-x86_64" \
-		packer_output/docker_slave-centos-7.6-x86_64.box --force
+	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
+	packer build \
+		-only=virtualbox-iso \
+		-var 'ansible_inventory_directory=environments/vagrant' \
+		-var 'cloud_environment=vagrant' \
+		templates/docker_slave-ubuntu-bionic-x86_64.json
+	vagrant box add --name "maidsafe/docker_slave-ubuntu-bionic-x86_64" \
+		packer_output/docker_slave-ubuntu-bionic-x86_64.box --force
 	aws s3 cp \
-		packer_output/docker_slave-centos-7.6-x86_64.box \
-		s3://safe-vagrant-boxes/docker_slave-centos-7.6-x86_64.box
+		packer_output/docker_slave-ubuntu-bionic-x86_64.box \
+		s3://safe-vagrant-boxes/docker_slave-ubuntu-bionic-x86_64.box
 
 box-jenkins_master-centos-7.6-x86_64-vbox:
 	rm -rf output-virtualbox-iso
@@ -125,16 +134,16 @@ env-jenkins-dev-aws:
 	./scripts/sh/install_external_java_role.sh
 	cd terraform/dev && terraform init && terraform apply -auto-approve
 	cd ../..
-	@echo "Sleep for 3 minutes to allow SSH to become available and yum updates on Linux instances..."
-	@sleep 180
+	./scripts/sh/update_machine.sh "docker_slave_001" "dev"
+	./scripts/sh/update_machine.sh "docker_slave_002" "dev"
 	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
-		--private-key=~/.ssh/jenkins_dev \
+		--private-key=~/.ssh/ansible_dev \
 		-e "cloud_environment=dev" \
-		-u centos ansible/docker-slave.yml
-	rm -rf ~/.ansible/tmp
+		-u ansible ansible/docker-slave.yml
+	./scripts/sh/update_machine.sh "jenkins_master" "dev"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
 	./scripts/sh/run_ansible_against_windows_instance.sh "dev"
 
@@ -154,7 +163,7 @@ else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
 	cd ../..
-	./scripts/sh/update_machine.sh "ansible_bastion"
+	./scripts/sh/update_machine.sh "ansible_bastion" "prod"
 	rm -rf ~/.ansible/tmp
 	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
@@ -165,16 +174,25 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=proxy" \
+		-e "safe_build_infrastructure_repo_branch=jenkins_master_disk" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
-	./scripts/sh/update_machine.sh "jenkins_master"
-	./scripts/sh/update_machine.sh "haproxy"
+	./scripts/sh/update_machine.sh "jenkins_master" "prod"
+	./scripts/sh/update_machine.sh "haproxy" "prod"
 	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
+		ansible-playbook -i "environments/prod" \
+		--private-key="~/.ssh/ansible_prod" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=prod" \
+		-u ansible ansible/haproxy-ssl-config.yml
 	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:

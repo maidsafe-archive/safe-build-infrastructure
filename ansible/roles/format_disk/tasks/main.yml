@@ -7,33 +7,30 @@
     msg: "a mount_info dictionary must be supplied"
   when: mount_info is not defined
 
-- name: 'create partition'
-  shell: echo -e "n\np\n1\n\n\nw\n" | fdisk "{{ block_device }}"
-  args:
-    creates: "{{ block_device }}1"
+- name: 'copy partitioning script'
+  copy:
+    src: create_disk_partition.sh
+    dest: /tmp/create_disk_partition.sh
+    mode: 0744
+    owner: root
+    group: root
 
-- name: 'check if partition formatted'
-  shell: blkid "{{ block_device }}1"
-  register: blkid_result
-  failed_when: false
-
-- name: 'format parition'
-  shell: mkfs.ext4 "{{ block_device }}1"
-  when: blkid_result.stdout == "" 
+# To format a disk without user input, you run this command:
+# echo -e "n\np\n1\n\n\nw\n" | fdisk /dev/sdb
+# For some reason, on Ubuntu, this doesn't work using the
+# Ansible shell module. I couldn't figure out why, so I changed
+# to using a script, but also put the file system creation in there too
+# just because it was easier to do it in there.
+- name: 'run partitioning script'
+  command: /tmp/create_disk_partition.sh "{{ block_device }}"
 
 - name: 'create mount point'
   file:
     name: "{{ mount_info.name }}"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: 0755
     state: directory
-
-- name: 'temporary mount to get disk uid'
-  command: mount -t "ext4" "{{ block_device }}1" "{{ mount_info.name }}"
-  args:
-    warn: False
-  failed_when: False
 
 - name: 'get uuid for {{ block_device }}1'
   shell: blkid -o export {{ block_device }}1 | grep "^UUID=.*" | sed 's/UUID=//g'
