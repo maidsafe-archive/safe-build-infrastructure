@@ -18,8 +18,8 @@
         block_device: "{{ jenkins_master_block_device }}",
         mount_info: {
           name: "{{ jenkins_master_mount_point }}",
-          owner: "jenkins",
-          group: "jenkins",
+          owner: "root",
+          group: "root",
           mode: 0755
         },
         when: cloud_environment == "prod"
