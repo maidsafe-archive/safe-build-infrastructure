@@ -1,0 +1,15 @@
+---
+- include: packages.yml
+- include: services.yml
+- include: ssh.yml
+- include: networking.yml
+- include: auditing.yml
+  when: ansible_distribution == 'CentOS'
+
+- name: 'install fail2ban'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - epel-release
+    - fail2ban
+  when: ansible_distribution == 'CentOS'

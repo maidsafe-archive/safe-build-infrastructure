@@ -112,6 +112,7 @@
       "inline": [
         "apt-get update -y",
         "apt-get install -y python",
+        "sleep 5",
         "apt-get install -y python-pip"
       ]
     },

@@ -1,0 +1,33 @@
+---
+- name: 'networking settings'
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    ignoreerrors: yes
+    sysctl_set: yes
+    reload: yes
+    state: present
+  with_items:
+    - { key: net.ipv6.conf.all.accept_redirects, value: 0 }
+    - { key: net.ipv6.conf.default.accept_redirects, value: 0 }
+    - { key: net.ipv6.conf.default.accept_ra, value: 0 }
+    - { key: net.ipv6.conf.all.accept_ra, value: 0 }
+    - { key: net.ipv6.conf.all.disable_ipv6, value: 1 }
+    - { key: net.ipv4.conf.all.accept_source_route, value: 0 }
+    - { key: net.ipv4.icmp_ignore_bogus_error_responses, value: 1 }
+    - { key: net.ipv4.conf.default.accept_redirects, value: 0 }
+    - { key: net.ipv4.conf.all.accept_redirects, value: 0 }
+    - { key: net.ipv4.conf.default.rp_filter, value: 1 }
+    - { key: net.ipv4.conf.all.rp_filter, value: 1 }
+    - { key: net.ipv4.conf.default.secure_redirects, value: 0 }
+    - { key: net.ipv4.conf.all.secure_redirects, value: 0 }
+    - { key: net.ipv4.conf.all.accept_source_route, value: 0 }
+    - { key: net.ipv4.conf.default.log_martians, value: 1 }
+    - { key: net.ipv4.conf.all.log_martians, value: 1 }
+    - { key: net.ipv4.icmp_echo_ignore_broadcasts, value: 1 }
+    - { key: net.ipv4.conf.default.send_redirects, value: 0 }
+    - { key: net.ipv4.conf.all.send_redirects, value: 0 }
+    - { key: net.ipv4.tcp_fin_timeout, value: 30 }
+    - { key: net.ipv4.tcp_keepalive_time, value: 180 }
+    - { key: net.ipv4.tcp_keepalive_intvl, value: 10 }
+    - { key: net.ipv4.tcp_keepalive_probes, value: 3 }

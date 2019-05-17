@@ -1,0 +1,46 @@
+---
+- name: 'disable services'
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  register: command_result
+  failed_when:
+    - command_result is failed
+    - "'Could not find the requested service' not in command_result.msg"
+    - "'no service or tool found for: {{item}}' not in command_result.msg"
+  with_items:
+    - xinetd
+    - rexec
+    - rsh
+    - rlogin
+    - ypbind
+    - tftp
+    - certmonger
+    - cgconfig
+    - cgred
+    - cpuspeed
+    - kdump
+    - netconsole
+    - ntpdate
+    - oddjobd
+    - portreserve
+    - qpidd
+    - quota_nld
+    - rdisc
+    - rhnsd
+    - rhsmcertd
+    - saslauthd
+    - nfslock
+    - named
+    - dovecot
+    - squid
+    - snmpd
+    - rpcgssd
+    - rpcsvcgssd
+    - rpcidmapd
+    - netfs
+    - nfs
+    - cups
+    - avahi-daemon
+    - dhcpd

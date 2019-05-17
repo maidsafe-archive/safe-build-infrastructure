@@ -2,6 +2,7 @@
 - hosts: masters:wireguard
   become: True
   roles:
+    - hardening
     - {
         role: format_disk,
         block_device: "{{ docker_storage_block_device }}",

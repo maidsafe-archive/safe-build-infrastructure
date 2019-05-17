@@ -2,5 +2,6 @@
 - hosts: provisioners
   become: True
   roles:
+    - hardening
     - pip
     - ansible-provisioner

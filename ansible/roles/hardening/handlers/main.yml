@@ -1,0 +1,13 @@
+---
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+
+# The use of 'use: service' is explained here:
+# https://stackoverflow.com/questions/41053331/ansible-how-to-restart-auditd-service-on-centos-7-get-error-about-dependency
+- name: restart auditd 
+  service:
+    name: auditd
+    state: restarted
+    use: service

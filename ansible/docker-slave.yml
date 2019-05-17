@@ -2,6 +2,7 @@
 - hosts: linux_slaves
   become: True
   roles:
+    - hardening
     - pip
     - java
     - {

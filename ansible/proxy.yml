@@ -2,6 +2,7 @@
 - hosts: proxies:wireguard
   become: True
   roles:
+    - hardening
     - lets-encrypt
     - haproxy
     - { role: wireguard, when: cloud_environment == "prod" }

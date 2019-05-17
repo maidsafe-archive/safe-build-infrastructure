@@ -110,7 +110,7 @@ resource "aws_instance" "haproxy" {
   ]
   tags {
     Name = "haproxy"
-    full_name = "haproxy-centos-7.6-x86_64"
+    full_name = "haproxy-ubuntu-bionic-x86_64"
     group = "provisioners"
     environment = "prod"
   }
