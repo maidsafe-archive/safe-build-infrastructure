@@ -1,0 +1,16 @@
+---
+# Note that this is just a *basic* disk formatting script.
+# It will just use the D drive as the destination.
+# If more functionality is needed, extend the role and the script.
+- name: 'create temp directory for script'
+  win_file:
+    path: "C:\\Temp"
+    state: directory
+
+- name: 'copy format disk script'
+  win_template:
+    src: format-disk.ps1
+    dest: "C:\\Temp\\format-disk.ps1"
+
+- name: 'run format disk script'
+  win_shell: "C:\\Temp\\format-disk.ps1 "
