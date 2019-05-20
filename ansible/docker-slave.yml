@@ -2,6 +2,7 @@
 - hosts: linux_slaves
   become: True
   roles:
+    - hardening
     - pip
     - java
     - {
@@ -22,8 +23,8 @@
         block_device: "{{ jenkins_workspace_block_device }}",
         mount_info: {
           name: "{{ jenkins_workspace_mount_point }}",
-          owner: "root",
-          group: "root",
+          owner: "jenkins",
+          group: "jenkins",
           mode: 0755
         },
         when: cloud_environment == "prod"

@@ -1,0 +1,49 @@
+---
+- name: 'copy banner file for ssh message'
+  copy:
+    src: banner
+    dest: /etc/ssh/banner
+    mode: 0644
+    owner: root
+    group: root
+
+- name: 'get default message of the day files'
+  find:
+    paths: /etc/update-motd.d
+    patterns: "**"
+  register: find_result
+
+# The way to disable these default messages is to remove the executable
+# permissions from the scripts in this directory.
+- name: 'disable any default ssh banners or messages of the day'
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "{{ find_result.files }}"
+    - { path: /usr/share/landscape/landscape-sysinfo.wrapper }
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'apply sshd settings'
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  notify:
+    - restart sshd
+  with_items:
+    - { line: "Protocol 2", regexp: "^Protocol .*" }
+    - { line: "#AllowUsers", regexp: "^AllowUsers .*" }
+    - { line: "IgnoreRhosts yes", regexp: "^IgnoreRhosts .*" }
+    - { line: "HostbasedAuthentication no", regexp: "^HostbasedAuthentication .*" }
+    - { line: "PermitRootLogin no", regexp: "^PermitRootLogin .*" }
+    - { line: "PermitEmptyPasswords no", regexp: "^PermitEmptyPasswords .*" }
+    - { line: "PasswordAuthentication no", regexp: "^PasswordAuthentication .*" }
+    - { line: "ChallengeResponseAuthentication no", regexp: "^ChallengeResponseAuthentication .*" }
+    - { line: "PubkeyAuthentication yes", regexp: "^PubkeyAuthentication .*" }
+    - { line: "PermitUserEnvironment no", regexp: "^PermitUserEnvironment .*" }
+    - { line: "Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc", regexp: "^Ciphers .*" }
+    - { line: "Macs hmac-sha1,hmac-sha2-256,hmac-sha2-512", regexp: "^Macs .*" }
+    - { line: "Banner /etc/ssh/banner", regexp: "^#Banner .*" }

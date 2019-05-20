@@ -1,0 +1,22 @@
+---
+- name: 'remove packages'
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - xinetd
+    - telnet-server
+    - rsh-server
+    - telnet
+    - rsh
+    - ypbind
+    - ypserv
+    - tftp-server
+    - bind
+    - vsftpd
+    - dovecot
+    - squid
+    - net-snmpd
+    - sendmail
+    - talk
+    - talk-server

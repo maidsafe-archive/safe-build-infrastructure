@@ -1,0 +1,40 @@
+---
+- name: 'install auditing service (ubuntu)'
+  package:
+    name: "{{ item }}"
+  with_items:
+    - auditd
+    - audispd-plugins
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'auditd plugin config'
+  notify:
+    - restart auditd
+  lineinfile:
+    dest: /etc/audisp/plugins.d/syslog.conf
+    line: "active = yes"
+    regexp: "^active =.*"
+  when: ansible_distribution == "CentOS"
+
+- name: 'auditd config'
+  notify:
+    - restart auditd
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  with_items:
+    - { line: "num_logs = 5", regexp: "^num_logs =.*" }
+    - { line: "max_log_file = 30MB", regexp: "^max_log_file =.*" }
+    - { line: "max_log_file_action = rotate", regexp: "^max_log_file_action =.*" }
+    - { line: "space_left_action = email", regexp: "^space_left_action =.*" }
+    - { line: "admin_space_left_action = halt", regexp: "^admin_space_left_action =.*" }
+    - { line: "action_mail_acct = dev", regexp: "^action_mail_acct =.*" }
+
+- name: 'auditd rules'
+  copy:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+    owner: root
+    group: root
+    mode: 0640
