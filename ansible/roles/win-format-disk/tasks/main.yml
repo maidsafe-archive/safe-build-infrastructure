@@ -8,7 +8,7 @@
     state: directory
 
 - name: 'copy format disk script'
-  win_template:
+  win_copy:
     src: format-disk.ps1
     dest: "C:\\Temp\\format-disk.ps1"
 
