@@ -33,6 +33,19 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		-var='cloud_environment=prod' \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
+box-rust_slave-windows-2016-x86_64-aws:
+ifndef WINDOWS_ANSIBLE_USER_PASSWORD
+	@echo "To build this box, a password must be set for the Ansible user."
+	@echo "Please set WINDOWS_ANSIBLE_USER_PASSWORD with a secure password."
+	@exit 1
+endif
+	rm -rf ~/.ansible/tmp
+	packer validate templates/rust_slave-windows-2016-x86_64.json
+	EC2_INI_PATH=environments/prod/ec2.ini PACKER_LOG=1 \
+		packer build \
+		-only=amazon-ebs \
+		templates/rust_slave-windows-2016-x86_64.json
+
 box-docker_slave-ubuntu-bionic-x86_64-vbox:
 	if [ ! -f "iso/ubuntu-18.04.1-server-amd64.iso" ]; then \
 		cd iso; \
@@ -145,6 +158,7 @@ env-jenkins-dev-aws:
 		-u ansible ansible/docker-slave.yml
 	./scripts/sh/update_machine.sh "jenkins_master" "dev"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
+	./scripts/sh/set_windows_ansible_user_passwords.sh "dev"
 	./scripts/sh/run_ansible_against_windows_instance.sh "dev"
 
 .ONESHELL:

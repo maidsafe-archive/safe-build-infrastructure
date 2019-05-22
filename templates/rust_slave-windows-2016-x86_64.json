@@ -1,0 +1,71 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "generated_ami_name": "rust_slave-windows-2016-x86_64",
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_access_key`}}",
+      "instance_type": "t3.medium",
+      "region": "eu-west-2",
+      "source_ami": "ami-0186531b707ced2ef",
+      "ami_name": "{{user `generated_ami_name`}}",
+      "user_data_file": "./scripts/ps/setup_winrm.ps1",
+      "communicator": "winrm",
+      "winrm_username": "Administrator",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true,
+      "winrm_port": 5986,
+      "ami_block_device_mappings": [
+        {
+          "device_name": "/dev/sdb",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        }
+      ],
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sdb",
+          "volume_size": 50,
+          "volume_type": "gp2",
+          "encrypted": false,
+          "delete_on_termination": true
+        }
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "./scripts/ps/format_disk.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "./scripts/ps/install_choco.ps1"
+    },
+    {
+      "type": "windows-shell",
+      "script": "./scripts/bat/travis_slave.bat"
+    },
+    {
+      "type": "windows-shell",
+      "inline": "choco install -y jre8"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule",
+        "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule",
+        "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
+      ]
+    }
+  ]
+}
