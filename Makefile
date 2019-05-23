@@ -158,8 +158,7 @@ env-jenkins-dev-aws:
 		-u ansible ansible/docker-slave.yml
 	./scripts/sh/update_machine.sh "jenkins_master" "dev"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "dev"
-	./scripts/sh/set_windows_ansible_user_passwords.sh "dev"
-	./scripts/sh/run_ansible_against_windows_instance.sh "dev"
+	python ./scripts/py/run_ansible_against_windows_slaves.py "dev"
 
 .ONESHELL:
 env-jenkins-prod-aws:
