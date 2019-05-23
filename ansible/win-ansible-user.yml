@@ -1,0 +1,4 @@
+---
+- hosts: windows_slaves
+  roles:
+    - win-ansible-user
