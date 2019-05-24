@@ -26,6 +26,12 @@
     state: present
     line: "export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
 
+- name: 'set the ansible windows user password in ansible user ~/.bashrc'
+  lineinfile:
+    path: /home/ansible/.bashrc
+    state: present
+    line: "export WINDOWS_ANSIBLE_USER_PASSWORD={{ secret_ansible_account_password }}"
+
 - name: 'set the aws default region in ansible user ~/.bashrc'
   lineinfile:
     path: /home/ansible/.bashrc
@@ -107,6 +113,7 @@
     - awscli
     - git+https://github.com/ansible/ansible.git@devel
     - boto
+    - boto3
     - pypsrp
   become: yes
   become_user: "{{ provisioning_user }}"
