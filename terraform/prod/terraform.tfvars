@@ -7,7 +7,7 @@ docker_slave_ami = { eu-west-2 = "ami-0eab3a90fc693af19" }
 docker_slave_instance_type = "t2.micro"
 ansible_ami { eu-west-2 = "ami-0eab3a90fc693af19" }
 ansible_instance_type = "t2.micro"
-windows_ami = { eu-west-2 = "ami-0186531b707ced2ef" }
+windows_ami = { eu-west-2 = "ami-0103bbc73d58441f9" }
 windows_instance_type = "t3.medium"
 windows_bastion_count = 0
 windows_slave_key_pair = "windows_slave-prod"

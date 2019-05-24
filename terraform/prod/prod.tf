@@ -126,12 +126,6 @@ resource "aws_instance" "windows_slave" {
   vpc_security_group_ids = [
     "${aws_security_group.windows_slaves.id}"
   ]
-  ebs_block_device {
-    device_name = "/dev/sdb"
-    volume_size = 50
-    volume_type = "gp2"
-    delete_on_termination = false
-  }
   tags {
     Name = "${format("windows_slave_%03d", count.index + 1)}"
     full_name = "${format("rust_slave_%03d-windows-2016-x86_64", count.index + 1)}"
