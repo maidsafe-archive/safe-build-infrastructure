@@ -187,7 +187,7 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=jenkins_master_disk" \
+		-e "safe_build_infrastructure_repo_branch=additional_windows_slave" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh
 
@@ -206,7 +206,7 @@ provision-jenkins-prod-aws:
 		--vault-password-file=~/.ansible/vault-pass \
 		-e "cloud_environment=prod" \
 		-u ansible ansible/haproxy-ssl-config.yml
-	./scripts/sh/run_ansible_against_windows_instance.sh "prod" "ec2-bastion.ini"
+	python ./scripts/py/run_ansible_against_windows_slaves.py "prod" "ec2-bastion.ini"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
