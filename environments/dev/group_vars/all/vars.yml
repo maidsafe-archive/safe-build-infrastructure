@@ -9,7 +9,7 @@ docker_slave_ami_id: ami-03850277b53ba7bc5
 windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
 windows_rust_slave_host_url: rust_slave.ubuntu.local
-windows_rust_slave_working_path: "c:\\jenkins-work"
+windows_rust_slave_working_path: "d:\\jenkins-work"
 jenkins_admin_user: qa
 secret_jenkins_admin_user_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256

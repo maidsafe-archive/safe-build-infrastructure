@@ -1,7 +1,11 @@
 $jenkins_master_url = "http://{{ jenkins_master_dns }}"
 $jenkins_user = "{{ jenkins_admin_user }}"
 $jenkins_password = "{{ secret_jenkins_admin_user_password }}"
+{% if cloud_environment != "none" %}
+$slave_name = "{{ ec2_tag_full_name }}"
+{% else %}
 $slave_name = "{{ windows_rust_slave_full_name }}"
+{% endif %}
 
 curl.exe -s --user ${jenkins_user}:${jenkins_password} $jenkins_master_url/crumbIssuer/api/xml > crumb.xml
 [xml]$crumbXml = Get-Content 'crumb.xml'

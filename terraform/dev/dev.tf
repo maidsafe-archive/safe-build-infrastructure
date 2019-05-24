@@ -66,7 +66,7 @@ resource "aws_instance" "windows_slave" {
   ]
   tags {
     Name = "${format("windows_slave_%03d", count.index + 1)}"
-    full_name = "${format("windows_slave_%03d-windows-2016-x86_64", count.index + 1)}"
+    full_name = "${format("rust_slave_%03d-windows-2016-x86_64", count.index + 1)}"
     group = "windows_slaves"
     environment = "dev"
   }
