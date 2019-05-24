@@ -84,17 +84,17 @@ def wait_for_instance_password_to_become_available(instance_id):
         sleep(5)
         password_data = client.get_password_data(InstanceId=instance_id)['PasswordData'].strip()
 
-def get_slaves_name_password_dict(instances, environment):
-    windows_slaves = {}
+def get_slaves_name_password_map(instances, environment):
+    slaves_name_map = {}
     for instance in instances:
-        machine_name = [
-            tag for tag in
+        machine_name = next(
+            tag['Value'] for tag in
             instance['Instances'][0]['Tags']
-            if tag['Key'] == 'Name'][0]['Value']
+            if tag['Key'] == 'Name')
         instance_id = instance['Instances'][0]['InstanceId']
         wait_for_instance_password_to_become_available(instance_id)
-        windows_slaves[machine_name] = get_decrypted_password(instance_id, environment)
-    return windows_slaves
+        slaves_name_map[machine_name] = get_decrypted_password(instance_id, environment)
+    return slaves_name_map
 
 def get_ansible_vault_password_path():
     return os.path.expanduser('~/.ansible/vault-pass')
@@ -121,8 +121,7 @@ def jenkins_slave_ansible_run(environment, ec2_ini_file):
     cmd += "--vault-password-file={0} ".format(get_ansible_vault_password_path())
     cmd += '-e "cloud_environment={0}" '.format(environment)
     cmd += '-e "jenkins_master_dns={0}" '.format(get_jenkins_master_location(environment))
-    cmd += '-e "ansible_password={0}" '.format(
-        os.environ['WINDOWS_ANSIBLE_USER_PASSWORD'])
+    cmd += '-e "ansible_password=$WINDOWS_ANSIBLE_USER_PASSWORD" '
     cmd += "ansible/win-jenkins-slave.yml"
     run_ansible(cmd)
 
@@ -149,7 +148,7 @@ def main():
     ec2_ini_file = 'ec2.ini'
     if len(sys.argv) == 3:
         ec2_ini_file = sys.argv[2]
-    slaves = get_slaves_name_password_dict(
+    slaves = get_slaves_name_password_map(
         get_windows_slave_instances(environment), environment)
     for key, value in slaves.iteritems():
         set_password_for_ansible_user(key, value, environment, ec2_ini_file)
