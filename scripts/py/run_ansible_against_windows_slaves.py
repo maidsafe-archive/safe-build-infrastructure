@@ -112,7 +112,7 @@ def set_password_for_ansible_user(slave_name, slave_password, environment, ec2_i
     cmd += '-e "ansible_user=Administrator" '
     cmd += '-e "ansible_password=$WINDOWS_ADMIN_PASSWORD" '
     cmd += "ansible/win-ansible-user.yml"
-    run_ansible(cmd)
+    run_ansible(cmd, clear_cache=False)
 
 def jenkins_slave_ansible_run(environment, ec2_ini_file):
     print("Running Ansible against Windows slaves... (can be 10+ seconds before output)")
@@ -126,11 +126,12 @@ def jenkins_slave_ansible_run(environment, ec2_ini_file):
     cmd += "ansible/win-jenkins-slave.yml"
     run_ansible(cmd)
 
-def run_ansible(cmd):
+def run_ansible(cmd, clear_cache=True):
     print(cmd)
     ansible_tmp_path = os.path.expanduser('~/.ansible/tmp')
-    if os.path.exists(ansible_tmp_path):
-        rmtree(os.path.expanduser('~/.ansible/tmp'))
+    if clear_cache:
+        if os.path.exists(ansible_tmp_path):
+            rmtree(os.path.expanduser('~/.ansible/tmp'))
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     while True:
         out = p.stdout.read(1)
