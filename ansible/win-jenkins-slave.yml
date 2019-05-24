@@ -1,6 +1,7 @@
 ---
 - hosts: windows_slaves
   roles:
+    - win-format-disk
     - win-psexec
     - win-jenkins-slave
     - win-rust-slave
