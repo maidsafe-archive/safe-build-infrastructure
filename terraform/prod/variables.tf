@@ -83,7 +83,7 @@ variable "haproxy_instance_type" {
 
 variable "windows_ami" {
   default = {
-    eu-west-2 = "ami-04d71308dd811889e"
+    eu-west-2 = "ami-0103bbc73d58441f9"
   }
   description = "AMI for Windows slave (Windows 2016)"
 }

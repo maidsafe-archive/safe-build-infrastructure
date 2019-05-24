@@ -2,7 +2,7 @@
   "variables": {
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "generated_ami_name": "rust_slave-windows-2016-x86_64",
+    "generated_ami_name": "rust_slave-windows-2016-x86_64"
   },
   "builders": [
     {
@@ -50,11 +50,11 @@
     },
     {
       "type": "windows-shell",
-      "script": "./scripts/bat/travis_slave.bat"
+      "inline": "choco install -y jre8"
     },
     {
       "type": "windows-shell",
-      "inline": "choco install -y jre8"
+      "script": "./scripts/bat/travis_slave.bat"
     },
     {
       "type": "windows-restart"
