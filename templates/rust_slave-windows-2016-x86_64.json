@@ -50,7 +50,7 @@
     },
     {
       "type": "windows-shell",
-      "inline": "choco install -y jre8"
+      "inline": "choco install -y jre8 make"
     },
     {
       "type": "windows-shell",
