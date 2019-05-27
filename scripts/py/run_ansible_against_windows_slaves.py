@@ -85,7 +85,7 @@ def wait_for_instance_password_to_become_available(instance_id):
         password_data = client.get_password_data(InstanceId=instance_id)['PasswordData'].strip()
 
 def get_slaves_name_password_map(instances, environment):
-    slaves_name_map = {}
+    slaves_name_password_map = {}
     for instance in instances:
         machine_name = next(
             tag['Value'] for tag in
@@ -93,8 +93,8 @@ def get_slaves_name_password_map(instances, environment):
             if tag['Key'] == 'Name')
         instance_id = instance['Instances'][0]['InstanceId']
         wait_for_instance_password_to_become_available(instance_id)
-        slaves_name_map[machine_name] = get_decrypted_password(instance_id, environment)
-    return slaves_name_map
+        slaves_name_password_map[machine_name] = get_decrypted_password(instance_id, environment)
+    return slaves_name_password_map
 
 def get_ansible_vault_password_path():
     return os.path.expanduser('~/.ansible/vault-pass')
