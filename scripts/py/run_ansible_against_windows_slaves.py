@@ -84,8 +84,8 @@ def wait_for_instance_password_to_become_available(instance_id):
         sleep(5)
         password_data = client.get_password_data(InstanceId=instance_id)['PasswordData'].strip()
 
-def get_slaves_name_password_map(instances, environment):
-    slaves_name_password_map = {}
+def get_slaves_name_info_map(instances, environment):
+    slaves_name_info_map = {}
     for instance in instances:
         machine_name = next(
             tag['Value'] for tag in
@@ -93,8 +93,9 @@ def get_slaves_name_password_map(instances, environment):
             if tag['Key'] == 'Name')
         instance_id = instance['Instances'][0]['InstanceId']
         wait_for_instance_password_to_become_available(instance_id)
-        slaves_name_password_map[machine_name] = get_decrypted_password(instance_id, environment)
-    return slaves_name_password_map
+        slaves_name_info_map[machine_name] = \
+            (get_decrypted_password(instance_id, environment), instance_id)
+    return slaves_name_info_map
 
 def get_ansible_vault_password_path():
     return os.path.expanduser('~/.ansible/vault-pass')
@@ -140,6 +141,11 @@ def run_ansible(cmd, clear_cache=True):
             sys.stdout.write(out)
             sys.stdout.flush()
 
+def reboot_slaves(slaves_info):
+    print("Issuing reboots for all Windows slaves...")
+    client = boto3.client('ec2')
+    client.reboot_instances(InstanceIds=[y[1] for x, y in slaves_info.iteritems()])
+
 def main():
     if len(sys.argv) == 1:
         print("Please supply the environment name. Valid values are 'dev' or 'prod'.")
@@ -148,11 +154,13 @@ def main():
     ec2_ini_file = 'ec2.ini'
     if len(sys.argv) == 3:
         ec2_ini_file = sys.argv[2]
-    slaves = get_slaves_name_password_map(
+    slaves = get_slaves_name_info_map(
         get_windows_slave_instances(environment), environment)
-    for key, value in slaves.iteritems():
-        set_password_for_ansible_user(key, value, environment, ec2_ini_file)
+    for machine_name, slave_info in slaves.iteritems():
+        set_password_for_ansible_user(
+            machine_name, slave_info[0], environment, ec2_ini_file)
     jenkins_slave_ansible_run(environment, ec2_ini_file)
+    reboot_slaves(slaves)
     return 0
 
 if __name__ == '__main__':
