@@ -41,7 +41,7 @@ variable "jenkins_master_ami" {
 }
 
 variable "jenkins_master_instance_type" {
-  default = "t2.micro"
+  default = "t3.small"
   description = "Instance type for Jenkins Master"
 }
 
@@ -77,7 +77,7 @@ variable "haproxy_ami" {
 }
 
 variable "haproxy_instance_type" {
-  default = "t2.micro"
+  default = "t3.micro"
   description = "Instance type for HAProxy machine"
 }
 
