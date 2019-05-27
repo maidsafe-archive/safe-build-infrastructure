@@ -65,8 +65,10 @@ function run_update() {
         echo "Running yum update against $machine_name"
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo yum update -y
     elif [[ "$image_name" == *"ubuntu"* ]]; then
-        echo "Running apt-get update against $machine_name"
+        echo "Running apt-get update and apt-get upgrade against $machine_name"
+        ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo locale-gen en_GB.UTF-8
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get update -y
+        ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get upgrade -y
         echo "Running Python install against $machine_name"
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get install -y python
     else
