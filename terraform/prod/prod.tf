@@ -73,6 +73,9 @@ resource "aws_instance" "jenkins_master" {
     volume_type = "gp2"
     delete_on_termination = true
   }
+  root_block_device {
+    delete_on_termination = true
+  }
 }
 
 resource "aws_eip_association" "jenkins_master_eip_association" {
@@ -96,6 +99,9 @@ resource "aws_instance" "ansible" {
     group = "provisioners"
     environment = "prod"
   }
+  root_block_device {
+    delete_on_termination = true
+  }
 }
 
 resource "aws_instance" "haproxy" {
@@ -113,6 +119,9 @@ resource "aws_instance" "haproxy" {
     full_name = "haproxy-ubuntu-bionic-x86_64"
     group = "provisioners"
     environment = "prod"
+  }
+  root_block_device {
+    delete_on_termination = true
   }
 }
 
@@ -133,6 +142,9 @@ resource "aws_instance" "windows_slave" {
     environment = "prod"
   }
   count = "${var.windows_slave_count}"
+  root_block_device {
+    delete_on_termination = true
+  }
 }
 
 resource "aws_instance" "windows_bastion" {
@@ -152,4 +164,7 @@ resource "aws_instance" "windows_bastion" {
     environment = "prod"
   }
   count = "${var.windows_bastion_count}"
+  root_block_device {
+    delete_on_termination = true
+  }
 }
