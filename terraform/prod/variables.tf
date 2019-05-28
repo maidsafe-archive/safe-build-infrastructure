@@ -41,7 +41,7 @@ variable "jenkins_master_ami" {
 }
 
 variable "jenkins_master_instance_type" {
-  default = "t3.small"
+  default = "t2.medium"
   description = "Instance type for Jenkins Master"
 }
 
