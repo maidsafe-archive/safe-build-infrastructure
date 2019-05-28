@@ -20,7 +20,7 @@
   template:
     src: "{{ inventory_hostname }}.conf"
     dest: "{{ wg_config_path }}/wg0.conf"
-    mode: 0644
+    mode: 0600
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
 
