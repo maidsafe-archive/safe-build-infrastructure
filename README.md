@@ -115,7 +115,7 @@ When you're finished, you can tear the production environment down by running `m
 
 ##### Provisioning the macOS Slave
 
-The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that. If connectivity problems persist, try pinging the macOS slave from the remote endpoint, i.e. the HAProxy - this has immediately resolved a couple of connection problems experienced during implementation.
 
 ### Configure Jenkins
 
