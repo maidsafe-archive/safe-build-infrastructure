@@ -161,6 +161,41 @@ env-jenkins-dev-aws:
 	python ./scripts/py/run_ansible_against_windows_slaves.py "dev"
 
 .ONESHELL:
+env-jenkins-staging-aws:
+ifndef WINDOWS_ANSIBLE_USER_STAGING_PASSWORD
+	@echo "The WINDOWS_ANSIBLE_USER_STAGING_PASSWORD environment variable must be set."
+	@exit 1
+endif
+ifndef AWS_ACCESS_KEY_ID
+	@echo "Your AWS access key ID must be set."
+	@exit 1
+endif
+ifndef AWS_SECRET_ACCESS_KEY
+	@echo "Your AWS secret access key must be set."
+	@exit 1
+endif
+ifeq ($(DEBUG_JENKINS_ENV),true)
+	cd terraform/staging && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+else
+	cd terraform/staging && terraform init && terraform apply -auto-approve
+endif
+	cd ../..
+	./scripts/sh/update_machine.sh "ansible_bastion" "staging"
+	rm -rf ~/.ansible/tmp
+	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
+	EC2_INI_PATH=environments/staging/ec2-host.ini ansible-playbook -i environments/staging \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/ansible_staging \
+		-e "cloud_environment=staging" \
+		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
+		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=staging" \
+		-u ansible ansible/ansible-provisioner.yml
+	./scripts/sh/prepare_bastion.sh
+
+.ONESHELL:
 env-jenkins-prod-aws:
 ifndef AWS_ACCESS_KEY_ID
 	@echo "Your AWS access key ID must be set."
