@@ -18,4 +18,4 @@ scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ~/.ss
 ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/jenkins_prod
 ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/windows_slave_prod
 ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/ansible_prod
-echo "SSH to the Bastion with: ssh -i ~/.ssh/ansible_prod ansible@$ansible_bastion_url"
+echo "SSH to the Bastion with: ssh -i ~/.ssh/ansible_$cloud_environment ansible@$ansible_bastion_url"
