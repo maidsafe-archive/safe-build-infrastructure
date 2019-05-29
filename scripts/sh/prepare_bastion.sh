@@ -12,10 +12,10 @@ ansible_bastion_url=$(aws ec2 describe-instances \
     "Name=instance-state-name,Values=running" \
     | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
     | sed 's/\"//g')
-scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ~/.ssh/jenkins_prod ansible@$ansible_bastion_url:/home/ansible/.ssh/jenkins_prod
-scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ~/.ssh/windows_slave_prod ansible@$ansible_bastion_url:/home/ansible/.ssh/windows_slave_prod
-scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ~/.ssh/ansible_prod ansible@$ansible_bastion_url:/home/ansible/.ssh/ansible_prod
-ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/jenkins_prod
-ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/windows_slave_prod
-ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 /home/ansible/.ssh/ansible_prod
+scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no "$HOME/.ssh/jenkins_$cloud_environment" ansible@"$ansible_bastion_url:/home/ansible/.ssh/jenkins_$cloud_environment"
+scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no "$HOME/.ssh/windows_slave_$cloud_environment" ansible@"$ansible_bastion_url:/home/ansible/.ssh/windows_slave_$cloud_environment"
+scp -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no "$HOME/.ssh/ansible_$cloud_environment" ansible@"$ansible_bastion_url:/home/ansible/.ssh/ansible_$cloud_environment"
+ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 "/home/ansible/.ssh/jenkins_$cloud_environment"
+ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 "/home/ansible/.ssh/windows_slave_$cloud_environment"
+ssh -i "$HOME/.ssh/ansible_$cloud_environment" -o StrictHostKeyChecking=no ansible@$ansible_bastion_url chmod 0400 "/home/ansible/.ssh/ansible_$cloud_environment"
 echo "SSH to the Bastion with: ssh -i ~/.ssh/ansible_$cloud_environment ansible@$ansible_bastion_url"
