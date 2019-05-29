@@ -162,8 +162,8 @@ env-jenkins-dev-aws:
 
 .ONESHELL:
 env-jenkins-staging-aws:
-ifndef WINDOWS_ANSIBLE_USER_STAGING_PASSWORD
-	@echo "The WINDOWS_ANSIBLE_USER_STAGING_PASSWORD environment variable must be set."
+ifndef WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
+	@echo "The WINDOWS_STAGING_ANSIBLE_USER_PASSWORD environment variable must be set."
 	@exit 1
 endif
 ifndef AWS_ACCESS_KEY_ID
@@ -197,6 +197,10 @@ endif
 
 .ONESHELL:
 env-jenkins-prod-aws:
+ifndef WINDOWS_PROD_ANSIBLE_USER_PASSWORD
+	@echo "The WINDOWS_PROD_ANSIBLE_USER_PASSWORD environment variable must be set."
+	@exit 1
+endif
 ifndef AWS_ACCESS_KEY_ID
 	@echo "Your AWS access key ID must be set."
 	@exit 1
@@ -234,7 +238,7 @@ provision-jenkins-staging-aws:
 	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
-	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
+	EC2_INI_PATH="environments/staging/ec2-bastion.ini" \
 		ansible-playbook -i "environments/staging" \
 		--private-key="~/.ssh/ansible_staging" \
 		--limit=haproxy \

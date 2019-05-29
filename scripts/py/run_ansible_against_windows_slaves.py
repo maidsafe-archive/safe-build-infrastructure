@@ -116,13 +116,19 @@ def set_password_for_ansible_user(slave_name, slave_password, environment, ec2_i
     run_ansible(cmd, clear_cache=False)
 
 def jenkins_slave_ansible_run(environment, ec2_ini_file):
+    if environment == "prod":
+        password_variable = "$WINDOWS_PROD_ANSIBLE_USER_PASSWORD"
+    elif environment == "staging":
+        password_variable = "$WINDOWS_STAGING_ANSIBLE_USER_PASSWORD"
+    else:
+        raise ValueError("The environment '{0}' is not supported".format(environment))
     print("Running Ansible against Windows slaves... (can be 10+ seconds before output)")
     cmd = "EC2_INI_PATH='environments/{0}/{1}' ".format(environment, ec2_ini_file)
     cmd += "ansible-playbook -i 'environments/{0}' ".format(environment)
     cmd += "--vault-password-file={0} ".format(get_ansible_vault_password_path())
     cmd += '-e "cloud_environment={0}" '.format(environment)
     cmd += '-e "jenkins_master_dns={0}" '.format(get_jenkins_master_location(environment))
-    cmd += '-e "ansible_password=$WINDOWS_ANSIBLE_USER_PASSWORD" '
+    cmd += '-e "ansible_password={0}" '.format(password_variable)
     cmd += "ansible/win-jenkins-slave.yml"
     run_ansible(cmd)
 
