@@ -71,7 +71,7 @@ def get_jenkins_master_location(environment):
             }
         ]
     )
-    if environment == 'prod':
+    if environment == 'prod' or environment == "staging":
         return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
     return response['Reservations'][0]['Instances'][0]['PublicDnsName']
 
@@ -154,7 +154,7 @@ def reboot_slaves(slaves_info):
 
 def main():
     if len(sys.argv) == 1:
-        print("Please supply the environment name. Valid values are 'dev' or 'prod'.")
+        print("Please supply the environment name. Valid values are 'dev', 'staging' or 'prod'.")
         return 1
     environment = sys.argv[1]
     ec2_ini_file = 'ec2.ini'
