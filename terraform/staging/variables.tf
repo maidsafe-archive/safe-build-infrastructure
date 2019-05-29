@@ -8,6 +8,11 @@ variable "environment_name" {
   description = "staging"
 }
 
+variable "subnet_name" {
+  default = "jenkins_environment-staging"
+  description = "The name for the subnet used in the VPC"
+}
+
 variable "jenkins_elastic_ip" {
   default = "eipalloc-059e4e377d46c8a84"
   description = ""

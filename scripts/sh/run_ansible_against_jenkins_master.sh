@@ -41,7 +41,7 @@ function get_proxy_dns() {
 function get_subnet_id() {
     subnet_id=$(aws ec2 describe-subnets \
         --filters \
-        "Name=tag:Name,Values=jenkins_environment-private-eu-west-2a" \
+        "Name=tag:Name,Values=jenkins_environment-$cloud_environment-private-eu-west-2a" \
         | jq '.Subnets | .[0] | .SubnetId' \
         | sed 's/\"//g')
     echo "Retrieved subnet ID for slaves as $subnet_id"

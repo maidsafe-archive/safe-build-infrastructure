@@ -193,7 +193,7 @@ endif
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
 		-e "safe_build_infrastructure_repo_branch=staging" \
 		-u ansible ansible/ansible-provisioner.yml
-	./scripts/sh/prepare_bastion.sh
+	./scripts/sh/prepare_bastion.sh "staging"
 
 .ONESHELL:
 env-jenkins-prod-aws:
@@ -224,7 +224,7 @@ endif
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
 		-e "safe_build_infrastructure_repo_branch=additional_windows_slave" \
 		-u ansible ansible/ansible-provisioner.yml
-	./scripts/sh/prepare_bastion.sh
+	./scripts/sh/prepare_bastion.sh "prod"
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
