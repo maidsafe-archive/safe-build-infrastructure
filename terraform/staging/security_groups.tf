@@ -1,5 +1,5 @@
 resource "aws_security_group" "haproxy" {
-  name = "haproxy-staging"
+  name = "${var.haproxy_security_group}"
   description = "Connectivity for HAProxy."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "ansible_egress_ssh_to_haproxy" {
   internet connectivity via the NAT gateway, for installing updates and so on.
 */
 resource "aws_security_group" "linux_slaves" {
-  name = "linux_slaves-staging"
+  name = "${var.linux_slaves_security_group}"
   description = "Connectivity for Linux slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -124,7 +124,7 @@ resource "aws_security_group_rule" "linux_slaves_egress_ssh" {
 }
 
 resource "aws_security_group" "jenkins_master" {
-  name = "jenkins_master-staging"
+  name = "${var.jenkins_security_group}"
   description = "Connectivity for the Jenkins master."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -229,7 +229,7 @@ resource "aws_security_group_rule" "jenkins_master_ingress_all_windows_slave_tra
   private subnet for provisioning all the machines.
 */
 resource "aws_security_group" "ansible" {
-  name = "ansible-staging"
+  name = "${var.ansible_security_group}"
   description = "Connectivity for Ansible machine."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -318,7 +318,7 @@ resource "aws_security_group_rule" "ansible_egress_https" {
 }
 
 resource "aws_security_group" "windows_slaves" {
-  name = "windows_slaves-staging"
+  name = "${var.windows_slaves_security_group}"
   description = "Connectivity for Windows slaves."
   vpc_id = "${module.vpc.vpc_id}"
 }
@@ -369,7 +369,7 @@ resource "aws_security_group_rule" "windows_slaves_egress_https" {
 }
 
 resource "aws_security_group" "windows_bastion" {
-  name = "windows_bastion-staging"
+  name = "${var.windows_bastion_security_group}"
   description = "Connectivity for Windows Bastion host."
   vpc_id = "${module.vpc.vpc_id}"
 }
