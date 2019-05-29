@@ -65,9 +65,10 @@ resource "aws_instance" "windows_slave" {
     "${aws_security_group.windows_slaves.id}"
   ]
   tags {
-    Name = "windows_slave_001"
-    full_name = "rust_slave-windows-2016-x86_64"
+    Name = "${format("windows_slave_%03d", count.index + 1)}"
+    full_name = "${format("rust_slave_%03d-windows-2016-x86_64", count.index + 1)}"
     group = "windows_slaves"
     environment = "dev"
   }
+  count = "${var.windows_slave_count}"
 }

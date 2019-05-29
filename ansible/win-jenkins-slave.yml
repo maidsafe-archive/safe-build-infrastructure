@@ -2,6 +2,5 @@
 - hosts: windows_slaves
   roles:
     - win-psexec
-    - win-travis-slave
     - win-jenkins-slave
     - win-rust-slave

@@ -1,0 +1,7 @@
+---
+- name: 'create ansible user'
+  win_user:
+    name: "{{ ansible_account_username }}"
+    password: "{{ secret_ansible_account_password }}"
+    state: present
+    groups: 'Administrators, Users, Remote Desktop Users'

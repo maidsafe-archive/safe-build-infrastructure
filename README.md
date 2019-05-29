@@ -58,6 +58,7 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * Install [jq](https://stedolan.github.io/jq/) on your platform.
 * Install the AWSCLI on your platform. It's very easy to install with pip: `sudo pip install awscli`.
 * The [ec2.py](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.py) requires a boto installation: `sudo pip install boto`.
+* There's a Python script that requires an installation of the newer boto3 library: `sudo pip install boto3`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
 * Get a copy of the `ansible_dev` and `ansible_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/ansible_dev` and `ansible_prod`, then run `chmod 0400` on both.
@@ -67,6 +68,7 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
+* Set `export WINDOWS_ANSIBLE_USER_PASSWORD=<value>` to the known password for the Windows slaves. This can be found in the QA Keepass database.
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
@@ -76,7 +78,7 @@ To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
-* 1 Windows machine to be used as a slave
+* 2 Windows machines to be used as a slaves
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
@@ -113,7 +115,7 @@ When you're finished, you can tear the production environment down by running `m
 
 ##### Provisioning the macOS Slave
 
-The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that. If connectivity problems persist, try pinging the macOS slave from the remote endpoint, i.e. the HAProxy - this has immediately resolved a couple of connection problems experienced during implementation.
 
 ### Configure Jenkins
 

@@ -65,13 +65,16 @@ resource "aws_instance" "jenkins_master" {
     device_name = "/dev/sdb"
     volume_size = 500
     volume_type = "gp2"
-    delete_on_termination = false
+    delete_on_termination = true
   }
   ebs_block_device {
     device_name = "/dev/sdc"
-    volume_size = 500
+    volume_size = 50
     volume_type = "gp2"
-    delete_on_termination = false
+    delete_on_termination = true
+  }
+  root_block_device {
+    delete_on_termination = true
   }
 }
 
@@ -96,6 +99,9 @@ resource "aws_instance" "ansible" {
     group = "provisioners"
     environment = "prod"
   }
+  root_block_device {
+    delete_on_termination = true
+  }
 }
 
 resource "aws_instance" "haproxy" {
@@ -114,6 +120,9 @@ resource "aws_instance" "haproxy" {
     group = "provisioners"
     environment = "prod"
   }
+  root_block_device {
+    delete_on_termination = true
+  }
 }
 
 resource "aws_instance" "windows_slave" {
@@ -127,10 +136,14 @@ resource "aws_instance" "windows_slave" {
     "${aws_security_group.windows_slaves.id}"
   ]
   tags {
-    Name = "windows_slave_001"
-    full_name = "rust_slave-windows-2016-x86_64"
+    Name = "${format("windows_slave_%03d", count.index + 1)}"
+    full_name = "${format("rust_slave_%03d-windows-2016-x86_64", count.index + 1)}"
     group = "windows_slaves"
     environment = "prod"
+  }
+  count = "${var.windows_slave_count}"
+  root_block_device {
+    delete_on_termination = true
   }
 }
 
@@ -151,4 +164,7 @@ resource "aws_instance" "windows_bastion" {
     environment = "prod"
   }
   count = "${var.windows_bastion_count}"
+  root_block_device {
+    delete_on_termination = true
+  }
 }

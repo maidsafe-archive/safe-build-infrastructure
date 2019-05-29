@@ -7,6 +7,7 @@ jenkins_master
 
 [windows_slaves]
 windows_slave_001 ansible_become_pass="{{ ansible_password }}"
+windows_slave_002 ansible_become_pass="{{ ansible_password }}"
 
 [osx_slaves]
 macos_rust_slave ansible_host=192.168.1.190 ansible_user=qamaidsafe

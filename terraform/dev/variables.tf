@@ -54,7 +54,7 @@ variable "docker_slave_instance_type" {
 
 variable "windows_ami" {
   default = {
-    eu-west-2 = "ami-0186531b707ced2ef"
+    eu-west-2 = "ami-00d68c7ba3a78073f"
   }
   description = "AMI for Windows slave (Windows 2016)"
 }
@@ -62,4 +62,9 @@ variable "windows_ami" {
 variable "windows_instance_type" {
   default = "t3.small"
   description = "Instance type for Windows slave machine"
+}
+
+variable "windows_slave_count" {
+  default = 2
+  description = "Determines the number of Windows slaves"
 }

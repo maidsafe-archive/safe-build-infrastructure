@@ -3,7 +3,11 @@
     <name>Jenkins Slave</name>
     <description>Runs the Jenkins agent so the machine can be used as a build slave.</description>
     <executable>java</executable>
+{% if cloud_environment != "none" %}
+    <arguments>-jar {{ jenkins_slave_agent_path }} -jnlpUrl http://{{ jenkins_master_dns }}/computer/{{ ec2_tag_full_name }}/slave-agent.jnlp -secret SECRET_PLACEHOLDER -workDir {{ windows_rust_slave_working_path }}</arguments>
+{% else %}
     <arguments>-jar {{ jenkins_slave_agent_path }} -jnlpUrl http://{{ jenkins_master_dns }}/computer/{{ windows_rust_slave_full_name }}/slave-agent.jnlp -secret SECRET_PLACEHOLDER -workDir {{ windows_rust_slave_working_path }}</arguments>
+{% endif %}
     <logmode>rotate</logmode>
     <serviceaccount>
         <domain>.</domain>

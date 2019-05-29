@@ -41,7 +41,7 @@ variable "jenkins_master_ami" {
 }
 
 variable "jenkins_master_instance_type" {
-  default = "t2.micro"
+  default = "t2.medium"
   description = "Instance type for Jenkins Master"
 }
 
@@ -77,15 +77,20 @@ variable "haproxy_ami" {
 }
 
 variable "haproxy_instance_type" {
-  default = "t2.micro"
+  default = "t3.micro"
   description = "Instance type for HAProxy machine"
 }
 
 variable "windows_ami" {
   default = {
-    eu-west-2 = "ami-0186531b707ced2ef"
+    eu-west-2 = "ami-00d68c7ba3a78073f"
   }
   description = "AMI for Windows slave (Windows 2016)"
+}
+
+variable "windows_slave_count" {
+  default = 2
+  description = "Determines the number of Windows slaves"
 }
 
 variable "windows_instance_type" {
