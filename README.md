@@ -78,7 +78,7 @@ To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
-* 1 Windows machine to be used as a slave
+* 2 Windows machines to be used as a slaves
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
