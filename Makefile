@@ -226,6 +226,23 @@ endif
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "prod"
 
+provision-jenkins-staging-aws:
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "staging"
+	./scripts/sh/update_machine.sh "haproxy" "staging"
+	./scripts/sh/run_ansible_against_haproxy.sh "staging" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
+		ansible-playbook -i "environments/staging" \
+		--private-key="~/.ssh/ansible_staging" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=staging" \
+		-u ansible ansible/haproxy-ssl-config.yml
+	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
+
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "prod"
