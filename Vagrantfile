@@ -242,4 +242,23 @@ Vagrant.configure("2") do |config|
     hosts_config.add_host "#{ENV['JENKINS_MASTER_IP_ADDRESS']}", ["#{ENV['JENKINS_MASTER_URL']}"]
     hosts_config.add_host "#{ENV['DOCKER_SLAVE_IP_ADDRESS']}", ["#{ENV['DOCKER_SLAVE_URL']}"]
   end
+
+ config.vm.define "kali-linux" do |kali_linux|
+    kali_linux.vm.box = "offensive-security/kali-linux"
+    kali_linux.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.customize ["modifyvm", :id, "--vram", "128"]
+    end
+  end
+
+  config.vm.define "lubuntu-desktop" do |lubuntu_desktop|
+    lubuntu_desktop.vm.box = "chenhan/lubuntu-desktop-18.04"
+    lubuntu_desktop.vm.box_version = "20180704.0.0"
+    lubuntu_desktop.vm.provision "shell", path: "scripts/sh/loicsetup.sh"
+    lubuntu_desktop.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.customize ["modifyvm", :id, "--vram", "128"]
+    end
+  end
+
 end
