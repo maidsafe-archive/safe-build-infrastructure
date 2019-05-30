@@ -91,3 +91,12 @@
     path: "{{ build_user_home_path }}/.bash_profile"
     line: '[[ -s ~/.bashrc ]] && source ~/.bashrc'
   when: ansible_distribution == 'MacOSX'
+
+- name: 'create jenkins workspace (macOS)'
+  file:
+    path: "{{ macos_jenkins_workspace }}"
+    state: directory
+    mode: 0744
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
+  when: ansible_distribution == 'MacOSX'

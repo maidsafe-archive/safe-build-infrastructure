@@ -37,3 +37,4 @@ secret_ansible_account_password: !vault |
   34316539623263373234386533333730326638303265323561653335303666383431356361313134
   3832663462306362373430343234303363646330623165343231
 windows_ansible_user_password_variable: WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
+macos_jenkins_workspace: "/Users/jenkins/jenkins-{{ cloud_environment }}-workspace"

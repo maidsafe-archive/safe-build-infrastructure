@@ -122,7 +122,7 @@ jenkins:
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
         numExecutors: 1
-        remoteFS: "/Users/jenkins"
+        remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
 {% else %}
     - permanent:
@@ -162,7 +162,7 @@ jenkins:
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
         numExecutors: 1
-        remoteFS: "/Users/jenkins"
+        remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
   numExecutors: 1
   primaryView:
