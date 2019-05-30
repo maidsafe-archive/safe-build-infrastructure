@@ -26,12 +26,12 @@ function get_proxy_dns() {
 function run_ansible() {
     echo "Jenkins master is at $proxy_dns"
     echo "Attempting Ansible run against macOS slave... (can be 10+ seconds before output)"
-    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/prod/hosts \
+    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "environments/$cloud_environment/hosts" \
         --limit=macos_rust_slave \
         --vault-password-file=~/.ansible/vault-pass \
         --private-key=~/.ssh/id_rsa \
         -e "wg_server_endpoint=$proxy_dns" \
-        -e "cloud_environment=prod" \
+        -e "cloud_environment=$cloud_environment" \
         -e "wg_run_on_host=True" \
         ansible/osx-rust-slave.yml
 }

@@ -272,8 +272,11 @@ provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 		-e "cloud_environment=none" \
 		ansible/osx-rust-slave.yml
 
+provision-rust_slave-macos-mojave-x86_64-staging-aws:
+	./scripts/sh/run_ansible_against_mac_slave.sh "staging"
+
 provision-rust_slave-macos-mojave-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh
+	./scripts/sh/run_ansible_against_mac_slave.sh "prod"
 
 clean-rust_slave-macos-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
