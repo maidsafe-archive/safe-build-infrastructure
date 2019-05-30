@@ -40,5 +40,5 @@ secret_wg_macos_rust_slave_private_key: !vault |
   3932646664313039333732356538333437333535613864393663
 wg_macos_rust_slave_ip_address: 10.190.125.3
 wg_macos_rust_slave_ip_address_with_mask: "{{ wg_macos_rust_slave_ip_address }}/32"
-wg_macos_rust_slave_allowed_ip_range: "0.0.0.0/0"
+wg_macos_rust_slave_allowed_ip_range: "{{ wg_server_ip_address }}/24"
 osx_rust_slave_ip_address: "{{ wg_macos_rust_slave_ip_address }}"
