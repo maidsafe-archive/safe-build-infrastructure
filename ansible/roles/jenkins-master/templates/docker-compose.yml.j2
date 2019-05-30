@@ -21,7 +21,7 @@ services:
   jenkins:
     image: {{ customised_jenkins_image_name }}
     restart: always
-{% if cloud_environment != "prod" or cloud_environment == "staging" %}
+{% if cloud_environment != "prod" or cloud_environment != "staging" %}
     ports:
       - {{ jenkins_web_port }}:8080
       - {{ jenkins_slave_port }}:50000
