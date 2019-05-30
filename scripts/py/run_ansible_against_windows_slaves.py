@@ -75,6 +75,34 @@ def get_jenkins_master_location(environment):
         return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
     return response['Reservations'][0]['Instances'][0]['PublicDnsName']
 
+def print_jenkins_master_location(environment):
+    client = boto3.client('ec2')
+    response = client.describe_instances(
+        Filters=[
+            {
+                'Name': 'tag:Name',
+                'Values': ['jenkins_master']
+            },
+            {
+                'Name': 'tag:environment',
+                'Values': [environment]
+            },
+            {
+                'Name': 'instance-state-name',
+                'Values': ['running']
+            }
+        ]
+    )
+    if environment == 'prod':
+        print('You can now access Jenkins on https://jenkins.maidsafe.net/.')
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'dev':
+        print('You can now access Jenkins on http://{0}.'.format(response['Reservations'][0]['Instances'][0]['PublicDnsName']))
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'staging':
+        print('You can now access Jenkins on https://jenkins-staging.maidsafe.net/.')
+        print('Note that some machines may not be available until after they have rebooted.')
+
 def wait_for_instance_password_to_become_available(instance_id):
     client = boto3.client('ec2')
     password_data = client.get_password_data(InstanceId=instance_id)['PasswordData']
@@ -166,6 +194,7 @@ def main():
         set_password_for_ansible_user(
             machine_name, slave_info[0], environment, ec2_ini_file)
     jenkins_slave_ansible_run(environment, ec2_ini_file)
+    print_jenkins_master_location(environment)
     reboot_slaves(slaves)
     return 0
 

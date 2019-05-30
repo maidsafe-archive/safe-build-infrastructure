@@ -39,6 +39,8 @@ What follows is a list of some of the VMs available in this repository. The name
 | vm-rust_slave_msys2-windows-2012_r2-x86_64-vbox    | Windows 2012 R2 | Use for debugging issues running Windows builds on Travis, which uses Git Bash as a shell. The reason why it's a separate box is because sometimes Git Bash and MSYS2 can interfere with each other. | Git Bash, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                                                                |
 | vm-jenkins_rust_slave-windows-2016-x86_64-vbox     | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis. Also functions as a Jenkins slave, so this needs to be used in combination with a Jenkins master.         | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows), Jenkins slave agent. |
 | vm-travis_rust_slave-windows-2016-x86_64-vbox      | Windows 2016    | Use for building Rust applications on Windows with an environment closely matching Travis.                                                                                                           | All the packages in the Travis Windows environment, rust 1.32.0, ConEmu, Chrome (the last 2 are just for alternatives to the unfortunately poor default tools on Windows).                      |
+| vm-kali_linux-v2019.2.0-x86_64-vbox                | Kali 2019.2.0   | Use for penetration testing and securtiy auditing.                                                                                                                                                   | Standard Kali installation                                                                                                                                                                      |
+| vm-pen_test_desktop_lubuntu-18.04-x86_64-vbox      | Lubuntu 18.04   | Use for DoS penetration testing. Exercise caution using the packaged tool.                                                                                                                           | Monodevelop, Git and LOIC DoS attack test tool.                                                                                                                                                 |
 
 The Linux boxes here use the official, publicly available Vagrant base boxes. There aren't really any reliable base boxes available for Windows, so this repo contains a [Packer](https://www.packer.io/intro/) template for building the Windows box.
 
@@ -78,7 +80,7 @@ To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
 * 2 CentOS Linux machines to be used as Docker slaves
-* 1 Windows machine to be used as a slave
+* 2 Windows machines to be used as a slaves
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
@@ -115,7 +117,7 @@ When you're finished, you can tear the production environment down by running `m
 
 ##### Provisioning the macOS Slave
 
-The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that.
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that. If connectivity problems persist, try pinging the macOS slave from the remote endpoint, i.e. the HAProxy - this has immediately resolved a couple of connection problems experienced during implementation.
 
 ### Configure Jenkins
 

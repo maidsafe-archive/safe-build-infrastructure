@@ -70,7 +70,7 @@ jenkins:
             stopOnTerminate: false
             subnetId: "{{ slave_vpc_subnet_id }}"
             t2Unlimited: false
-            type: T2Micro
+            type: T2Medium
             useDedicatedTenancy: false
             useEphemeralDevices: false
             usePrivateDnsName: false
