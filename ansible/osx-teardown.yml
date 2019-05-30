@@ -2,6 +2,14 @@
 - hosts: osx_slaves
   become: True
   tasks:
+    - name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
+      command: "wg-quick down {{ item }}"
+      ignore_errors: yes
+      with_items:
+        - wg0
+        - wg0-dev
+        - wg0-staging
+        - wg0-prod
     - name: 'uninstall awscli'
       pip:
         name: 'awscli'
@@ -32,14 +40,6 @@
       homebrew_tap:
         name: homebrew/cask-versions
         state: absent
-    - name: 'stop wireguard (if not running this task will error but that is fine) (macOS)'
-      command: "wg-quick down {{ item }}"
-      ignore_errors: yes
-      with_items:
-        - wg0
-        - wg0-dev
-        - wg0-staging
-        - wg0-prod
     - name: 'uninstall wireguard'
       homebrew:
         name: wireguard-tools
