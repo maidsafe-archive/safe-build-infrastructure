@@ -3,6 +3,16 @@ variable "region" {
   description = "The AWS region to use"
 }
 
+variable "environment_name" {
+  default = "prod"
+  description = "Name for the environment. Just used to reduce maintenance."
+}
+
+variable "subnet_name" {
+  default = "jenkins_environment-staging"
+  description = "The name for the subnet used in the VPC"
+}
+
 variable "jenkins_elastic_ip" {
   default = "eipalloc-0d02a5ea729669b98"
   description = ""
@@ -20,6 +30,11 @@ variable "haproxy_key_pair" {
 
 variable "jenkins_key_pair" {
   default = "jenkins-prod"
+  description = "The key pair for the Jenkins master instance"
+}
+
+variable "docker_slave_key_pair" {
+  default = "docker_slave-staging"
   description = "The key pair for the Jenkins master instance"
 }
 
@@ -101,4 +116,34 @@ variable "windows_instance_type" {
 variable "windows_bastion_count" {
   default = 0
   description = "Set this to 1 if you need a Windows Bastion host for debugging problems with the Windows slave in the private subnet."
+}
+
+variable "ansible_security_group" {
+  default = "ansible-staging"
+  description = "Name of the security group for the Ansible instance"
+}
+
+variable "haproxy_security_group" {
+  default = "haproxy-staging"
+  description = "Name of the security group for the HAProxy instance"
+}
+
+variable "jenkins_security_group" {
+  default = "jenkins_master-staging"
+  description = "Name of the security group for the Jenkins master instance"
+}
+
+variable "linux_slaves_security_group" {
+  default = "linux_slaves-staging"
+  description = "Name of the security group for the Linux slaves"
+}
+
+variable "windows_slaves_security_group" {
+  default = "windows_slaves-staging"
+  description = "Name of the security group for any Windows slaves"
+}
+
+variable "windows_bastion_security_group" {
+  default = "windows_bastion-staging"
+  description = "Name of the security group for the Windows bastion"
 }

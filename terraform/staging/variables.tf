@@ -5,7 +5,7 @@ variable "region" {
 
 variable "environment_name" {
   default = "staging"
-  description = "staging"
+  description = "Name for the environment. Just used to reduce maintenance."
 }
 
 variable "subnet_name" {

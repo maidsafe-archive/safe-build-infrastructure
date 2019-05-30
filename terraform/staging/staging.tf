@@ -9,7 +9,7 @@ resource "aws_key_pair" "haproxy" {
 
 resource "aws_key_pair" "jenkins" {
   key_name = "${var.jenkins_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW+gx3axoFvvafQX5camHzGGvu+AExYdKOwN3o1aXmbSpBmgmtcY9eQyukId7al9yoTkCIWB2PjBwpmcGBPQIIsEfaw1kD6JhV6a4OxWp9uRbPNMPnJJTZo/c9Vzze7d02zRh8x0zJ1+NsIWxfFr5jXli9xeKeIQV6e5GLrMV0QRRXy+xglrNg9bJdvfw1eBGOwxYh169ug+Mzp2MEtz+PggAMECV37vNX4w6a0ahJrLs5bfDtAZTRvikgJ6w6CQwVidBlY3XAWC+Q4fHe8DvSS6sN8F0U6gjvdXhS/AvuVLnqeZywUCkYkm3gfW0SKyLw8zKJJ6wiEk7NSArdRJpH"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCj7LvCOyyw5pbT3yWKtmYowx8h19aicesY0BYTqE9BzpI6LFT3TU8EwMVGhwQ/PE2bJm3qxKK4x0caVn7yt9X/CR0wm9t4jwSNy6RyO7t2BaJzM3VmhJ7Y4WfHnobFadA4G30tJnoUkbcnqOLTUJqexnxMeDEVyDuQnEt1GkjtTENM5E5msOfVHwKCn0x21HdQMp9UkF0BpCMhuYVAqKxqsPINQRqbFUFP3EFY+rUVrJnBxyyJaiZgutpmgwSTkWPXjtG/IZtANyiUFj3swutz6KI9HvLJvgaBQyLEZRIlSE+XA0LUuIiXFjt+MWFji9OeXRSeMTbJU42WFEAlN3oF"
 }
 
 resource "aws_key_pair" "windows_slave" {
