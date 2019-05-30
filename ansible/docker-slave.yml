@@ -14,7 +14,7 @@
           group: "root",
           mode: 0755
         },
-        when: cloud_environment == "prod"
+        when: cloud_environment == "prod" or cloud_environment == "staging"
       }
     - docker
     - jenkins-slave
@@ -27,6 +27,6 @@
           group: "jenkins",
           mode: 0755
         },
-        when: cloud_environment == "prod"
+        when: cloud_environment == "prod" or cloud_environment == "staging"
       }
     - docker-slave-images
