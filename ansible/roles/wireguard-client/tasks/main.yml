@@ -8,6 +8,10 @@
     msg: "An IP address or hostname must be supplied for wg_server_endpoint. Run Ansible again and pass the server endpoint with -e."
   when: wg_server_endpoint is not defined or wg_server_endpoint == ""
 
+- fail:
+    msg: "The cloud_environment variable must be set for WireGuard. Valid values are 'dev', 'staging', or 'prod'."
+  when: cloud_environment is not defined or cloud_environment == ""
+
 - name: 'create wireguard config directory'
   file:
     path: "{{ wg_config_path }}"
@@ -19,7 +23,7 @@
 - name: 'copy configuration'
   template:
     src: "{{ inventory_hostname }}.conf"
-    dest: "{{ wg_config_path }}/wg0.conf"
+    dest: "{{ wg_config_path }}/wg0-{{ cloud_environment }}.conf"
     mode: 0600
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
