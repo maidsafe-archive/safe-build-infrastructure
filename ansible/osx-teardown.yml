@@ -14,33 +14,41 @@
       pip:
         name: 'awscli'
         state: absent
+      ignore_errors: yes
     - name: 'uninstall pip'
       pip:
         name: 'pip'
         state: absent
+      ignore_errors: yes
     - name: 'remove jenkins user'
       user:
         name: 'jenkins'
         state: absent
+      ignore_errors: yes
     - name: 'remove jenkins group'
       group:
         name: 'jenkins'
         state: absent
+      ignore_errors: yes
     - name: 'remove jenkins user home directory'
       file:
         path: /Users/jenkins
         state: absent
+      ignore_errors: yes
     - name: 'uninstall java'
       homebrew_cask:
         name: homebrew/cask-versions/adoptopenjdk8
         state: absent
       become: yes
       become_user: qamaidsafe
+      ignore_errors: yes
     - name: 'uninstall caskroom/versions'
       homebrew_tap:
         name: homebrew/cask-versions
         state: absent
+      ignore_errors: yes
     - name: 'uninstall wireguard'
       homebrew:
         name: wireguard-tools
         state: absent
+      ignore_errors: yes
