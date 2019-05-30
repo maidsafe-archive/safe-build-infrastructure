@@ -124,6 +124,13 @@ vm-jenkins_rust_slave-windows-2016-x86_64-vbox:
 vm-travis_rust_slave-windows-2016-x86_64-vbox:
 	vagrant up travis_rust_slave-windows-2016-x86_64 --provision
 
+vm-kali_linux-v2019.2.0-x86_64-vbox:
+	vagrant up kali-linux
+
+vm-pen_test_desktop-lubuntu-18.04-x86_64-vbox:
+	vagrant up lubuntu-desktop
+	vagrant reload lubuntu-desktop
+
 vm-docker_slave-centos-7.6-x86_64-aws:
 	vagrant up docker_slave-centos-7.6-x86_64-aws --provision --provider=aws
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
