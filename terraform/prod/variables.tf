@@ -9,7 +9,7 @@ variable "environment_name" {
 }
 
 variable "subnet_name" {
-  default = "jenkins_environment-staging"
+  default = "jenkins_environment-${var.environment_name}"
   description = "The name for the subnet used in the VPC"
 }
 
@@ -34,7 +34,7 @@ variable "jenkins_key_pair" {
 }
 
 variable "docker_slave_key_pair" {
-  default = "docker_slave-staging"
+  default = "docker_slave-prod"
   description = "The key pair for the Jenkins master instance"
 }
 
@@ -119,31 +119,31 @@ variable "windows_bastion_count" {
 }
 
 variable "ansible_security_group" {
-  default = "ansible-staging"
+  default = "ansible-${var.environment_name}"
   description = "Name of the security group for the Ansible instance"
 }
 
 variable "haproxy_security_group" {
-  default = "haproxy-staging"
+  default = "haproxy-${var.environment_name}"
   description = "Name of the security group for the HAProxy instance"
 }
 
 variable "jenkins_security_group" {
-  default = "jenkins_master-staging"
+  default = "jenkins_master-${var.environment_name}"
   description = "Name of the security group for the Jenkins master instance"
 }
 
 variable "linux_slaves_security_group" {
-  default = "linux_slaves-staging"
+  default = "linux_slaves-${var.environment_name}"
   description = "Name of the security group for the Linux slaves"
 }
 
 variable "windows_slaves_security_group" {
-  default = "windows_slaves-staging"
+  default = "windows_slaves-${var.environment_name}"
   description = "Name of the security group for any Windows slaves"
 }
 
 variable "windows_bastion_security_group" {
-  default = "windows_bastion-staging"
+  default = "windows_bastion-${var.environment_name}"
   description = "Name of the security group for the Windows bastion"
 }
