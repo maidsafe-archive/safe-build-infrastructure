@@ -9,7 +9,7 @@ variable "environment_name" {
 }
 
 variable "subnet_name" {
-  default = "jenkins_environment-${var.environment_name}"
+  default = "jenkins_environment-prod"
   description = "The name for the subnet used in the VPC"
 }
 
@@ -119,31 +119,31 @@ variable "windows_bastion_count" {
 }
 
 variable "ansible_security_group" {
-  default = "ansible-${var.environment_name}"
+  default = "ansible-prod"
   description = "Name of the security group for the Ansible instance"
 }
 
 variable "haproxy_security_group" {
-  default = "haproxy-${var.environment_name}"
+  default = "haproxy-prod"
   description = "Name of the security group for the HAProxy instance"
 }
 
 variable "jenkins_security_group" {
-  default = "jenkins_master-${var.environment_name}"
+  default = "jenkins_master-prod"
   description = "Name of the security group for the Jenkins master instance"
 }
 
 variable "linux_slaves_security_group" {
-  default = "linux_slaves-${var.environment_name}"
+  default = "linux_slaves-prod"
   description = "Name of the security group for the Linux slaves"
 }
 
 variable "windows_slaves_security_group" {
-  default = "windows_slaves-${var.environment_name}"
+  default = "windows_slaves-prod"
   description = "Name of the security group for any Windows slaves"
 }
 
 variable "windows_bastion_security_group" {
-  default = "windows_bastion-${var.environment_name}"
+  default = "windows_bastion-prod"
   description = "Name of the security group for the Windows bastion"
 }
