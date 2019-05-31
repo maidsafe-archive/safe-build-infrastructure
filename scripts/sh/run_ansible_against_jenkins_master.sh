@@ -34,12 +34,16 @@ function get_proxy_dns() {
 }
 
 function get_subnet_id() {
-    subnet_id=$(aws ec2 describe-subnets \
-        --filters \
-        "Name=tag:Name,Values=jenkins_environment-$cloud_environment-private-eu-west-2a" \
-        | jq '.Subnets | .[0] | .SubnetId' \
-        | sed 's/\"//g')
-    echo "Retrieved subnet ID for slaves as $subnet_id"
+    if [[ "$cloud_environment" == "dev" ]]; then
+        echo "No private subnet for dev environment."
+    else
+        subnet_id=$(aws ec2 describe-subnets \
+            --filters \
+            "Name=tag:Name,Values=jenkins_environment-$cloud_environment-private-eu-west-2a" \
+            | jq '.Subnets | .[0] | .SubnetId' \
+            | sed 's/\"//g')
+        echo "Retrieved subnet ID for slaves as $subnet_id"
+    fi
 }
 
 function run_ansible() {
@@ -59,5 +63,5 @@ function run_ansible() {
 }
 
 get_proxy_dns
-[[ "$cloud_environment" == "prod" ]] && get_subnet_id
+get_subnet_id
 run_ansible
