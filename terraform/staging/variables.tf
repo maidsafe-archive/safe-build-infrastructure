@@ -23,6 +23,11 @@ variable "availability_zones" {
   description = "The availability zones to use"
 }
 
+variable "ansible_key_pair" {
+  default = "ansible-staging"
+  description = "The key pair for the Bastion instance"
+}
+
 variable "haproxy_key_pair" {
   default = "haproxy-staging"
   description = "The key pair for the HAProxy instance"

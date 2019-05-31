@@ -2,6 +2,11 @@ provider "aws" {
   region = "${var.region}"
 }
 
+resource "aws_key_pair" "ansible" {
+  key_name = "${var.ansible_key_pair}"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwWGjEnhGRD3mY9UgoK1krHs8VZVu0TzfAgsTwT8EqBgeT5mPnLaMuGTP7Q2qsertIAM7+AlAYdA2a5qeP+HKkjA0nutFYxsxblg/zSubznlApstVjx/NN48eXE0xFdj4dfqYQf8YFxHHkoIIPPqmt00lBubLVnzHQc3Nm18oIWuX0nJBUD6Y5BBf1xEjoPkQostQAmneuoO7S6ojT7GFr1GDiNJGxhvAdFR7WW1OtwUkfWx/7mXVdryJ1wjsmr6qFwsXXv4HtmXVGvCrQV8grFUhxAAljHPijoqJoBb5Hatb5B8n9R8DMTQYJBrWVuLEd6gzWmSA9VfVsOTYAhLSb"
+}
+
 resource "aws_key_pair" "haproxy" {
   key_name = "${var.haproxy_key_pair}"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGhjnDd0oh+eNKOvyRY6hA2CIGWztDudLJ0tcdX3bPo3H3caYRSPeuAnruovu6Fnf36AMIJIteoMNx9yZgA+/Y2wVPPE6h4RpW7OOGB0f5GobFPMEfsC3dQcP+OK6PRr5x6zeFhL2cYU69pJCaK8eRd+Q/H8ORbD3LjkCHGyPm3IO3+j4utOmTFHgNZcvHHYecrHqsdd6IlxgCb4vPOrgN+HpCMzz+o+pcgQ1WozReo5gmnVZHXfNQ8TXmWwwZOU8GXeR3MOP6C6nnbMnmm4WmxQOjXuzMdmk7FSvmstjV1M4SN0xdDheIFZjE2YMZ5tIDoPEBxqA/9YMKdNh1ak6V"
@@ -86,7 +91,7 @@ resource "aws_eip_association" "jenkins_master_eip_association" {
 resource "aws_instance" "ansible" {
   ami = "${lookup(var.ansible_ami, var.region)}"
   instance_type = "${var.ansible_instance_type}"
-  key_name = "${var.jenkins_key_pair}"
+  key_name = "${var.ansible_key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
   user_data = "${file("../../scripts/sh/setup_ansible_user_${var.environment_name}.sh")}"

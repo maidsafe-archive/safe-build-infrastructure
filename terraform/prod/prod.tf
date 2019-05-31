@@ -2,6 +2,11 @@ provider "aws" {
   region = "${var.region}"
 }
 
+resource "aws_key_pair" "ansible" {
+  key_name = "${var.ansible_key_pair}"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy2jDTSMksE7ZXbDMG/0RWi6jsKUSa5ui+hEzr65FiSUY93EoB/+bXyRnzSmUOp/p1tfbaw5G2KIEhKC5y1rP3FIaxm4k70tS4ZWE235W8ysW4W7MhaxLWtVrtn+ksjL8fa9YBtkxhtjcpnGYDA8OftR3HAFZKsEtGgJ+GCm5NYnIgkDl+NFBQ0oJADiae1j0AiuBPH2tZimYL6TG10CbJV+VsEgGd4a5yRwYX+6smiOMcozLmc6QfobohgVlVJveUnrspDZyBTKezaC42Rv9iZ6YsYDGx/WAkhNWJaH34qkeD/W03Z+g05hAyMDNgVtFnxljcghVEr9NKufCdKliZ"
+}
+
 resource "aws_key_pair" "haproxy" {
   key_name = "${var.haproxy_key_pair}"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCdbI8UCzJb95JQ7c3mvkSVy1mo79tjr+YP+bd3LvPpRSu53YjwWMsxQIzhuMqqQjHccWWrRMCVsv9rIRIHskS9TsrX31g7F8Sc0C7nsFWMMfxTGPE1RWRfvcN7ohh6a/N0vrc7zT4YQ1yj/9ZXTDAAdwzAMjZV9dbydJ4DLXQRf+fxtbUq1/zNOOrLAsK/PAFXkaiVoQ4Jp1Ndsd2dfLVa+cz+irLaK/acbU5dePY9A37KKfV15ly2xD8/ukrNXfVMVxc+IcmOIEXL1VminaYNX5m6hj/1x7JZCFt+jOiEqf/EcJF+ly2+UWGNvZBqQMHrRkGIzyh8KRIUz7K6Qr//"
