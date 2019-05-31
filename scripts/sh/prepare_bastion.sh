@@ -9,6 +9,7 @@ fi
 ansible_bastion_url=$(aws ec2 describe-instances \
     --filters \
     "Name=tag:Name,Values=ansible_bastion" \
+    "Name=tag:environment,Values=$cloud_environment" \
     "Name=instance-state-name,Values=running" \
     | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
     | sed 's/\"//g')
