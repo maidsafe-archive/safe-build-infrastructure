@@ -63,14 +63,15 @@ It's possible to get an environment on AWS, but there is some setup required on 
 * There's a Python script that requires an installation of the newer boto3 library: `sudo pip install boto3`.
 * Save [ec2.ini](https://github.com/ansible/ansible/blob/devel/contrib/inventory/ec2.ini) at `/etc/ansible/ec2.ini`.
 * Edit `/etc/ansible/ec2.ini` an uncomment the `#hostname_variable = tag_Name` by removing the hash at the start.
-* Get a copy of the `ansible_dev` and `ansible_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/ansible_dev` and `ansible_prod`, then run `chmod 0400` on both.
-* Get a copy of the `jenkins_dev` and `jenkins_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/jenkins_dev` and `~/.ssh/jenkins_prod`, then run `chmod 0400` on both.
-* Get a copy of the `windows_slave_dev` and `windows_slave_prod` SSH keys from someone in QA and save them to `~/.ssh/windows_slave_dev` and `~/.ssh/windows_slave_prod`, then run `chmod 0400` on both.
+* Get a copy of the `ansible_dev`, `ansible_staging` and `ansible_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/ansible_dev`, `~/.ssh/ansible_staging` and `~/.ssh/ansible_prod`, then run `chmod 0400` on the 3 new files.
+* Get a copy of the `jenkins_dev`, `jenkins_staging` and `jenkins_prod` SSH keys from the QA Keepass database and save them to `~/.ssh/jenkins_dev`, `~/.ssh/jenkins_staging` and `~/.ssh/jenkins_prod`, then run `chmod 0400` on the 3 new files.
+* Get a copy of the `windows_slave_dev`, `windows_slave_staging` and `windows_slave_prod` SSH keys from someone in QA and save them to `~/.ssh/windows_slave_dev`, `~/.ssh/windows_slave_staging` and `~/.ssh/windows_slave_prod`, then run `chmod 0400` on the 3 new files.
 * Get a copy of the Ansible vault password from the QA Keepass database, then put that in `~/.ansible/vault-pass` on the host.
 * Set `export AWS_DEFAULT_REGION=eu-west-2` to set the default region to `eu-west-2`.
 * Set `export AWS_ACCESS_KEY_ID=<your key ID>` to the access key ID for your account.
 * Set `export AWS_SECRET_ACCESS_KEY=<your secret access key>` to the secret access key for your account.
-* Set `export WINDOWS_ANSIBLE_USER_PASSWORD=<value>` to the known password for the Windows slaves. This can be found in the QA Keepass database.
+* Set `export WINDOWS_PROD_ANSIBLE_USER_PASSWORD=<value>` to the known password for the Windows slaves. This can be found in the QA Keepass database.
+* Set `export WINDOWS_STAGING_ANSIBLE_USER_PASSWORD=<value>` to the known password for the Windows slaves. This can be found in the QA Keepass database.
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
