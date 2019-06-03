@@ -30,7 +30,7 @@
   lineinfile:
     path: /home/ansible/.bashrc
     state: present
-    line: "export WINDOWS_ANSIBLE_USER_PASSWORD={{ secret_ansible_account_password }}"
+    line: "export {{ windows_ansible_user_password_variable }}={{ secret_ansible_account_password }}"
 
 - name: 'set the aws default region in ansible user ~/.bashrc'
   lineinfile:

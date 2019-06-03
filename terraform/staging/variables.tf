@@ -4,17 +4,17 @@ variable "region" {
 }
 
 variable "environment_name" {
-  default = "prod"
+  default = "staging"
   description = "Name for the environment. Just used to reduce maintenance."
 }
 
 variable "subnet_name" {
-  default = "jenkins_environment-prod"
+  default = "jenkins_environment-staging"
   description = "The name for the subnet used in the VPC"
 }
 
 variable "jenkins_elastic_ip" {
-  default = "eipalloc-0d02a5ea729669b98"
+  default = "eipalloc-059e4e377d46c8a84"
   description = ""
 }
 
@@ -24,32 +24,32 @@ variable "availability_zones" {
 }
 
 variable "ansible_key_pair" {
-  default = "ansible-prod"
+  default = "ansible-staging"
   description = "The key pair for the Bastion instance"
 }
 
 variable "haproxy_key_pair" {
-  default = "haproxy-prod"
+  default = "haproxy-staging"
   description = "The key pair for the HAProxy instance"
 }
 
 variable "jenkins_key_pair" {
-  default = "jenkins-prod"
+  default = "jenkins-staging"
   description = "The key pair for the Jenkins master instance"
 }
 
 variable "docker_slave_key_pair" {
-  default = "docker_slave-prod"
+  default = "docker_slave-staging"
   description = "The key pair for the Jenkins master instance"
 }
 
 variable "windows_slave_key_pair" {
-  default = "windows_slave-prod"
+  default = "windows_slave-staging"
   description = "The key pair for any Windows slaves"
 }
 
 variable "windows_bastion_key_pair" {
-  default = "windows_bastion-prod"
+  default = "windows_bastion-staging"
   description = "The key pair for the Windows bastion"
 }
 
@@ -124,31 +124,31 @@ variable "windows_bastion_count" {
 }
 
 variable "ansible_security_group" {
-  default = "ansible-prod"
+  default = "ansible-staging"
   description = "Name of the security group for the Ansible instance"
 }
 
 variable "haproxy_security_group" {
-  default = "haproxy-prod"
+  default = "haproxy-staging"
   description = "Name of the security group for the HAProxy instance"
 }
 
 variable "jenkins_security_group" {
-  default = "jenkins_master-prod"
+  default = "jenkins_master-staging"
   description = "Name of the security group for the Jenkins master instance"
 }
 
 variable "linux_slaves_security_group" {
-  default = "linux_slaves-prod"
+  default = "linux_slaves-staging"
   description = "Name of the security group for the Linux slaves"
 }
 
 variable "windows_slaves_security_group" {
-  default = "windows_slaves-prod"
+  default = "windows_slaves-staging"
   description = "Name of the security group for any Windows slaves"
 }
 
 variable "windows_bastion_security_group" {
-  default = "windows_bastion-prod"
+  default = "windows_bastion-staging"
   description = "Name of the security group for the Windows bastion"
 }

@@ -14,18 +14,12 @@ if [[ -z "$ec2_ini_file" ]]; then
 fi
 
 function get_proxy_dns() {
-    nc -z -vvv jenkins.maidsafe.net 80
-    rc=$?
-    if [[ "$rc" == 0 ]]; then
+    if [[ "$cloud_environment" == "prod" ]]; then
         proxy_dns="jenkins.maidsafe.net"
-    elif [[ "$cloud_environment" == "prod" ]]; then
-        proxy_dns=$(aws ec2 describe-instances \
-            --filters \
-            "Name=tag:Name,Values=haproxy" \
-            "Name=tag:environment,Values=$cloud_environment" \
-            "Name=instance-state-name,Values=running" \
-            | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
-            | sed 's/\"//g')
+        jenkins_master_url="https://jenkins.maidsafe.net/"
+    elif [[ "$cloud_environment" == "staging" ]]; then
+        proxy_dns="jenkins-staging.maidsafe.net"
+        jenkins_master_url="https://jenkins-staging.maidsafe.net/"
     else
         proxy_dns=$(aws ec2 describe-instances \
             --filters \
@@ -34,17 +28,22 @@ function get_proxy_dns() {
             "Name=instance-state-name,Values=running" \
             | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
             | sed 's/\"//g')
+        jenkins_master_url="http://$proxy_dns/"
     fi
     echo "Jenkins master is at $proxy_dns"
 }
 
 function get_subnet_id() {
-    subnet_id=$(aws ec2 describe-subnets \
-        --filters \
-        "Name=tag:Name,Values=jenkins_environment-private-eu-west-2a" \
-        | jq '.Subnets | .[0] | .SubnetId' \
-        | sed 's/\"//g')
-    echo "Retrieved subnet ID for slaves as $subnet_id"
+    if [[ "$cloud_environment" == "dev" ]]; then
+        echo "No private subnet for dev environment."
+    else
+        subnet_id=$(aws ec2 describe-subnets \
+            --filters \
+            "Name=tag:Name,Values=jenkins_environment-$cloud_environment-private-eu-west-2a" \
+            | jq '.Subnets | .[0] | .SubnetId' \
+            | sed 's/\"//g')
+        echo "Retrieved subnet ID for slaves as $subnet_id"
+    fi
 }
 
 function run_ansible() {
@@ -56,7 +55,7 @@ function run_ansible() {
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
         -e "cloud_environment=$cloud_environment" \
-        -e "jenkins_master_url=http://$proxy_dns/" \
+        -e "jenkins_master_url=$jenkins_master_url" \
         -e "slave_vpc_subnet_id=$subnet_id" \
         -e "wg_server_endpoint=$proxy_dns" \
         -e "wg_run_on_host=False" \
@@ -64,5 +63,5 @@ function run_ansible() {
 }
 
 get_proxy_dns
-[[ "$cloud_environment" == "prod" ]] && get_subnet_id
+get_subnet_id
 run_ansible

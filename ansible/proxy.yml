@@ -5,5 +5,11 @@
     - hardening
     - lets-encrypt
     - haproxy
-    - { role: wireguard, when: cloud_environment == "prod" }
-    - { role: wireguard-server, when: cloud_environment == "prod" }
+    - {
+        role: wireguard,
+        when: cloud_environment == "prod" or cloud_environment == "staging"
+      }
+    - {
+        role: wireguard-server,
+        when: cloud_environment == "prod" or cloud_environment == "staging"
+      }

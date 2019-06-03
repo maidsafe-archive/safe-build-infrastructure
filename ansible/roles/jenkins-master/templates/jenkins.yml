@@ -7,7 +7,7 @@ jenkins:
     - "JNLP4-connect"
     - "Ping"
   authorizationStrategy:
-{% if cloud_environment == "prod" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" %}
     globalMatrix:
       grantedPermissions:
       - "Overall/Read:authenticated"
@@ -40,7 +40,7 @@ jenkins:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   mode: NORMAL
-{% if cloud_environment == "prod" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" %}
   clouds:
     - amazonEC2:
         cloudName: "jenkins"
@@ -94,7 +94,7 @@ jenkins:
         remoteFS: "/home/jenkins"
 {% endfor %}
 {% endif %}
-{% if cloud_environment == "dev" or cloud_environment == "prod" %}
+{% if cloud_environment != "none" %}
 {% for slave in groups['windows_slaves'] %}
     - permanent:
         launcher:
@@ -109,7 +109,7 @@ jenkins:
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
 {% endfor %}
-{% if cloud_environment == "prod" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" %}
     - permanent:
         launcher:
           sSHLauncher:
@@ -122,7 +122,7 @@ jenkins:
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
         numExecutors: 1
-        remoteFS: "/Users/jenkins"
+        remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
 {% else %}
     - permanent:
@@ -162,7 +162,7 @@ jenkins:
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
         numExecutors: 1
-        remoteFS: "/Users/jenkins"
+        remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
   numExecutors: 1
   primaryView:

@@ -168,7 +168,46 @@ env-jenkins-dev-aws:
 	python ./scripts/py/run_ansible_against_windows_slaves.py "dev"
 
 .ONESHELL:
+env-jenkins-staging-aws:
+ifndef WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
+	@echo "The WINDOWS_STAGING_ANSIBLE_USER_PASSWORD environment variable must be set."
+	@exit 1
+endif
+ifndef AWS_ACCESS_KEY_ID
+	@echo "Your AWS access key ID must be set."
+	@exit 1
+endif
+ifndef AWS_SECRET_ACCESS_KEY
+	@echo "Your AWS secret access key must be set."
+	@exit 1
+endif
+ifeq ($(DEBUG_JENKINS_ENV),true)
+	cd terraform/staging && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+else
+	cd terraform/staging && terraform init && terraform apply -auto-approve
+endif
+	cd ../..
+	./scripts/sh/update_machine.sh "ansible_bastion" "staging"
+	rm -rf ~/.ansible/tmp
+	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
+	EC2_INI_PATH=environments/staging/ec2-host.ini ansible-playbook -i environments/staging \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/ansible_staging \
+		-e "cloud_environment=staging" \
+		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
+		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=staging" \
+		-u ansible ansible/ansible-provisioner.yml
+	./scripts/sh/prepare_bastion.sh "staging"
+
+.ONESHELL:
 env-jenkins-prod-aws:
+ifndef WINDOWS_PROD_ANSIBLE_USER_PASSWORD
+	@echo "The WINDOWS_PROD_ANSIBLE_USER_PASSWORD environment variable must be set."
+	@exit 1
+endif
 ifndef AWS_ACCESS_KEY_ID
 	@echo "Your AWS access key ID must be set."
 	@exit 1
@@ -194,9 +233,26 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=additional_windows_slave" \
+		-e "safe_build_infrastructure_repo_branch=staging" \
 		-u ansible ansible/ansible-provisioner.yml
-	./scripts/sh/prepare_bastion.sh
+	./scripts/sh/prepare_bastion.sh "prod"
+
+provision-jenkins-staging-aws:
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "staging"
+	./scripts/sh/update_machine.sh "haproxy" "staging"
+	./scripts/sh/run_ansible_against_haproxy.sh "staging" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/staging/ec2-bastion.ini" \
+		ansible-playbook -i "environments/staging" \
+		--private-key="~/.ssh/ansible_staging" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=staging" \
+		-u ansible ansible/haproxy-ssl-config.yml
+	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh
@@ -223,8 +279,11 @@ provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 		-e "cloud_environment=none" \
 		ansible/osx-rust-slave.yml
 
+provision-rust_slave-macos-mojave-x86_64-staging-aws:
+	./scripts/sh/run_ansible_against_mac_slave.sh "staging"
+
 provision-rust_slave-macos-mojave-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh
+	./scripts/sh/run_ansible_against_mac_slave.sh "prod"
 
 clean-rust_slave-macos-mojave-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml

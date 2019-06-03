@@ -4,32 +4,32 @@ provider "aws" {
 
 resource "aws_key_pair" "ansible" {
   key_name = "${var.ansible_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy2jDTSMksE7ZXbDMG/0RWi6jsKUSa5ui+hEzr65FiSUY93EoB/+bXyRnzSmUOp/p1tfbaw5G2KIEhKC5y1rP3FIaxm4k70tS4ZWE235W8ysW4W7MhaxLWtVrtn+ksjL8fa9YBtkxhtjcpnGYDA8OftR3HAFZKsEtGgJ+GCm5NYnIgkDl+NFBQ0oJADiae1j0AiuBPH2tZimYL6TG10CbJV+VsEgGd4a5yRwYX+6smiOMcozLmc6QfobohgVlVJveUnrspDZyBTKezaC42Rv9iZ6YsYDGx/WAkhNWJaH34qkeD/W03Z+g05hAyMDNgVtFnxljcghVEr9NKufCdKliZ"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwWGjEnhGRD3mY9UgoK1krHs8VZVu0TzfAgsTwT8EqBgeT5mPnLaMuGTP7Q2qsertIAM7+AlAYdA2a5qeP+HKkjA0nutFYxsxblg/zSubznlApstVjx/NN48eXE0xFdj4dfqYQf8YFxHHkoIIPPqmt00lBubLVnzHQc3Nm18oIWuX0nJBUD6Y5BBf1xEjoPkQostQAmneuoO7S6ojT7GFr1GDiNJGxhvAdFR7WW1OtwUkfWx/7mXVdryJ1wjsmr6qFwsXXv4HtmXVGvCrQV8grFUhxAAljHPijoqJoBb5Hatb5B8n9R8DMTQYJBrWVuLEd6gzWmSA9VfVsOTYAhLSb"
 }
 
 resource "aws_key_pair" "haproxy" {
   key_name = "${var.haproxy_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCdbI8UCzJb95JQ7c3mvkSVy1mo79tjr+YP+bd3LvPpRSu53YjwWMsxQIzhuMqqQjHccWWrRMCVsv9rIRIHskS9TsrX31g7F8Sc0C7nsFWMMfxTGPE1RWRfvcN7ohh6a/N0vrc7zT4YQ1yj/9ZXTDAAdwzAMjZV9dbydJ4DLXQRf+fxtbUq1/zNOOrLAsK/PAFXkaiVoQ4Jp1Ndsd2dfLVa+cz+irLaK/acbU5dePY9A37KKfV15ly2xD8/ukrNXfVMVxc+IcmOIEXL1VminaYNX5m6hj/1x7JZCFt+jOiEqf/EcJF+ly2+UWGNvZBqQMHrRkGIzyh8KRIUz7K6Qr//"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGhjnDd0oh+eNKOvyRY6hA2CIGWztDudLJ0tcdX3bPo3H3caYRSPeuAnruovu6Fnf36AMIJIteoMNx9yZgA+/Y2wVPPE6h4RpW7OOGB0f5GobFPMEfsC3dQcP+OK6PRr5x6zeFhL2cYU69pJCaK8eRd+Q/H8ORbD3LjkCHGyPm3IO3+j4utOmTFHgNZcvHHYecrHqsdd6IlxgCb4vPOrgN+HpCMzz+o+pcgQ1WozReo5gmnVZHXfNQ8TXmWwwZOU8GXeR3MOP6C6nnbMnmm4WmxQOjXuzMdmk7FSvmstjV1M4SN0xdDheIFZjE2YMZ5tIDoPEBxqA/9YMKdNh1ak6V"
 }
 
 resource "aws_key_pair" "jenkins" {
   key_name = "${var.jenkins_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxu9rVmi7KTruNSNjeiPweSPQNBP3prXeSdqUzD4p76MuMWWQLnWjiAI/RSwesWy99R/3aXZTE0fqmD8QLevldG36VX4RO5VZunpqLNcqJY3nxIv54Tq/+DH2LQbTBxyHWwWyduy/bU/JueFnbld9Zn+/a+yUj77z/sYPiHFwHhOFA7MLZ/rVZwq1z7i7bOAFMI+Ktzc40rKyyCSukIUemMZUSDzgY0+qcv9cxuWwagzlnsDuaD9XQRZrSEJxZVXGSkJzAa1BVxj55m1PxUhaZlCfrIvqBmOXp0emwhs7XP5wE6NKElZUpcMnGVwwjFb38ej0zMaqFV7FCu7NkuXuL"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCj7LvCOyyw5pbT3yWKtmYowx8h19aicesY0BYTqE9BzpI6LFT3TU8EwMVGhwQ/PE2bJm3qxKK4x0caVn7yt9X/CR0wm9t4jwSNy6RyO7t2BaJzM3VmhJ7Y4WfHnobFadA4G30tJnoUkbcnqOLTUJqexnxMeDEVyDuQnEt1GkjtTENM5E5msOfVHwKCn0x21HdQMp9UkF0BpCMhuYVAqKxqsPINQRqbFUFP3EFY+rUVrJnBxyyJaiZgutpmgwSTkWPXjtG/IZtANyiUFj3swutz6KI9HvLJvgaBQyLEZRIlSE+XA0LUuIiXFjt+MWFji9OeXRSeMTbJU42WFEAlN3oF"
 }
 
 resource "aws_key_pair" "windows_slave" {
   key_name = "${var.windows_slave_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbqVexd8nzku6hYYHYQMqP2x8JuRU81IbIKkMG8b/g1Er63tXy7w/QFTYSW11dLyjpN1nPzl+/NljxnWs/yFmztEIlBb2vL94Sp8SyQeWgmEHFGCrA9EaneWU6DFQJ8SptMwfE9rBzY5d/ouo90fYopPJYkG4kGcadIWR+g3Fx/t8tQf0T8ogrknWJmaAAsIi+BVINnXYyTmSLOc63ZoA9K1dCOps4YBVNmgxitrrGa+Lo0fB6Aza8m7dfweM7nwSOpSHEsXC/aA85czOd9dWzbaXAEFqAJYzSACubSM55R6telSkJhE6YIZ0p8C+YdZQmQPOweeCSZs31G3sN7pdj"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1IfddK8Eh4flvBXJLjgMZbsvxdUXdkxrAv4bRjqOK7EQ0XqANZBrQ0N3rZx6+zPr6CJ8CK4ER+ZP63LPEOvVPtiBEVrR8c4mrWDx7cOL3/3aEuppmj2ljIAHdOaLhul1pWbPgf6VkuZUr9GBfSHaO3Zt8tm7YNtALZZVOsK0Vp3XpzlFZwCFFAU0llG37RFlr8Mwl6mP4xCyPswJppd2zsIZe8kUYho46SszMNitdfPP6OdhGeoGnBQVxyt2ziZ7EXx0RoawkMnELtX4rDVf9vCW0AeNxhQ7mbtbxuQ9mHXamBJPXO26l8cNkr35b7akNjqYyr17NemeTXixM7tW/"
 }
 
 resource "aws_key_pair" "windows_bastion" {
   key_name = "${var.windows_bastion_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTFIv1T40+T+xwuD/2BhO2+jgv/iKQ1qadkE9gm3hGG4xziyqsD2YUZ6+o8o0wfhAuTUDh/p1vXrm6PYJpA6ncYovmEJ6/ZlLDl2XDAoV8gpZAovCjHqIOd1zegE5vQYKl7P5kbdCgDzyKXfUd++C5l3zIY/WQCutUxoEw5m/Wy6ILDnBT0+Y7pmkFGQyzhgVgkqvYbxUQsQXTkuJiGtzlrOlApDY7yeJneN4g3rUzaTg1vUyep6yUfh5IVEXZ69eCIuoXS5wLd38BTAIfCc7lwEcnjmAVMjJqTxV0thvIGNlhwbgxhcrB7U9q9agsGCQBLAsHxE9h9OcRkcllj1qR"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT5P9kamSDHy22mWCSZiGUwNP/EhGRZJPobPMitRSgeoEQ5UMGQeJhyUD+lGg3kB1j4eKmSHEtbCpe4Bgse46sl0iYrQ0hqsFIuG+/kpvK8pmS7+uu8Fq0oIC9Fu8imdHjAFcAj2SsWTktw77lmB7meWSKnCIwCy+MIWO3zleC+/gH3iGb1LM1t1Orsp7PZI/itIOMK2wNTwDo/zg92Wr1OLdC0/y7mxh28AASnsMVg4UEhU3n64sk2SJ1xxyVyzZAuhntLkfjUCekiNb1eFc2jUU5xUvKX36YG3dwM80KN29Ds12RULcnO9dqAk2120dQYt8FGKkIIfSHQpWoiqf/"
 }
 
 resource "aws_key_pair" "docker_slave" {
   key_name = "${var.docker_slave_key_pair}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeXRo+ENDr9I8uFQwuRP0cghcjX+6Q8XnmuxWiVEpGakluP3URWr8+bfL4SQ8bqoAFf6Lb/PjpdxWopQoW72N9Mej7Z5Y2+koa1Hh5IaHl+PuzEDnhlm1Y7gYuTj9+ZdhlDzX+98pwPTzdPVpxpz0MEibPe+XEe+TKeBK/3gJO2Gu22HC5yewoy0nShhHcAgBRXrjJJJ9vcuslOv/rTkWqSiFLAvibq869Nl80aP8YQdy0Kwl2wsvDb4qkfEXiW8P2/DwLiNGpr4kY5qQA4Adr83j+NT25kh7LLqWot/vAYwaAwmfZ+y6lAwiC5OXHGtIVF6gA19HGDQkIOx4aqny9"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDD+Lpgpr0QQdp3guno5NCV50Ete/AQvWPmh01XdcojGgmnTWs2ZFcwA2SFhjpWXDFKOKwQ8cWZpRY0Kosuoi32bJV/D/rpNVnMy3R2nD3y790epSRv8qKJgc3rsTPDZeE7FNZbcto2KFD/+arm0h+spSiG8od80r5Ajf+M8B6CKuCAmPIV3E2Ni+XsYtrePsoUYmtS+m7hSwBmNpZLvw2WXXda/D3/maH1kIqErTgrBM5eHiWAfvslaqlRE4xggW86Pzfjq090TGq5vuY7YFT/5mw4MXYwt/i7aStJvuBjU58jlAyK+avoO0+gzlPk3rLXSvvYjRzMVpG04PjSqCYZ"
 }
 
 module "vpc" {
@@ -91,7 +91,7 @@ resource "aws_eip_association" "jenkins_master_eip_association" {
 resource "aws_instance" "ansible" {
   ami = "${lookup(var.ansible_ami, var.region)}"
   instance_type = "${var.ansible_instance_type}"
-  key_name = "${var.jenkins_key_pair}"
+  key_name = "${var.ansible_key_pair}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   associate_public_ip_address = true
   user_data = "${file("../../scripts/sh/setup_ansible_user_${var.environment_name}.sh")}"
