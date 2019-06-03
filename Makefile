@@ -254,6 +254,7 @@ provision-jenkins-staging-aws:
 		-e "cloud_environment=staging" \
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
+	./scripts/sh/reboot_all_instances.sh "staging"
 
 provision-jenkins-prod-aws:
 	./scripts/sh/install_external_java_role.sh

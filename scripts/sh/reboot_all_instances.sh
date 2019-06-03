@@ -26,7 +26,5 @@ function reboot_instance() {
   echo "Your environment will be available once the reboot process has complete"
 }
 
-# TODO add function wait_for_jenkins()
-
 get_instance_ids
 reboot_instance
