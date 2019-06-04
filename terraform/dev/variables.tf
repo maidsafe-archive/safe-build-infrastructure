@@ -65,6 +65,11 @@ variable "windows_instance_type" {
 }
 
 variable "windows_slave_count" {
-  default = 2
+  default = 1
+  description = "Determines the number of Windows slaves"
+}
+
+variable "docker_slave_count" {
+  default = 1
   description = "Determines the number of Windows slaves"
 }
