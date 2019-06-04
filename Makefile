@@ -34,15 +34,9 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-rust_slave-windows-2016-x86_64-aws:
-ifndef WINDOWS_ANSIBLE_USER_PASSWORD
-	@echo "To build this box, a password must be set for the Ansible user."
-	@echo "Please set WINDOWS_ANSIBLE_USER_PASSWORD with a secure password."
-	@exit 1
-endif
-	rm -rf ~/.ansible/tmp
 	packer validate templates/rust_slave-windows-2016-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2.ini PACKER_LOG=1 \
-		packer build \
+	packer build \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-only=amazon-ebs \
 		templates/rust_slave-windows-2016-x86_64.json
 

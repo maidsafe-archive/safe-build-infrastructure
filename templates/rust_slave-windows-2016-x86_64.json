@@ -12,7 +12,7 @@
       "instance_type": "t3.medium",
       "region": "eu-west-2",
       "source_ami": "ami-0186531b707ced2ef",
-      "ami_name": "{{user `generated_ami_name`}}",
+      "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "user_data_file": "./scripts/ps/setup_winrm.ps1",
       "communicator": "winrm",
       "winrm_username": "Administrator",
@@ -50,7 +50,7 @@
     },
     {
       "type": "windows-shell",
-      "inline": "choco install -y jre8 make"
+      "inline": "choco install -y jre8 make awscli"
     },
     {
       "type": "windows-shell",
