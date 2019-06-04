@@ -68,7 +68,7 @@ function run_update() {
         echo "Running apt-get update and apt-get upgrade against $machine_name"
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo locale-gen en_GB.UTF-8
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get update -y
-        ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get upgrade -y
+        ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq
         echo "Running Python install against $machine_name"
         ssh -i "$key_path" -o StrictHostKeyChecking=no ansible@"$location" sudo apt-get install -y python
     else
