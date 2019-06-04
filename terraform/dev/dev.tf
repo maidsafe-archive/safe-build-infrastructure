@@ -51,7 +51,7 @@ resource "aws_instance" "docker_slave" {
     group = "linux_slaves"
     environment = "dev"
   }
-  count = 2
+  count = "${var.docker_slave_count}"
 }
 
 resource "aws_instance" "windows_slave" {

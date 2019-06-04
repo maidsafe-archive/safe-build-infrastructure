@@ -155,7 +155,6 @@ env-jenkins-dev-aws:
 	cd terraform/dev && terraform init && terraform apply -auto-approve
 	cd ../..
 	./scripts/sh/update_machine.sh "docker_slave_001" "dev"
-	./scripts/sh/update_machine.sh "docker_slave_002" "dev"
 	@echo "Attempting Ansible run against Docker slaves...(can be 10+ seconds before output)"
 	rm -rf ~/.ansible/tmp
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
