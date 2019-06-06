@@ -71,17 +71,17 @@ def get_jenkins_master_location(environment):
             }
         ]
     )
-    if environment == 'prod' or environment == "staging":
-        return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
-    return response['Reservations'][0]['Instances'][0]['PublicDnsName']
+    if environment == "dev":
+        return response['Reservations'][0]['Instances'][0]['PublicDnsName']
+    return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
 
-def print_jenkins_master_location(environment):
+def get_haproxy_location(environment):
     client = boto3.client('ec2')
     response = client.describe_instances(
         Filters=[
             {
                 'Name': 'tag:Name',
-                'Values': ['jenkins_master']
+                'Values': ['haproxy']
             },
             {
                 'Name': 'tag:environment',
@@ -93,14 +93,22 @@ def print_jenkins_master_location(environment):
             }
         ]
     )
+    return response['Reservations'][0]['Instances'][0]['PublicDnsName']
+
+def print_jenkins_master_location(environment):
     if environment == 'prod':
         print('You can now access Jenkins on https://jenkins.maidsafe.net/.')
         print('Note that some machines may not be available until after they have rebooted.')
-    elif environment == 'dev':
-        print('You can now access Jenkins on http://{0}.'.format(response['Reservations'][0]['Instances'][0]['PublicDnsName']))
-        print('Note that some machines may not be available until after they have rebooted.')
     elif environment == 'staging':
         print('You can now access Jenkins on https://jenkins-staging.maidsafe.net/.')
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'qa':
+        proxy_dns = get_haproxy_location(environment)
+        print('You can now access Jenkins on https://{0}.'.format(proxy_dns))
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'dev':
+        jenkins_dns = get_jenkins_master_location(environment)
+        print('You can now access Jenkins on http://{0}.'.format(jenkins_dns))
         print('Note that some machines may not be available until after they have rebooted.')
 
 def wait_for_instance_password_to_become_available(instance_id):

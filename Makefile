@@ -266,6 +266,16 @@ endif
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "prod"
 
+provision-jenkins-qa-aws:
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "qa"
+	./scripts/sh/update_machine.sh "haproxy" "qa"
+	./scripts/sh/run_ansible_against_haproxy.sh "qa" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_for_ssl_config.sh "qa"
+	python ./scripts/py/run_ansible_against_windows_slaves.py "qa" "ec2-bastion.ini"
+	./scripts/sh/reboot_all_instances.sh "qa"
+
 provision-jenkins-staging-aws:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "staging"

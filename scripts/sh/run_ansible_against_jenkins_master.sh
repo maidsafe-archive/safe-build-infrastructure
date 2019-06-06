@@ -20,6 +20,15 @@ function get_proxy_dns() {
     elif [[ "$cloud_environment" == "staging" ]]; then
         proxy_dns="jenkins-staging.maidsafe.net"
         jenkins_master_url="https://jenkins-staging.maidsafe.net/"
+    elif [[ "$cloud_environment" == "qa" ]]; then
+        proxy_dns=$(aws ec2 describe-instances \
+            --filters \
+            "Name=tag:Name,Values=haproxy" \
+            "Name=tag:environment,Values=$cloud_environment" \
+            "Name=instance-state-name,Values=running" \
+            | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+            | sed 's/\"//g')
+        jenkins_master_url="https://$proxy_dns/"
     else
         proxy_dns=$(aws ec2 describe-instances \
             --filters \
