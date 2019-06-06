@@ -162,6 +162,41 @@ env-jenkins-dev-aws:
 	./scripts/sh/reboot_all_instances.sh "dev"
 
 .ONESHELL:
+env-jenkins-qa-aws:
+ifndef WINDOWS_QA_ANSIBLE_USER_PASSWORD
+	@echo "The WINDOWS_QA_ANSIBLE_USER_PASSWORD environment variable must be set."
+	@exit 1
+endif
+ifndef AWS_ACCESS_KEY_ID
+	@echo "Your AWS access key ID must be set."
+	@exit 1
+endif
+ifndef AWS_SECRET_ACCESS_KEY
+	@echo "Your AWS secret access key must be set."
+	@exit 1
+endif
+ifeq ($(DEBUG_JENKINS_ENV),true)
+	cd terraform/qa && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+else
+	cd terraform/qa && terraform init && terraform apply -auto-approve
+endif
+	cd ../..
+	./scripts/sh/update_machine.sh "ansible_bastion" "qa"
+	rm -rf ~/.ansible/tmp
+	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
+	EC2_INI_PATH=environments/qa/ec2-host.ini ansible-playbook -i environments/qa \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/ansible_qa \
+		-e "cloud_environment=qa" \
+		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
+		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-e "safe_build_infrastructure_repo_owner=jacderida" \
+		-e "safe_build_infrastructure_repo_branch=qa_environment" \
+		-u ansible ansible/ansible-provisioner.yml
+	./scripts/sh/prepare_bastion.sh "qa"
+
+.ONESHELL:
 env-jenkins-staging-aws:
 ifndef WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
 	@echo "The WINDOWS_STAGING_ANSIBLE_USER_PASSWORD environment variable must be set."
