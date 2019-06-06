@@ -10,6 +10,7 @@ jenkins:
 {% if cloud_environment == "prod" or cloud_environment == "staging" %}
     globalMatrix:
       grantedPermissions:
+      - "Overall/Read:anonymous"
       - "Overall/Read:authenticated"
       - "Overall/Read:Administrators"
       - "Overall/Read:maidsafe*QA"
@@ -18,6 +19,7 @@ jenkins:
       - "Overall/Administer:{{ jenkins_admin_user }}"
       - "Job/Workspace:maidsafe*developers"
       - "Job/Cancel:maidsafe*developers"
+      - "Job/Read:anonymous"
       - "Job/Read:maidsafe*developers"
       - "Job/Build:maidsafe*developers"
       - "Job/Discover:maidsafe*developers"
