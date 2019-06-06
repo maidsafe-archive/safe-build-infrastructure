@@ -33,7 +33,7 @@ function run_ansible() {
             --limit=haproxy \
             --vault-password-file=~/.ansible/vault-pass \
             -e "jenkins_url=$jenkins_url" \
-            -e "cloud_environment=qa" \
+            -e "cloud_environment=$cloud_environment" \
             -u ansible ansible/haproxy-ssl-config.yml
     else
         EC2_INI_PATH="environments/qa/ec2-bastion.ini" \
@@ -41,7 +41,7 @@ function run_ansible() {
             --private-key="~/.ssh/ansible_qa" \
             --limit=haproxy \
             --vault-password-file=~/.ansible/vault-pass \
-            -e "cloud_environment=qa" \
+            -e "cloud_environment=$cloud_environment" \
             -u ansible ansible/haproxy-ssl-config.yml
     fi
 }
