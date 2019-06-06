@@ -16,16 +16,13 @@ if [[ -z "$ec2_ini_file" ]]; then
 fi
 
 function get_proxy_location() {
-    if [[ "$cloud_environment" == "qa" ]]; then
-        proxy_dns=$(aws ec2 describe-instances \
-            --filters \
-            "Name=tag:Name,Values=haproxy" \
-            "Name=tag:environment,Values=$cloud_environment" \
-            "Name=instance-state-name,Values=running" \
-            | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
-            | sed 's/\"//g')
-        jenkins_url="https://$proxy_dns"
-    fi
+    proxy_dns=$(aws ec2 describe-instances \
+        --filters \
+        "Name=tag:Name,Values=haproxy" \
+        "Name=tag:environment,Values=$cloud_environment" \
+        "Name=instance-state-name,Values=running" \
+        | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
+        | sed 's/\"//g')
 }
 
 function run_ansible() {
@@ -39,7 +36,7 @@ function run_ansible() {
             --limit=haproxy \
             --vault-password-file=~/.ansible/vault-pass \
             -e "cloud_environment=$cloud_environment" \
-            -e "jenkins_url=$jenkins_url" \
+            -e "jenkins_url=$proxy_dns" \
             -e "wg_run_on_host=True" \
             -u ansible ansible/proxy.yml
     else

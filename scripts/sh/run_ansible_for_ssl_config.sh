@@ -15,7 +15,6 @@ function get_proxy_location() {
             "Name=instance-state-name,Values=running" \
             | jq '.Reservations | .[0] | .Instances | .[0] | .PublicDnsName' \
             | sed 's/\"//g')
-        jenkins_url="https://$proxy_dns"
     fi
 }
 
@@ -32,7 +31,7 @@ function run_ansible() {
             --private-key="~/.ssh/ansible_qa" \
             --limit=haproxy \
             --vault-password-file=~/.ansible/vault-pass \
-            -e "jenkins_url=$jenkins_url" \
+            -e "jenkins_url=$proxy_dns" \
             -e "cloud_environment=$cloud_environment" \
             -u ansible ansible/haproxy-ssl-config.yml
     else
