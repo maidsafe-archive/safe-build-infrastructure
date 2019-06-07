@@ -15,7 +15,7 @@
       "instance_type": "t2.micro",
       "region": "eu-west-2",
       "source_ami": "ami-0883141bc92a74917",
-      "ami_name": "{{user `generated_ami_name`}}-{{user-`commit_hash`}}",
+      "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "run_tags": {
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",
@@ -111,8 +111,8 @@
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
       "inline": [
         "apt-get update -y",
-        "apt-get install -y python",
         "sleep 5",
+        "apt-get install -y python",
         "apt-get install -y python-pip"
       ]
     },
