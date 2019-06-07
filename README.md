@@ -1,6 +1,6 @@
 # Build Infrastructure
 
-This repository houses automated build infrastructure for various Maidsafe projects. The purpose is to provide reproducible build environments for a Jenkins-based system or for developers who need a known configuration for debugging build problems; doing our builds from known configurations reduces the 'it works on my machine' effect.
+This repository houses automated build infrastructure for various MaidSafe projects. The purpose is to provide reproducible build environments for a Jenkins-based system or for developers who need a known configuration for debugging build problems; doing our builds from known configurations reduces the 'it works on my machine' effect.
 
 Right now there are only some VMs available, but hopefully shortly we can provide some Docker containers for running builds in.
 
@@ -13,7 +13,7 @@ To get the VMs up and running, you need some things installed on your developmen
   - [vagrant-hosts](https://github.com/oscar-stack/vagrant-hosts): `vagrant plugin install vagrant-hosts`.
   - [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest): `vagrant plugin install vagrant-vbguest`.
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads). The list of versions supported by Vagrant is [here](https://www.vagrantup.com/docs/virtualbox/). Sometimes the latest versions aren't supported yet, but generally it's OK to just grab the latest version.
-* [Ansible](https://docs.ansible.com/). Ansible is needed on the host to bring the Windows machines online. The easiest way to install Ansible is via pip. At the moment we actually need the latest development version of Ansible. This is because there is a fix related to the Chocolately package manager for Windows that isn't in released versions yet. You can install the development version of Ansible with `pip install git+https://github.com/ansible/ansible.git@devel`. Consider installing into a [virtualenv](https://virtualenv.pypa.io/en/latest/) so that you can vary the version used quite easily.
+* [Ansible](https://docs.ansible.com/). Ansible is needed on the host to bring the Windows machines online. The easiest way to install Ansible is via pip. At the moment we actually need the latest development version of Ansible. This is because there is a fix related to the Chocolatey package manager for Windows that isn't in released versions yet. You can install the development version of Ansible with `pip install git+https://github.com/ansible/ansible.git@devel`. Consider installing into a [virtualenv](https://virtualenv.pypa.io/en/latest/) so that you can vary the version used quite easily.
 * [Python Powershell Remoting Protocol Client](https://github.com/jborean93/pypsrp). Needed for bringing up the Windows Jenkins slaves if you're on a Linux or macOS host. Even though an SSH server is available for Windows, Ansible doesn't support it, so the communication has to be done via WinRM. This library enables communication from Linux/macOS -> Windows via WinRM. The easiest way to install it is via pip: `pip install pypsrp`. If you don't have it, there are [lots of ways to install pip](https://pip.pypa.io/en/stable/installing/). You can install pip packages system with `sudo`, or if you don't want to do that, you can run it with the `--user` switch. As per Ansible, you can also consider installing this into a virtualenv. If you install Ansible into a virtualenv, you also need to install this library into it.
 * The easiest way to get machines running are via the convenience targets in the Makefile. Most Linux distros will probably have `make` installed via other packages like `build-essentials`. Google for how to install it on your distro. On Windows you can get access to `make` by installing [MSYS2](http://www.msys2.org/) then running `pacman -S make`; after this add `c:\msys64\usr\bin` to your `PATH` variable to have `make` accessible via `cmd.exe`. On macOS you can install via the [Apple Developer Tools](http://developer.apple.com/) and there's also a package available for [Homebrew](https://formulae.brew.sh/formula/make).
 * Get a copy of the Ansible vault password from someone in QA, then put that in `~/.ansible/vault-pass` on the host.
@@ -81,12 +81,12 @@ For the environment variables, it's probably better to put them in some kind of 
 To get the development environment run `make env-jenkins-dev-aws`. This creates:
 
 * A security group with the necessary ports opened
-* 2 CentOS Linux machines to be used as Docker slaves
-* 2 Windows machines to be used as a slaves
+* 1 CentOS Linux machine to be used as Docker slaves
+* 1 Windows machine to be used as a Windows slave
 * 1 CentOS Linux machine to be used as the Jenkins master
 * Provisions all the machines using Ansible
 
-Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in itermittent failures when trying to pull the packages. If this happens, start the process again by running `make env-jenkins-dev-aws`.
+Unfortunately, using the [Chocolatey](https://chocolatey.org/) package manager for the Windows machine sometimes results in intermittent failures when trying to pull the packages. If this happens, start the process again by running `make env-jenkins-dev-aws`.
 
 This setup is intended *only* for development. The machines are all running on the default VPC and Jenkins doesn't have HTTPS enabled.
 
@@ -119,7 +119,7 @@ When you're finished, you can tear the production environment down by running `m
 
 ##### Provisioning the macOS Slave
 
-The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws`. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that. If connectivity problems persist, try pinging the remote endpoint, i.e. the HAProxy, from the macOS Slave - this has immediately resolved a couple of connection problems experienced during implementation.
+The macOS slave needs to be provisioned after the Jenkins master, because the WireGuard VPN setup needs a reference to the location of the master. Currently the macOS slave is only configured to work via WireGuard VPN on either the production or staging environments. Leave the SSH connection to the Bastion and return to the machine where you launched the `make env-jenkins-prod-aws` or `make env-jenkins-staging-aws` command. Now run `make provision-rust_slave-macos-mojave-x86_64-prod-aws` or `make provision-rust_slave-macos-mojave-x86_64-staging-aws`, depending on what environment you are working in. After that completes, when you login to Jenkins, you may see this slave as marked offline. Try relaunching the agent and it will usually connect after that. If connectivity problems persist, try pinging the remote endpoint, i.e. the HAProxy, from the macOS Slave - this has immediately resolved a couple of connection problems experienced during implementation.
 
 ### Configure Jenkins
 
@@ -131,7 +131,7 @@ To perform this configuration you need to login with the initial admin user. The
 
 #### GitHub
 
-We are using the [GitHub OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+OAuth+Plugin) for authentication with Jenkins. This needs to be configured manually after first login. Go to Manage Jenkins -> Configure Global Security -> Security Realm. Change this to 'GitHub Authentication Plugin', then provide the client ID and secret; they can both be found in the QA Keypass database. After this, click on the Save button. You should now be able to log out of Jenkins, and when you log back in you should be able to authenticate using OAuth through your GitHub account. Note that if this is the first time you have logged into Jenkins via GitHub then GitHub will ask you to authorise Jenkins.
+We are using the [GitHub OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+OAuth+Plugin) for authentication with Jenkins on both the production and staging environments. This needs to be configured manually after first login. Go to Manage Jenkins -> Configure Global Security -> Security Realm. Change this to 'GitHub Authentication Plugin', then provide the client ID and secret; they can both be found in the QA Keypass database, under the section for the environment you are working in. After this, click on the Save button. You should now be able to log out of Jenkins, and when you log back in you should be able to authenticate using OAuth through your GitHub account. Note that if this is the first time you have logged into Jenkins via GitHub then GitHub will ask you to authorise Jenkins.
 
 The GitHub Pull Request Builder plugin also needs to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and change the Credentials selection to use `github_maidsafe_token_secret_text`.
 
@@ -179,3 +179,11 @@ Here are the instructions for building the Windows 2012 R2 server box:
 * Put the file in the `iso` directory in this repo (create it if it doesn't exist - it's in the .gitignore to prevent large ISO files being committed).
 * Run `make build-base-windows-2012_r2-box`.
 * After that's completed, you can add the resulting box for use with Vagrant using `vagrant box add packer_output/windows2012r2min-virtualbox.box`.
+
+## License
+
+This SAFE Network repository is dual-licensed under the Modified BSD ([LICENSE-BSD](LICENSE-BSD) https://opensource.org/licenses/BSD-3-Clause) or the MIT license ([LICENSE-MIT](LICENSE-MIT) http://opensource.org/licenses/MIT) at your option.
+
+## Contribution
+
+Copyrights in the SAFE Network are retained by their contributors. No copyright assignment is required to contribute to this project.

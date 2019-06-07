@@ -31,6 +31,7 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-rust_slave-windows-2016-x86_64-aws:
@@ -227,7 +228,7 @@ endif
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=staging" \
+		-e "safe_build_infrastructure_repo_branch=scl_container_update" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "staging"
 
@@ -252,6 +253,9 @@ else
 endif
 	cd ../..
 	./scripts/sh/update_machine.sh "ansible_bastion" "prod"
+	# Note: the prod environment is now live, so from now on, please *DO NOT* change
+	# the safe_build_infrastructure_repo_owner and safe_build_infrastructure_repo_branch variables
+	# in this target. They are still OK to change for staging or QA.
 	rm -rf ~/.ansible/tmp
 	echo "Attempting Ansible run against Bastion... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/prod/ec2-host.ini ansible-playbook -i environments/prod \
