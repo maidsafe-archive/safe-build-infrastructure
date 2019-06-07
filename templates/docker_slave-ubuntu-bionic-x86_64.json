@@ -15,7 +15,7 @@
       "instance_type": "t2.micro",
       "region": "eu-west-2",
       "source_ami": "ami-0883141bc92a74917",
-      "ami_name": "{{user `generated_ami_name`}}",
+      "ami_name": "{{user `generated_ami_name`}}-{{user-`commit_hash`}}",
       "run_tags": {
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",

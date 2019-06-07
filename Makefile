@@ -31,6 +31,7 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-rust_slave-windows-2016-x86_64-aws:
