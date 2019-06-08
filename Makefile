@@ -269,7 +269,6 @@ provision-jenkins-prod-aws:
 		-e "cloud_environment=prod" \
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "prod" "ec2-bastion.ini"
-	./scripts/sh/reboot_all_instances.sh "prod"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
