@@ -181,7 +181,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	@exit 1
 endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/staging && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/staging && terraform init && terraform apply -auto-approve -var='windows_bastion_count=1'
 else
 	cd terraform/staging && terraform init && terraform apply -auto-approve
 endif
@@ -216,7 +216,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	@exit 1
 endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/prod && terraform init && terraform apply -auto-approve -var='windows_bastion_count=1'
 else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
