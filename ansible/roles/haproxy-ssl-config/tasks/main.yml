@@ -1,7 +1,7 @@
 ---
 - name: 'check if certificate directory exists'
   stat:
-    path: "{{ letsencrypt_server }}"
+    path: "{{ letsencrypt_cert_path }}"
   register: cert_path_result
 
 - name: 'generate certificates'
