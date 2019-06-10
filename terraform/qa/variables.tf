@@ -14,7 +14,7 @@ variable "subnet_name" {
 }
 
 variable "jenkins_elastic_ip" {
-  default = "eipalloc-06fd1755731a4a597"
+  default = "eipalloc-0adff716e8b7c80a7"
   description = ""
 }
 
