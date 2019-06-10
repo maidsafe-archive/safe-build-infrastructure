@@ -1,4 +1,9 @@
 ---
+- name: 'check if certificate directory exists'
+  stat:
+    path: "{{ letsencrypt_server }}"
+  register: cert_path_result
+
 - name: 'generate certificates'
   command: |
     certbot certonly \
@@ -9,12 +14,14 @@
     --agree-tos \
     --email qa@maidsafe.net \
     --http-01-port=8888
+  when: cert_path_result.stat.exists == False
 
 - name: 'concatenate full chain and private keys'
   shell: |
     cat {{ letsencrypt_cert_path }}/fullchain.pem \
     {{ letsencrypt_cert_path }}/privkey.pem \
     | tee {{ cert_path }}
+  when: cert_path_result.stat.exists == False
 
 - name: 'copy haproxy config'
   template:
