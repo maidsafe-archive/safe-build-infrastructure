@@ -199,6 +199,10 @@ endif
 
 .ONESHELL:
 env-jenkins-staging-aws:
+ifndef SAFE_BUILD_INFRA_REPO_OWNER
+	@echo "The SAFE_BUILD_INFRA_REPO_OWNER environment variable must be set."
+	@exit 1
+endif
 ifndef WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
 	@echo "The WINDOWS_STAGING_ANSIBLE_USER_PASSWORD environment variable must be set."
 	@exit 1
@@ -212,7 +216,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	@exit 1
 endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/staging && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/staging && terraform init && terraform apply -auto-approve -var='windows_bastion_count=1'
 else
 	cd terraform/staging && terraform init && terraform apply -auto-approve
 endif
@@ -227,8 +231,8 @@ endif
 		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
-		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=scl_container_update" \
+		-e "safe_build_infrastructure_repo_owner=${SAFE_BUILD_INFRA_REPO_OWNER}" \
+		-e "safe_build_infrastructure_repo_branch=$$(git branch | grep \* | cut -d ' ' -f2)" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "staging"
 
@@ -247,7 +251,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	@exit 1
 endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/prod && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/prod && terraform init && terraform apply -auto-approve -var='windows_bastion_count=1'
 else
 	cd terraform/prod && terraform init && terraform apply -auto-approve
 endif
@@ -314,7 +318,6 @@ provision-jenkins-prod-aws:
 		-e "cloud_environment=prod" \
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "prod" "ec2-bastion.ini"
-	./scripts/sh/reboot_all_instances.sh "prod"
 
 provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
