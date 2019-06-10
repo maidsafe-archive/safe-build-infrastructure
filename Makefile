@@ -280,7 +280,15 @@ provision-jenkins-qa-aws:
 	./scripts/sh/update_machine.sh "haproxy" "qa"
 	./scripts/sh/run_ansible_against_haproxy.sh "qa" "ec2-bastion.ini"
 	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_for_ssl_config.sh "qa"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/qa/ec2-bastion.ini" \
+		ansible-playbook -i "environments/qa" \
+		--private-key="~/.ssh/ansible_qa" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=qa" \
+		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "qa" "ec2-bastion.ini"
 	./scripts/sh/reboot_all_instances.sh "qa"
 

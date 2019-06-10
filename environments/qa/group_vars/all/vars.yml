@@ -1,5 +1,6 @@
 ---
 haproxy_config_path: /etc/haproxy/haproxy.cfg
+jenkins_url: jenkins-qa.maidsafe.net
 jenkins_master_ip_address: 192.168.10.100
 jenkins_master_full_name: jenkins_master-ubuntu-bionic-x86_64
 jenkins_master_host_url: jenkins_master.ubuntu.local
