@@ -177,7 +177,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	@exit 1
 endif
 ifeq ($(DEBUG_JENKINS_ENV),true)
-	cd terraform/qa && terraform init && terraform apply -auto-approve -var-file=debug.tfvars
+	cd terraform/qa && terraform init && terraform apply -auto-approve -var='windows_bastion_count=1'
 else
 	cd terraform/qa && terraform init && terraform apply -auto-approve
 endif
@@ -192,8 +192,8 @@ endif
 		-e "aws_access_key_id=${AWS_ACCESS_KEY_ID}" \
 		-e "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
-		-e "safe_build_infrastructure_repo_owner=jacderida" \
-		-e "safe_build_infrastructure_repo_branch=qa_environment" \
+		-e "safe_build_infrastructure_repo_owner=${SAFE_BUILD_INFRA_REPO_OWNER}" \
+		-e "safe_build_infrastructure_repo_branch=$$(git branch | grep \* | cut -d ' ' -f2)" \
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "qa"
 
@@ -290,7 +290,7 @@ provision-jenkins-qa-aws:
 		-e "cloud_environment=qa" \
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "qa" "ec2-bastion.ini"
-	./scripts/sh/reboot_all_instances.sh "qa"
+	#./scripts/sh/reboot_all_instances.sh "qa"
 
 provision-jenkins-staging-aws:
 	./scripts/sh/install_external_java_role.sh
