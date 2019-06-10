@@ -47,6 +47,7 @@
 
 - name: 'copy extracted libsodium contents to {{ libsodium_path }}'
   win_command: "xcopy /s /e C:\\Temp\\libsodium-win64 {{ libsodium_path }}"
+  when: libsodium_path_result.stat.exists == False
 
 - name: 'remove downloaded libsodium archives'
   win_file:
@@ -60,6 +61,7 @@
 
 - name: 'set RUST_SODIUM_LIB_DIR environment variable'
   win_command: 'cmd.exe /c setx /M RUST_SODIUM_LIB_DIR "{{ libsodium_path }}\\lib"'
+  when: libsodium_path_result.stat.exists == False
 
 - name: 'copy the rust installer'
   win_template:
