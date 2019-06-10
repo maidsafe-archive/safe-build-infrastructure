@@ -174,7 +174,7 @@ def run_ansible(cmd, clear_cache=True):
         if out != '':
             sys.stdout.write(out)
             sys.stdout.flush()
-    if p.return_code != 0:
+    if p.returncode != 0:
         raise RuntimeError('Ansible run failed. Please see output for error message.')
 
 def reboot_slaves(slaves_info):
