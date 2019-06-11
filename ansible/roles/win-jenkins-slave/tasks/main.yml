@@ -1,4 +1,9 @@
 ---
+- name: 'check if jenkins-slave service is installed'
+  win_service:
+    name: jenkins-slave
+  register: jenkins_slave_service_result
+
 - name: 'install packages'
   win_chocolatey:
     name: "{{ item }}"
@@ -32,6 +37,7 @@
     - { user: "{{ jenkins_service_account_user }}", priv: SeRemoteInteractiveLogonRight }
     - { user: Administrator , priv: SeServiceLogonRight }
     - { user: Administrator , priv: SeRemoteInteractiveLogonRight }
+  when: jenkins_slave_service_result.exists == False
 
 # The way to set this as the shell is to put the binary location at the beginning
 # of system wide PATH variable. You can only use the shell tool location settings
@@ -46,11 +52,6 @@
   with_items:
     - "{{ jenkins_slave_config_path }}"
     - "{{ windows_rust_slave_working_path }}"
-
-- name: 'check if jenkins-slave service is installed'
-  win_service:
-    name: jenkins-slave
-  register: jenkins_slave_service_result
 
 - name: 'copy the jenkins agent jar'
   win_copy:

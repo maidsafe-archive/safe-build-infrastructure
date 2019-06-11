@@ -1,0 +1,40 @@
+---
+haproxy_config_path: /etc/haproxy/haproxy.cfg
+jenkins_url: jenkins-qa.maidsafe.net
+jenkins_master_ip_address: 192.168.10.100
+jenkins_master_full_name: jenkins_master-ubuntu-bionic-x86_64
+jenkins_master_host_url: jenkins_master.ubuntu.local
+docker_slave_ip_address: 192.168.10.101
+docker_slave_full_name: docker_slave-ubuntu-bionic-x86_64
+docker_slave_host_url: docker-slave.ubuntu.local
+docker_slave_ami_id: ami-03850277b53ba7bc5
+windows_rust_slave_ip_address: 192.168.10.102
+windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
+windows_rust_slave_host_url: rust_slave.ubuntu.local
+windows_rust_slave_working_path: "d:\\jenkins-work"
+jenkins_admin_user: qa
+secret_jenkins_admin_user_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  33336664626233383436623961353137356235633961303837663339376134643965363233346334
+  3263663231353036643438363734363731376436663063660a326234623062393038616239383338
+  32646238373337643961373062373365396634646631613766616330613939386165333765316565
+  3937323861613739330a616632663536363566666330393663303465633464653637393335373363
+  64616536363464656238626637616333353565313538333866313336366432363331373261333434
+  3331396630616234663361363138326633393632363837653335
+rust_version: stable
+osx_rust_slave_full_name: rust_slave-macos-mojave-x86_64
+linux_slaves_security_group_name: linux_slaves-qa
+jenkins_workspace_block_device: /dev/xvdb
+jenkins_workspace_mount_point: /mnt/jenkins_workspace
+docker_slave_ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeXRo+ENDr9I8uFQwuRP0cghcjX+6Q8XnmuxWiVEpGakluP3URWr8+bfL4SQ8bqoAFf6Lb/PjpdxWopQoW72N9Mej7Z5Y2+koa1Hh5IaHl+PuzEDnhlm1Y7gYuTj9+ZdhlDzX+98pwPTzdPVpxpz0MEibPe+XEe+TKeBK/3gJO2Gu22HC5yewoy0nShhHcAgBRXrjJJJ9vcuslOv/rTkWqSiFLAvibq869Nl80aP8YQdy0Kwl2wsvDb4qkfEXiW8P2/DwLiNGpr4kY5qQA4Adr83j+NT25kh7LLqWot/vAYwaAwmfZ+y6lAwiC5OXHGtIVF6gA19HGDQkIOx4aqny9
+letsencrypt_server: https://acme-staging.api.letsencrypt.org/directory
+secret_ansible_account_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  64666639666566613237613137323438636638666233363834373265326662646662663634333064
+  3037633434646430363637623165376266626366663537310a623564663734353236393637396463
+  66623264626230363165626564356366646538376431343035333330646134623463343666363366
+  6663346436383738350a343462326436323166303439656164626263326561333266303030303761
+  32643363313434343434633934383239653364633265333465333033613138303932323339333538
+  3937333539363631633039346564393234356162373736366162
+windows_ansible_user_password_variable: WINDOWS_QA_ANSIBLE_USER_PASSWORD
+macos_jenkins_workspace: "/Users/jenkins/jenkins-{{ cloud_environment }}-workspace"

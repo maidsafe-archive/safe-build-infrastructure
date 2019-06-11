@@ -71,36 +71,39 @@ def get_jenkins_master_location(environment):
             }
         ]
     )
-    if environment == 'prod' or environment == "staging":
-        return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
-    return response['Reservations'][0]['Instances'][0]['PublicDnsName']
+    if environment == 'dev':
+        return response['Reservations'][0]['Instances'][0]['PublicDnsName']
+    return response['Reservations'][0]['Instances'][0]['PrivateIpAddress']
 
 def print_jenkins_master_location(environment):
-    client = boto3.client('ec2')
-    response = client.describe_instances(
-        Filters=[
-            {
-                'Name': 'tag:Name',
-                'Values': ['jenkins_master']
-            },
-            {
-                'Name': 'tag:environment',
-                'Values': [environment]
-            },
-            {
-                'Name': 'instance-state-name',
-                'Values': ['running']
-            }
-        ]
-    )
-    if environment == 'prod':
-        print('You can now access Jenkins on https://jenkins.maidsafe.net/.')
-        print('Note that some machines may not be available until after they have rebooted.')
-    elif environment == 'dev':
+    if environment == 'dev':
+        client = boto3.client('ec2')
+        response = client.describe_instances(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': ['jenkins_master']
+                },
+                {
+                    'Name': 'tag:environment',
+                    'Values': [environment]
+                },
+                {
+                    'Name': 'instance-state-name',
+                    'Values': ['running']
+                }
+            ]
+        )
         print('You can now access Jenkins on http://{0}.'.format(response['Reservations'][0]['Instances'][0]['PublicDnsName']))
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'prod':
+        print('You can now access Jenkins on https://jenkins.maidsafe.net/.')
         print('Note that some machines may not be available until after they have rebooted.')
     elif environment == 'staging':
         print('You can now access Jenkins on https://jenkins-staging.maidsafe.net/.')
+        print('Note that some machines may not be available until after they have rebooted.')
+    elif environment == 'qa':
+        print('You can now access Jenkins on https://jenkins-qa.maidsafe.net/.')
         print('Note that some machines may not be available until after they have rebooted.')
 
 def wait_for_instance_password_to_become_available(instance_id):
@@ -144,7 +147,7 @@ def set_password_for_ansible_user(slave_name, slave_password, environment, ec2_i
     run_ansible(cmd, clear_cache=False)
 
 def jenkins_slave_ansible_run(environment, ec2_ini_file):
-    if environment not in ['dev', 'staging', 'prod']:
+    if environment not in ['dev', 'qa', 'staging', 'prod']:
         raise ValueError("The environment '{0}' is not supported".format(environment))
     password_variable = '$WINDOWS_{0}_ANSIBLE_USER_PASSWORD'.format(environment.upper())
     print("Running Ansible against Windows slaves... (can be 10+ seconds before output)")
@@ -171,6 +174,8 @@ def run_ansible(cmd, clear_cache=True):
         if out != '':
             sys.stdout.write(out)
             sys.stdout.flush()
+    if p.returncode != 0:
+        raise RuntimeError('Ansible run failed. Please see output for error message.')
 
 def reboot_slaves(slaves_info):
     print("Issuing reboots for all Windows slaves...")

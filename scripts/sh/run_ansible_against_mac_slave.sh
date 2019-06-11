@@ -11,6 +11,8 @@ function get_proxy_dns() {
         proxy_dns="jenkins.maidsafe.net"
     elif [[ "$cloud_environment" == "staging" ]]; then
         proxy_dns="jenkins-staging.maidsafe.net"
+    elif [[ "$cloud_environment" == "qa" ]]; then
+        proxy_dns="jenkins-qa.maidsafe.net"
     else
         proxy_dns=$(aws ec2 describe-instances \
             --filters \

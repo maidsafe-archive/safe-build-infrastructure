@@ -7,7 +7,7 @@ jenkins:
     - "JNLP4-connect"
     - "Ping"
   authorizationStrategy:
-{% if cloud_environment == "prod" or cloud_environment == "staging" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
     globalMatrix:
       grantedPermissions:
       - "Overall/Read:anonymous"
@@ -42,7 +42,7 @@ jenkins:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   mode: NORMAL
-{% if cloud_environment == "prod" or cloud_environment == "staging" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
   clouds:
     - amazonEC2:
         cloudName: "jenkins"
@@ -111,7 +111,7 @@ jenkins:
         # This variable must be without quotes for the Windows style path
         remoteFS: {{ windows_rust_slave_working_path }}
 {% endfor %}
-{% if cloud_environment == "prod" or cloud_environment == "staging" %}
+{% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
     - permanent:
         launcher:
           sSHLauncher:

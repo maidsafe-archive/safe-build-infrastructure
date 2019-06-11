@@ -7,9 +7,9 @@
     - haproxy
     - {
         role: wireguard,
-        when: cloud_environment == "prod" or cloud_environment == "staging"
+        when: cloud_environment != "dev" or cloud_environment != "none"
       }
     - {
         role: wireguard-server,
-        when: cloud_environment == "prod" or cloud_environment == "staging"
+        when: cloud_environment != "dev" or cloud_environment != "none"
       }
