@@ -359,3 +359,9 @@ clean-jenkins-dev-aws:
 
 clean-jenkins-prod-aws:
 	cd terraform/prod && terraform destroy
+
+clean-jenkins-staging-aws:
+	cd terraform/staging && terraform destroy
+
+clean-jenkins-qa-aws:
+	cd terraform/qa && terraform destroy
