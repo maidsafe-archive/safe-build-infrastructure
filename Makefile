@@ -164,6 +164,10 @@ env-jenkins-dev-aws:
 
 .ONESHELL:
 env-jenkins-qa-aws:
+ifndef SAFE_BUILD_INFRA_REPO_OWNER
+	@echo "The SAFE_BUILD_INFRA_REPO_OWNER environment variable must be set."
+	@exit 1
+endif
 ifndef WINDOWS_QA_ANSIBLE_USER_PASSWORD
 	@echo "The WINDOWS_QA_ANSIBLE_USER_PASSWORD environment variable must be set."
 	@exit 1
