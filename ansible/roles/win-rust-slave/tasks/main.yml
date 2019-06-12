@@ -79,3 +79,17 @@
 - name: 'run the rust installer as the admin user'
   win_command: "powershell.exe -File C:\\Temp\\install_rustup.ps1"
   when: jenkins_service_account_user == ""
+
+- name: 'install rustfmt'
+  win_psexec:
+    command: "{{ rustup_path }} component add rustfmt"
+    elevated: yes
+    username: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"
+
+- name: 'install clippy'
+  win_psexec:
+    command: "{{ rustup_path }} component add clippy"
+    elevated: yes
+    username: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"

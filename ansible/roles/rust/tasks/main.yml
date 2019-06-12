@@ -24,7 +24,7 @@
     - libssl-dev
     - pkg-config
   when: ansible_distribution == 'Ubuntu'
-  
+
 - name: 'get the rustup installer'
   get_url:
     url: "{{ rustup_installer_url }}"
@@ -61,6 +61,16 @@
   become: yes
   become_user: "{{ build_user }}"
   when: ansible_distribution != 'MacOSX'
+
+- name: 'install rustfmt'
+  command: "{{ rustup_path }} component add rustfmt"
+  become: yes
+  become_user: "{{ build_user }}"
+
+- name: 'install clippy'
+  command: "{{ rustup_path }} component add clippy"
+  become: yes
+  become_user: "{{ build_user }}"
 
 - stat: path="{{ cargo_script_path }}"
   register: cargo_script_result
