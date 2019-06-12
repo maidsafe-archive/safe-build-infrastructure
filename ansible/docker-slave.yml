@@ -14,7 +14,7 @@
           group: "root",
           mode: 0755
         },
-        when: cloud_environment != "dev" or cloud_environment != "none"
+        when: cloud_environment != "dev"
       }
     - docker
     - jenkins-slave
@@ -27,6 +27,6 @@
           group: "jenkins",
           mode: 0755
         },
-        when: cloud_environment != "dev" or cloud_environment != "none"
+        when: cloud_environment != "dev"
       }
     - docker-slave-images

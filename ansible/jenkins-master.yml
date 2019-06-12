@@ -12,7 +12,7 @@
           group: "root",
           mode: 0755
         },
-        when: cloud_environment != "dev" or cloud_environment != "none"
+        when: cloud_environment != "dev"
       }
     - {
         role: format_disk,
@@ -23,12 +23,12 @@
           group: "root",
           mode: 0755
         },
-        when: cloud_environment != "dev" or cloud_environment != "none"
+        when: cloud_environment != "dev"
       }
     - pip
     - docker
     - {
         role: wireguard-client,
-        when: cloud_environment != "dev" or cloud_environment != "none"
+        when: cloud_environment != "dev"
       }
     - jenkins-master
