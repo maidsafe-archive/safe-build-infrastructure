@@ -77,6 +77,13 @@ It's possible to get an environment on AWS, but there is some setup required on 
 
 For the environment variables, it's probably better to put them in some kind of file and source that as part of your `~/.bashrc`.
 
+If you are working remotely, there are another couple of variables you may want to set if you need to provision the macOS slave:
+
+* Set `export MACOS_SLAVE_SSH_IP_ADDRESS=<value>`
+* Set `export MACOS_SLAVE_SSH_PORT=<value>`
+
+Both of these values can be obtained from someone in QA.
+
 #### Development Infrastructure
 
 To get the development environment run `make env-jenkins-dev-aws`. This creates:

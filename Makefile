@@ -331,7 +331,7 @@ provision-jenkins-prod-aws:
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "prod" "ec2-bastion.ini"
 
-provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
+provision-rust_slave-macos-high_sierra-x86_64-vagrant-vbox:
 	ANSIBLE_SSH_PIPELINING=true ansible-playbook -i environments/vagrant/hosts \
 		--limit=macos_rust_slave \
 		--vault-password-file=~/.ansible/vault-pass \
@@ -339,16 +339,52 @@ provision-rust_slave-macos-mojave-x86_64-vagrant-vbox:
 		-e "cloud_environment=none" \
 		ansible/osx-rust-slave.yml
 
-provision-rust_slave-macos-mojave-x86_64-qa-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "qa"
+provision-rust_slave-macos-high_sierra-x86_64-qa-aws:
+	./scripts/sh/run_ansible_against_mac_slave.sh "qa" "192.168.1.190"
 
-provision-rust_slave-macos-mojave-x86_64-staging-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "staging"
+provision-from_external-rust_slave-macos-high_sierra-x86_64-qa-aws:
+ifndef MACOS_SLAVE_SSH_IP_ADDRESS
+	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
+	@exit 1
+endif
+ifndef MACOS_SLAVE_SSH_PORT
+	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
+	@exit 1
+endif
+	./scripts/sh/run_ansible_against_mac_slave.sh \
+		"qa" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
 
-provision-rust_slave-macos-mojave-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "prod"
+provision-rust_slave-macos-high_sierra-x86_64-staging-aws:
+	./scripts/sh/run_ansible_against_mac_slave.sh "staging" "192.168.1.190"
 
-clean-rust_slave-macos-mojave-x86_64:
+provision-from_external-rust_slave-macos-high_sierra-x86_64-staging-aws:
+ifndef MACOS_SLAVE_SSH_IP_ADDRESS
+	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
+	@exit 1
+endif
+ifndef MACOS_SLAVE_SSH_PORT
+	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
+	@exit 1
+endif
+	./scripts/sh/run_ansible_against_mac_slave.sh \
+		"staging" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
+
+provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
+	./scripts/sh/run_ansible_against_mac_slave.sh "prod" "192.168.1.190"
+
+provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
+ifndef MACOS_SLAVE_SSH_IP_ADDRESS
+	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
+	@exit 1
+endif
+ifndef MACOS_SLAVE_SSH_PORT
+	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
+	@exit 1
+endif
+	./scripts/sh/run_ansible_against_mac_slave.sh \
+		"prod" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
+
+clean-rust_slave-macos-high_sierra-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
 
 clean-vbox:
