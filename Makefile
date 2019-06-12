@@ -349,7 +349,6 @@ provision-jenkins-staging-aws-reprovision:
 	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
 
 provision-jenkins-prod-aws-initial:
-	echo
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "prod"
 	./scripts/sh/update_machine.sh "haproxy" "prod"
