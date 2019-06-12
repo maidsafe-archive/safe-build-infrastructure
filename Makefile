@@ -278,7 +278,7 @@ endif
 		-u ansible ansible/ansible-provisioner.yml
 	./scripts/sh/prepare_bastion.sh "prod"
 
-provision-jenkins-qa-aws:
+provision-jenkins-qa-aws-initial:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "qa"
 	./scripts/sh/update_machine.sh "haproxy" "qa"
@@ -294,9 +294,26 @@ provision-jenkins-qa-aws:
 		-e "cloud_environment=qa" \
 		-u ansible ansible/haproxy-ssl-config.yml
 	python ./scripts/py/run_ansible_against_windows_slaves.py "qa" "ec2-bastion.ini"
-	#./scripts/sh/reboot_all_instances.sh "qa"
+	./scripts/sh/reboot_all_instances.sh "qa"
 
-provision-jenkins-staging-aws:
+provision-jenkins-qa-aws-reprovision:
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "qa"
+	./scripts/sh/update_machine.sh "haproxy" "qa"
+	./scripts/sh/run_ansible_against_haproxy.sh "qa" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/qa/ec2-bastion.ini" \
+		ansible-playbook -i "environments/qa" \
+		--private-key="~/.ssh/ansible_qa" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=qa" \
+		-u ansible ansible/haproxy-ssl-config.yml
+	python ./scripts/py/run_ansible_against_windows_slaves.py "qa" "ec2-bastion.ini"
+
+provision-jenkins-staging-aws-initial:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "staging"
 	./scripts/sh/update_machine.sh "haproxy" "staging"
@@ -314,7 +331,43 @@ provision-jenkins-staging-aws:
 	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
 	./scripts/sh/reboot_all_instances.sh "staging"
 
-provision-jenkins-prod-aws:
+provision-jenkins-staging-aws-reprovision:
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "staging"
+	./scripts/sh/update_machine.sh "haproxy" "staging"
+	./scripts/sh/run_ansible_against_haproxy.sh "staging" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/staging/ec2-bastion.ini" \
+		ansible-playbook -i "environments/staging" \
+		--private-key="~/.ssh/ansible_staging" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=staging" \
+		-u ansible ansible/haproxy-ssl-config.yml
+	python ./scripts/py/run_ansible_against_windows_slaves.py "staging" "ec2-bastion.ini"
+
+provision-jenkins-prod-aws-initial:
+	echo
+	./scripts/sh/install_external_java_role.sh
+	./scripts/sh/update_machine.sh "jenkins_master" "prod"
+	./scripts/sh/update_machine.sh "haproxy" "prod"
+	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	rm -rf ~/.ansible/tmp
+	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
+	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
+		ansible-playbook -i "environments/prod" \
+		--private-key="~/.ssh/ansible_prod" \
+		--limit=haproxy \
+		--vault-password-file=~/.ansible/vault-pass \
+		-e "cloud_environment=prod" \
+		-u ansible ansible/haproxy-ssl-config.yml
+	python ./scripts/py/run_ansible_against_windows_slaves.py "prod" "ec2-bastion.ini"
+	./scripts/sh/reboot_all_instances.sh "prod"
+
+provision-jenkins-prod-aws-reprovision:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "prod"
 	./scripts/sh/update_machine.sh "haproxy" "prod"
