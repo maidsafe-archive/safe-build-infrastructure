@@ -8,10 +8,10 @@ jenkins_master
 windows_slave_001 ansible_become_pass="{{ ansible_password }}"
 
 [osx_slaves]
-macos_rust_slave ansible_host=192.168.1.190 ansible_user=qamaidsafe
+macos_rust_slave ansible_host="{{ macos_slave_ssh_hostname }}" ansible_user=qamaidsafe ansible_port="{{ macos_slave_ssh_port }}"
 
 [wireguard]
 jenkins_master
-macos_rust_slave ansible_host=192.168.1.190 ansible_user=qamaidsafe
+macos_rust_slave ansible_host="{{ macos_slave_ssh_hostname }}" ansible_user=qamaidsafe ansible_port="{{ macos_slave_ssh_port }}"
 wgserver
 wgclient-ubuntu-bionic-x86_64 ansible_host=localhost ansible_port=2322

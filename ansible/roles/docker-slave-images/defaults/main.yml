@@ -1,3 +1,5 @@
 ---
 safe_client_libs_build_image_name: maidsafe/safe-client-libs-build
 safe_client_libs_build_image_tag: 0.9.1
+safe_nd_build_image_name: maidsafe/safe-nd-build
+safe_nd_build_image_tag: 0.1.0
