@@ -372,7 +372,7 @@ endif
 provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
 	./scripts/sh/run_ansible_against_mac_slave.sh "prod" "192.168.1.190"
 
-provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
+provision-from_external-rust_slave-macos-high_sierra-x86_64-prod-aws:
 ifndef MACOS_SLAVE_SSH_IP_ADDRESS
 	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
 	@exit 1
