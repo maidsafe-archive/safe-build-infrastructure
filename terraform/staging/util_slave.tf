@@ -14,6 +14,7 @@ resource "aws_instance" "util_slave" {
     group = "util_slaves"
     environment = "${var.environment_name}"
   }
+  count = 1
   root_block_device {
     delete_on_termination = true
   }
