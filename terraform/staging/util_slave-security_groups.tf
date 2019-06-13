@@ -35,3 +35,30 @@ resource "aws_security_group_rule" "util_slaves_egress_https" {
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.util_slaves.id}"
 }
+
+resource "aws_security_group_rule" "util_slaves_egress_ssh_to_jenkins_master" {
+  type = "egress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.jenkins_master.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
+
+resource "aws_security_group_rule" "util_slaves_egress_winrm_to_windows_slaves" {
+  type = "egress"
+  from_port = 5985
+  to_port = 5986
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.windows_slaves.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
+
+resource "aws_security_group_rule" "util_slaves_egress_ssh_to_haproxy" {
+  type = "egress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.haproxy.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
