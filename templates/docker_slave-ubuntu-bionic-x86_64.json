@@ -109,7 +109,7 @@
     {
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/install_python.sh",
+      "script": "./scripts/sh/install_python.sh"
     },
     {
       "type": "shell",
