@@ -34,6 +34,16 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
+box-util_slave-ubuntu-bionic-x86_64-aws:
+	rm -rf ~/.ansible/tmp
+	packer validate templates/util_slave-ubuntu-bionic-x86_64.json
+	EC2_INI_PATH=environments/prod/ec2.ini \
+		packer build \
+		-only=amazon-ebs \
+		-var='cloud_environment=prod' \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		templates/util_slave-ubuntu-bionic-x86_64.json
+
 box-rust_slave-windows-2016-x86_64-aws:
 	packer validate templates/rust_slave-windows-2016-x86_64.json
 	packer build \
