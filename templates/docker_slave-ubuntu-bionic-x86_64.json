@@ -109,12 +109,7 @@
     {
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "inline": [
-        "apt-get update -y",
-        "sleep 5",
-        "apt-get install -y python",
-        "apt-get install -y python-pip"
-      ]
+      "script": "./scripts/sh/install_python.sh",
     },
     {
       "type": "shell",
