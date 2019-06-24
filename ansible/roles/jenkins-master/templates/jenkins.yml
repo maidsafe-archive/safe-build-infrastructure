@@ -45,10 +45,10 @@ jenkins:
 {% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
   clouds:
     - amazonEC2:
-        cloudName: "jenkins"
+        cloudName: "docker_slaves"
         credentialsId: "jenkins-ec2"
         privateKey: |
-          {{ docker_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
+          {{ secret_docker_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
         instanceCapStr: ""
         region: "eu-west-2"
         templates:
@@ -77,6 +77,15 @@ jenkins:
             useDedicatedTenancy: false
             useEphemeralDevices: false
             usePrivateDnsName: false
+        useInstanceProfileForCredentials: false
+    - amazonEC2:
+        cloudName: "util_slaves"
+        credentialsId: "jenkins-ec2"
+        privateKey: |
+          {{ secret_util_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
+        instanceCapStr: ""
+        region: "eu-west-2"
+        templates:
           - ami: "{{ util_slave_ami_id }}"
             amiType:
               unixData:
