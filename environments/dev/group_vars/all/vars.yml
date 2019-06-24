@@ -34,3 +34,6 @@ secret_ansible_account_password: !vault |
   63303932383563633831343636353665636166613234643130363166653235346436373738663165
   3638343661643462666438366665363632613063623938356331
 windows_ansible_user_password_variable: WINDOWS_DEV_ANSIBLE_USER_PASSWORD
+util_slave_full_name: util_slave-ubuntu-bionic-x86_64
+util_slave_ami_id: ami-02ddf3fefe7a847dd
+util_slaves_security_group_name: util_slave-dev

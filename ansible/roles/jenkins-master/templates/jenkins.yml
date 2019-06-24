@@ -47,8 +47,9 @@ jenkins:
     - amazonEC2:
         cloudName: "jenkins"
         credentialsId: "jenkins-ec2"
+        privateKey: |
+          {{ docker_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
         instanceCapStr: ""
-        privateKey: ""
         region: "eu-west-2"
         templates:
           - ami: "{{ docker_slave_ami_id }}"
@@ -73,6 +74,31 @@ jenkins:
             subnetId: "{{ slave_vpc_subnet_id }}"
             t2Unlimited: false
             type: T2Medium
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
+          - ami: "{{ util_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ util_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "util"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
+            securityGroups: "{{ util_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Small
             useDedicatedTenancy: false
             useEphemeralDevices: false
             usePrivateDnsName: false
