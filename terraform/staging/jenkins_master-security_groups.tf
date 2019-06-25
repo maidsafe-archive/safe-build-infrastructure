@@ -107,3 +107,12 @@ resource "aws_security_group_rule" "jenkins_master_ingress_all_windows_slave_tra
   source_security_group_id = "${aws_security_group.windows_slaves.id}"
   security_group_id = "${aws_security_group.jenkins_master.id}"
 }
+
+resource "aws_security_group_rule" "jenkins_master_egress_ssh_to_util_slaves" {
+  type = "egress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.util_slaves.id}"
+  security_group_id = "${aws_security_group.jenkins_master.id}"
+}

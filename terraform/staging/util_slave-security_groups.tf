@@ -18,6 +18,15 @@ resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_ansible" {
   security_group_id = "${aws_security_group.util_slaves.id}"
 }
 
+resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_jenkins_master" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.jenkins_master.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
+
 resource "aws_security_group_rule" "util_slaves_egress_http" {
   type = "egress"
   from_port = 80
