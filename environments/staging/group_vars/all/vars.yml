@@ -40,3 +40,4 @@ macos_jenkins_workspace: "/Users/jenkins/jenkins-{{ cloud_environment }}-workspa
 util_slave_full_name: util_slave-ubuntu-bionic-x86_64
 util_slave_ami_id: ami-0ab7e20517b53328e
 util_slaves_security_group_name: util_slaves-staging
+build_user: jenkins

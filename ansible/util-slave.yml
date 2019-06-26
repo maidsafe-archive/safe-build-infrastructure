@@ -29,3 +29,4 @@
         },
         when: cloud_environment != "dev"
       }
+    - docker-slave

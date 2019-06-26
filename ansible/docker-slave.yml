@@ -29,4 +29,4 @@
         },
         when: cloud_environment != "dev"
       }
-    - docker-slave-images
+    - docker-slave
