@@ -5,3 +5,4 @@
   with_items:
     - "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
     - "{{ safe_nd_build_image_name }}:{{ safe_nd_build_image_tag }}"
+    - "{{ safe_cli_build_image_name }}:{{ safe_cli_build_image_tag }}"
