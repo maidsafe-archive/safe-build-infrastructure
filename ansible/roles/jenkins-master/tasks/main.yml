@@ -138,6 +138,14 @@
     group: root
     mode: 0644
 
+- name: 'copy github Maidsafe-QA user password'
+  copy:
+    content: "{{ secret_github_maidsafe_qa_user_password }}"
+    dest: "{{ secret_github_maidsafe_qa_user_password_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
 - name: 'refresh systemd to load jenkins service file'
   command: systemctl daemon-reload
   when: service_file_result.changed
