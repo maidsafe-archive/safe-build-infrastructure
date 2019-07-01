@@ -16,6 +16,7 @@ data "aws_iam_user" "jenkins_build_artifacts" {
 
 resource "aws_s3_bucket" "jenkins_build_artifacts" {
   bucket = "${var.jenkins_build_artifacts_bucket_name}"
+  acl = "public-read"
 }
 
 resource "aws_iam_user_policy" "jenkins_build_artifacts" {
