@@ -210,8 +210,18 @@ credentials:
             scope: GLOBAL
             username: "{{ aws_jenkins_access_key }}"
         - usernamePassword:
+            id: "aws_jenkins_build_artifacts_user"
+            password: ${secret_aws_jenkins_build_user_secret_key}
+            scope: GLOBAL
+            username: "AKIAVVODCRMSJRUPZZHN"
+        - usernamePassword:
             id: "github_maidsafe_token_credentials"
             password: ${secret_github_access_token}
+            scope: GLOBAL
+            username: "maidsafe"
+        - usernamePassword:
+            id: "github_maidsafe_qa_user_credentials"
+            password: ${secret_github_maidsafe_qa_user_password}
             scope: GLOBAL
             username: "maidsafe"
         - aws:
