@@ -38,3 +38,32 @@ resource "aws_iam_user_policy" "jenkins_build_artifacts" {
 }
 EOF
 }
+
+data "aws_iam_user" "jenkins_deploy_artifacts" {
+  user_name = "${var.jenkins_deploy_artifacts_username}"
+}
+
+resource "aws_s3_bucket" "safe_cli_deploy" {
+  bucket = "${var.safe_cli_deploy_bucket_name}"
+  acl = "public-read"
+}
+
+resource "aws_iam_user_policy" "jenkins_deploy_artifacts" {
+    name = "jenkins_deploy_artifacts_user_policy"
+    user = "${data.aws_iam_user.jenkins_deploy_artifacts.user_name}"
+    policy= <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}",
+                "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}/*"
+            ]
+        }
+   ]
+}
+EOF
+}
