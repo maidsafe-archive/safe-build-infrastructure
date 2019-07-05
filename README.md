@@ -136,12 +136,12 @@ Now perform the following steps on the Bastion host:
 
 * Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
 * If working on QA or Staging, you may wish to ensure that you are on the correct fork and branch of the repository.
-* Run the provisioning:
-  * PRODUCTION = `make provision-jenkins-prod-aws`
-  * STAGING = `make provision-jenkins-staging-aws`
-  * QA = `make provision-jenkins-qa-aws`
+* Run the provisioning, use either `initial` or `reprovision` depending on your needs:
+  * PRODUCTION = `make provision-jenkins-prod-aws-initial` or `make provision-jenkins-prod-aws-reprovision`
+  * STAGING = `make provision-jenkins-staging-aws-initial` or `make provision-jenkins-staging-aws-reprovision`
+  * QA = `make provision-jenkins-qa-aws-initial` or `make provision-jenkins-qa-aws-reprovision`
 
-The `provision-jenkins-[env]-aws` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision.
+The `provision-jenkins-[env]-aws-[initial/reprovision]` target provisions the Jenkins master and any static Windows slaves. For Linux we're using dynamic slaves, so there are no Linux slaves to provision. Using `initial` reboots all machines at the end of the provisioning process, while using `reprovision` assumes a reboot is not required.
 
 When you're finished, you can tear the production environment down by running `make clean-jenkins-[env]-aws`, putting in either `prod`, `staging` or `qa` as the [env]. Note though, as the Linux slaves are spun up and down dynamically as and when required, they will NOT be removed by the `make clean-jenkins-[env]-aws` command - Jenkins will destroy them after 30 minutes (configurable) of inactivity *unless you run the `make clean-jenkins-[env]-aws` command before that 30 minutes is up*. The `make clean-jenkins-[env]-aws` command will attempt to remove, amongst other things, `aws_security_group.linux_slaves`, the VPC and the VPC subnet - these will fail if the Linux slaves have not already been destroyed. Should you wish to remove these boxes before allowing Jenkins to have 30 minutes of inactivity then you need to destroy them manually via AWS. After this you can run (or re-run) the `make clean-jenkins-[env]-aws` command to remove the remaining security group, VPC and VPC subnet.
 
