@@ -39,5 +39,5 @@ windows_ansible_user_password_variable: WINDOWS_PROD_ANSIBLE_USER_PASSWORD
 macos_jenkins_workspace: "/Users/jenkins/jenkins-{{ cloud_environment }}-workspace"
 util_slave_full_name: util_slave-ubuntu-bionic-x86_64
 util_slave_ami_id: ami-06456964a6dcbb5b3
-util_slaves_security_group_name: util_slaves-staging
+util_slaves_security_group_name: util_slaves-prod
 build_user: jenkins
