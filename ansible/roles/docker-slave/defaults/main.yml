@@ -3,6 +3,8 @@ safe_client_libs_build_image_name: maidsafe/safe-client-libs-build
 safe_client_libs_build_image_tag: 0.9.1
 safe_nd_build_image_name: maidsafe/safe-nd-build
 safe_nd_build_image_tag: 0.1.0
+safe_cli_build_image_name: maidsafe/safe-cli-build
+safe_cli_build_image_tag: 0.0.1
 dockerhub_user: jacderida
 secret_dockerhub_user_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
