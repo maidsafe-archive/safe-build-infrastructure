@@ -9,15 +9,6 @@ resource "aws_security_group" "util_slaves" {
   vpc_id = "${module.vpc.vpc_id}"
 }
 
-resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_ansible" {
-  type = "ingress"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  source_security_group_id = "${aws_security_group.ansible.id}"
-  security_group_id = "${aws_security_group.util_slaves.id}"
-}
-
 resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_jenkins_master" {
   type = "ingress"
   from_port = 22

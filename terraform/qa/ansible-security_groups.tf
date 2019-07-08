@@ -89,15 +89,6 @@ resource "aws_security_group_rule" "ansible_egress_https" {
   security_group_id = "${aws_security_group.ansible.id}"
 }
 
-resource "aws_security_group_rule" "ansible_egress_ssh_util_slave_traffic" {
-  type = "egress"
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  source_security_group_id = "${aws_security_group.util_slaves.id}"
-  security_group_id = "${aws_security_group.ansible.id}"
-}
-
 resource "aws_security_group_rule" "ansible_egress_ssh_to_haproxy" {
   type = "egress"
   from_port = 22
