@@ -6,9 +6,15 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
+run_mode=$2
+if [[ -z "$run_mode" ]]; then
+    echo "A value must be supplied for the run mode. Valid values are 'initial' or 'reprovision'."
+    exit 1
+fi
+
 ansible_ssh_key="$HOME/.ssh/ansible_$cloud_environment"
 
-ec2_ini_file=$2
+ec2_ini_file=$3
 if [[ -z "$ec2_ini_file" ]]; then
     ec2_ini_file="ec2.ini"
 fi
@@ -57,6 +63,7 @@ function run_ansible() {
         --private-key="$ansible_ssh_key" \
         --limit=jenkins_master \
         --vault-password-file=~/.ansible/vault-pass \
+        -e "run_mode=$run_mode" \
         -e "cloud_environment=$cloud_environment" \
         -e "jenkins_master_url=$jenkins_master_url" \
         -e "slave_vpc_subnet_id=$subnet_id" \
