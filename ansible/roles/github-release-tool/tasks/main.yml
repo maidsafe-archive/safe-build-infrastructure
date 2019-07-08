@@ -1,0 +1,7 @@
+---
+- name: 'download and extract'
+  unarchive:
+    src: "{{ github_release_url }}"
+    dest: "{{ github_release_path }}"
+    extra_opts: ['--strip-components=3']
+    remote_src: yes

@@ -1,0 +1,4 @@
+---
+github_release_version: 0.7.2
+github_release_url: "https://github.com/aktau/github-release/releases/download/v{{ github_release_version }}/linux-amd64-github-release.tar.bz2"
+github_release_path: /usr/bin

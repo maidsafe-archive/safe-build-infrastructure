@@ -29,4 +29,5 @@
         },
         when: cloud_environment != "dev"
       }
+    - github-release-tool
     - docker-slave
