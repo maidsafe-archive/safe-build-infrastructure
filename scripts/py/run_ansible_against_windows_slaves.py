@@ -192,7 +192,6 @@ def main():
             machine_name, slave_info[0], environment, ec2_ini_file)
     jenkins_slave_ansible_run(environment, ec2_ini_file)
     print_jenkins_master_location(environment)
-    reboot_slaves(slaves)
     return 0
 
 if __name__ == '__main__':
