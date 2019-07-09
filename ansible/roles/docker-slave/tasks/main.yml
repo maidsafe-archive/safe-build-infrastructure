@@ -6,3 +6,11 @@
     - "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
     - "{{ safe_nd_build_image_name }}:{{ safe_nd_build_image_tag }}"
     - "{{ safe_cli_build_image_name }}:{{ safe_cli_build_image_tag }}"
+
+- name: 'login to dockerhub for pushing images'
+  docker_login:
+    username: "{{ dockerhub_user }}"
+    password: "{{ secret_dockerhub_user_password }}"
+    reauthorize: yes
+  become: yes
+  become_user: "{{ build_user }}"

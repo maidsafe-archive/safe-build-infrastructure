@@ -177,11 +177,6 @@ def run_ansible(cmd, clear_cache=True):
     if p.returncode != 0:
         raise RuntimeError('Ansible run failed. Please see output for error message.')
 
-def reboot_slaves(slaves_info):
-    print("Issuing reboots for all Windows slaves...")
-    client = boto3.client('ec2')
-    client.reboot_instances(InstanceIds=[y[1] for x, y in slaves_info.iteritems()])
-
 def main():
     if len(sys.argv) == 1:
         print("Please supply the environment name. Valid values are 'dev', 'staging' or 'prod'.")
@@ -197,7 +192,6 @@ def main():
             machine_name, slave_info[0], environment, ec2_ini_file)
     jenkins_slave_ansible_run(environment, ec2_ini_file)
     print_jenkins_master_location(environment)
-    reboot_slaves(slaves)
     return 0
 
 if __name__ == '__main__':

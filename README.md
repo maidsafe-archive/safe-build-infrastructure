@@ -161,11 +161,7 @@ To perform this configuration you need to login with the initial admin user. The
 
 We are using the [GitHub OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+OAuth+Plugin) for authentication with Jenkins on both the production and staging environments. This needs to be configured manually after first login. Go to Manage Jenkins -> Configure Global Security -> Security Realm. Change this to 'GitHub Authentication Plugin', then provide the client ID and secret; they can both be found in the QA Keypass database, under the section for the environment you are working in. After this, click on the Save button. You should now be able to log out of Jenkins, and when you log back in you should be able to authenticate using OAuth through your GitHub account. Note that if this is the first time you have logged into Jenkins via GitHub then GitHub will ask you to authorise Jenkins.
 
-The GitHub Pull Request Builder plugin also needs to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and change the Credentials selection to use `github_maidsafe_token_secret_text`.
-
-#### EC2
-
-If you're running on AWS with the EC2 plugin, this requires one manual step to get working. Go to Manage Jenkins -> Configure System -> Cloud Section -> EC2 Key Pair's Private Key then paste in the `docker_slave_prod` private key and click on 'Save'.
+The GitHub Pull Request Builder plugin may also need to be configured manually. Go to Manage Jenkins -> Configure System -> GitHub Pull Request Builder and ensure the Credentials selection is set to use `github_maidsafe_token_secret_text`.
 
 #### Job DSL Plugin
 
@@ -174,10 +170,10 @@ The instance is using the [Job DSL plugin](https://github.com/jenkinsci/job-dsl-
 * Create a new 'freestyle' job to function as the seed (I usually call it 'freestyle-job_seed')
 * Add a build step by selecting 'Process Job DSL' from the drop down
 * Select 'Use the provided DSL script'
-* Paste the contents of the 'ansible/roles/jenkins-master/files/job_dsl_seed.groovy' file in this repository into the textbox
+* Paste the contents of the [job_dsl_seed.groovy file](https://github.com/maidsafe/jenkins-jobs/blob/master/job_dsl_seed.groovy) in the jenkins-jobs repository into the textbox
 * Save the job then run it
 
-After running the seed job, this will generate all the other jobs. At the time of writing there is only a pipeline for [Safe Client Libs](https://github.com/maidsafe/safe_client_libs). I would recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
+After running the seed job, this will generate all the other jobs. I would recommend switching to the [Blue Ocean](https://jenkins.io/projects/blueocean/) view.
 
 ### macOS Slaves
 

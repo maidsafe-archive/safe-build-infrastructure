@@ -34,6 +34,16 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
+box-util_slave-ubuntu-bionic-x86_64-aws:
+	rm -rf ~/.ansible/tmp
+	packer validate templates/util_slave-ubuntu-bionic-x86_64.json
+	EC2_INI_PATH=environments/prod/ec2.ini \
+		packer build \
+		-only=amazon-ebs \
+		-var='cloud_environment=prod' \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		templates/util_slave-ubuntu-bionic-x86_64.json
+
 box-rust_slave-windows-2016-x86_64-aws:
 	packer validate templates/rust_slave-windows-2016-x86_64.json
 	packer build \
@@ -282,8 +292,8 @@ provision-jenkins-qa-aws-initial:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "qa"
 	./scripts/sh/update_machine.sh "haproxy" "qa"
-	./scripts/sh/run_ansible_against_haproxy.sh "qa" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "qa" "initial" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "initial" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/qa/ec2-bastion.ini" \
@@ -300,8 +310,8 @@ provision-jenkins-qa-aws-reprovision:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "qa"
 	./scripts/sh/update_machine.sh "haproxy" "qa"
-	./scripts/sh/run_ansible_against_haproxy.sh "qa" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "qa" "reprovision" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "qa" "reprovision" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/qa/ec2-bastion.ini" \
@@ -317,8 +327,8 @@ provision-jenkins-staging-aws-initial:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "staging"
 	./scripts/sh/update_machine.sh "haproxy" "staging"
-	./scripts/sh/run_ansible_against_haproxy.sh "staging" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "staging" "initial" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "initial" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/staging/ec2-bastion.ini" \
@@ -335,8 +345,8 @@ provision-jenkins-staging-aws-reprovision:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "staging"
 	./scripts/sh/update_machine.sh "haproxy" "staging"
-	./scripts/sh/run_ansible_against_haproxy.sh "staging" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "staging" "reprovision" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "staging" "reprovision" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/staging/ec2-bastion.ini" \
@@ -352,8 +362,8 @@ provision-jenkins-prod-aws-initial:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "prod"
 	./scripts/sh/update_machine.sh "haproxy" "prod"
-	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "prod" "initial" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "initial" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \
@@ -370,8 +380,8 @@ provision-jenkins-prod-aws-reprovision:
 	./scripts/sh/install_external_java_role.sh
 	./scripts/sh/update_machine.sh "jenkins_master" "prod"
 	./scripts/sh/update_machine.sh "haproxy" "prod"
-	./scripts/sh/run_ansible_against_haproxy.sh "prod" "ec2-bastion.ini"
-	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_haproxy.sh "prod" "reprovision" "ec2-bastion.ini"
+	./scripts/sh/run_ansible_against_jenkins_master.sh "prod" "reprovision" "ec2-bastion.ini"
 	rm -rf ~/.ansible/tmp
 	echo "Running Ansible against proxy instance for SSL configuration... (can be 10+ seconds before output)"
 	EC2_INI_PATH="environments/prod/ec2-bastion.ini" \

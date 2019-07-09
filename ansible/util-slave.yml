@@ -1,5 +1,5 @@
 ---
-- hosts: linux_slaves
+- hosts: util_slaves
   become: True
   roles:
     - hardening
@@ -29,5 +29,4 @@
         },
         when: cloud_environment != "dev"
       }
-    - github-release-tool
     - docker-slave

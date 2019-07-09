@@ -1,0 +1,6 @@
+---
+docker_slave_ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDskM5OJ65YIsKIAfJ+zIBr3OTtojl6c379q0EiL86niF9nJqp0OF4WeUm8ZjncUIbnNWrpmK0IRpiC2aFCogOUm0Rorx99a+S3hMyGEjSD5L0he+ZKuGfSUMyisUdW+f/40UxTD/FJkLZXtmmZc3e6ZTqKtu707yqK+vHNjIAPrutgEcaGrBwg+kxRB1E411rX05vJ/CLbIyKRUBfe5lYMwjbtUQ3N9HuMNvZNG5EAoCE8igDw5k85hftfOK/eZXtHe1on6FChKktKJ60odCFW7+/Ul8+5Du6RPhJM4yM5m2tLaDkYygZYzX6VK4HUJHr6KnTi1oH1LCN0n3/iyo+j
+docker_storage_block_device: /dev/xvdc
+docker_storage_mount_point: /var/lib/docker
+jenkins_workspace_block_device: /dev/xvdb
+jenkins_workspace_mount_point: /mnt/jenkins_workspace

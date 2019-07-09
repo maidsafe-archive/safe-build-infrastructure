@@ -45,10 +45,11 @@ jenkins:
 {% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
   clouds:
     - amazonEC2:
-        cloudName: "jenkins"
+        cloudName: "docker_slaves"
         credentialsId: "jenkins-ec2"
+        privateKey: |
+          {{ secret_docker_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
         instanceCapStr: ""
-        privateKey: ""
         region: "eu-west-2"
         templates:
           - ami: "{{ docker_slave_ami_id }}"
@@ -69,6 +70,40 @@ jenkins:
             remoteAdmin: "jenkins"
             remoteFS: "{{ jenkins_workspace_mount_point }}"
             securityGroups: "{{ linux_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Medium
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
+        useInstanceProfileForCredentials: false
+    - amazonEC2:
+        cloudName: "util_slaves"
+        credentialsId: "jenkins-ec2"
+        privateKey: |
+          {{ secret_util_slave_private_key | indent(width=5) | indent(width=5, indentfirst=false) }}
+        instanceCapStr: ""
+        region: "eu-west-2"
+        templates:
+          - ami: "{{ util_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ util_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "util"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
+            securityGroups: "{{ util_slaves_security_group_name }}"
             stopOnTerminate: false
             subnetId: "{{ slave_vpc_subnet_id }}"
             t2Unlimited: false
@@ -123,7 +158,7 @@ jenkins:
             retryWaitTime: 15
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
-        numExecutors: 1
+        numExecutors: 2
         remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
 {% else %}
