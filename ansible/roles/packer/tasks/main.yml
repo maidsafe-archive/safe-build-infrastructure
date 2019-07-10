@@ -1,0 +1,14 @@
+---
+- name: 'download and extract packer'
+  unarchive:
+    src: "{{ packer_url }}"
+    dest: "{{ packer_install_path }}"
+    remote_src: yes
+
+- name: 'set packer binary as executable'
+  file:
+    path: "{{ packer_install_path }}/packer"
+    state: file
+    mode: 0755
+    owner: root
+    group: root
