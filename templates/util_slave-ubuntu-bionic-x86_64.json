@@ -69,9 +69,10 @@
       "inventory_directory": "{{ user `ansible_inventory_directory` }}",
       "groups": "util_slaves",
       "extra_arguments": [
+        "--vault-password-file={{ user `vault_password_path` }}",
         "--extra-vars",
         "cloud_environment={{ user `cloud_environment` }}",
-        "--vault-password-file={{ user `vault_password_path` }}"
+        "provisioning_user=jenkins"
       ],
       "only": ["amazon-ebs"]
     }

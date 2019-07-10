@@ -28,4 +28,5 @@
           mode: 0755
         }
       }
+    - ansible-provisioner
     - docker-slave

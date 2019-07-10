@@ -1,0 +1,5 @@
+---
+safe_build_infrastructure_repo_owner: maidsafe
+safe_build_infrastructure_repo_branch: master
+safe_build_infrastructure_repo_url: "https://github.com/{{ safe_build_infrastructure_repo_owner }}/safe-build-infrastructure.git"
+safe_build_infrastructure_repo_path: "/home/{{ provisioning_user }}/safe-build-infrastructure"

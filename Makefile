@@ -154,6 +154,8 @@ vm-util_slave-ubuntu-bionic-x86_64-aws:
 		--private-key=~/.ssh/vagrant \
 		--limit=util_slave \
 		-e "cloud_environment=dev" \
+		-e "provisioning_user=jenkins" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-u ubuntu ansible/util-slave.yml
 
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}

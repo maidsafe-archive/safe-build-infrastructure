@@ -1,62 +1,33 @@
 ---
-- name: 'fail if aws access key id is not set'
-  fail:
-    msg: "The AWS access key ID must be provided"
-  when: aws_access_key_id is not defined or aws_access_key_id == ""
-
-- name: 'fail if aws secret access key is not set'
-  fail:
-    msg: "The AWS secret access key must be provided"
-  when: aws_secret_access_key is not defined or aws_secret_access_key == ""
-
-- name: 'fail if ansible password is not set'
-  fail:
-    msg: "The Ansible vault password must be provided"
-  when: ansible_vault_password is not defined or ansible_vault_password == ""
-
-- name: 'set the aws access key id in ansible user ~/.bashrc'
-  lineinfile:
-    path: "/home/ansible/.bashrc"
-    state: present
-    line: "export AWS_ACCESS_KEY_ID={{ aws_access_key_id }}"
-
-- name: 'set the aws secret access key in ansible user ~/.bashrc'
-  lineinfile:
-    path: /home/ansible/.bashrc
-    state: present
-    line: "export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
-
-- name: 'set the ansible windows user password in ansible user ~/.bashrc'
-  lineinfile:
-    path: /home/ansible/.bashrc
-    state: present
-    line: "export {{ windows_ansible_user_password_variable }}={{ secret_ansible_account_password }}"
-
-- name: 'set the aws default region in ansible user ~/.bashrc'
-  lineinfile:
-    path: /home/ansible/.bashrc
-    state: present
-    line: export AWS_DEFAULT_REGION=eu-west-2
-
 - name: 'create .ansible directory'
   file:
-    path: /home/ansible/.ansible
+    path: "/home/{{ provisioning_user }}/.ansible"
     state: directory
     mode: 0700
-    owner: ansible
-    group: ansible
+    owner: "{{ provisioning_user }}"
+    group: "{{ provisioning_user }}"
 
 - name: 'set the ansible vault password'
   copy:
     content: "{{ ansible_vault_password }}"
-    dest: "/home/ansible/.ansible/vault-pass"
+    dest: "/home/{{ provisioning_user }}/.ansible/vault-pass"
     mode: 0600
-    owner: ansible
-    group: ansible
+    owner: "{{ provisioning_user }}"
+    group: "{{ provisioning_user }}"
 
 - name: 'install utils'
   package:
-    name: ['git', 'nc', 'vim']
+    name: ['git', 'vim']
+
+- name: 'install netcat (centos)'
+  package:
+    name: 'nc'
+  when: ansible_distribution == 'CentOS'
+
+- name: 'install netcat (ubuntu)'
+  package:
+    name: 'netcat'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: 'install jq'
   get_url:
@@ -88,18 +59,18 @@
     owner: root
     group: root
 
-- name: 'clone safe-build-infrastructure repo'
-  git:
-    repo: "{{ safe_build_infrastructure_repo_url }}"
-    dest: "{{ safe_build_infrastructure_repo_path }}"
-    version: "{{ safe_build_infrastructure_repo_branch }}"
-  become: yes
-  become_user: "{{ provisioning_user }}"
+- name: 'create virtualenv location'
+  file:
+    path: "{{ virtualenv_path }}"
+    state: directory
+    mode: 0700
+    owner: "{{ provisioning_user }}"
+    group: "{{ provisioning_user }}"
 
-- name: 'create virtualenv in repo location'
+- name: 'create provisioning virtualenv'
   command: "virtualenv {{ virtualenv_name }}"
   args:
-    chdir: "{{ safe_build_infrastructure_repo_path }}"
+    chdir: "{{ virtualenv_path }}"
   become: yes
   become_user: "{{ provisioning_user }}"
 
@@ -107,7 +78,7 @@
 # install packages into a virtualenv, but it wasn't working correctly.
 - name: 'install ansible, boto and pypsrp in virtualenv'
   shell: |
-    source {{ virtualenv_path }}/bin/activate
+    . {{ provisioning_virtualenv_path }}/bin/activate
     pip install {{ item }}
   with_items:
     - awscli

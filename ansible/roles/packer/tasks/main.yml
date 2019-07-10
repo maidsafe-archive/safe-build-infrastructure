@@ -1,4 +1,8 @@
 ---
+- name: 'install unzip package'
+  package:
+    name: unzip
+
 - name: 'download and extract packer'
   unarchive:
     src: "{{ packer_url }}"
