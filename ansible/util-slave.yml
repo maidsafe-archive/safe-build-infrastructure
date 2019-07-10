@@ -13,8 +13,7 @@
           owner: "root",
           group: "root",
           mode: 0755
-        },
-        when: cloud_environment != "dev"
+        }
       }
     - docker
     - jenkins-slave
@@ -26,7 +25,6 @@
           owner: "jenkins",
           group: "jenkins",
           mode: 0755
-        },
-        when: cloud_environment != "dev"
+        }
       }
     - docker-slave

@@ -145,6 +145,17 @@ vm-docker_slave-centos-7.6-x86_64-aws:
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
 
+vm-util_slave-ubuntu-bionic-x86_64-aws:
+	vagrant up util_slave-ubuntu-bionic-x86_64-aws --provision --provider=aws
+	vagrant ssh util_slave-ubuntu-bionic-x86_64-aws -c "sudo apt-get install -y python"
+	echo "Running Ansible... (can be 10+ seconds before output)"
+	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/vagrant \
+		--limit=util_slave \
+		-e "cloud_environment=dev" \
+		-u ubuntu ansible/util-slave.yml
+
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 env-jenkins-dev-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}
 env-jenkins-dev-vbox: export JENKINS_MASTER_IP_ADDRESS := ${JENKINS_MASTER_IP_ADDRESS}
