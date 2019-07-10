@@ -5,6 +5,7 @@
     - hardening
     - pip
     - java
+    - packer
     - {
         role: format_disk,
         block_device: "{{ docker_storage_block_device }}",
