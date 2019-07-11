@@ -72,6 +72,7 @@
         "--vault-password-file={{ user `vault_password_path` }}",
         "--extra-vars",
         "cloud_environment={{ user `cloud_environment` }}",
+        "--extra-vars",
         "provisioning_user=jenkins"
       ],
       "only": ["amazon-ebs"]

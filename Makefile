@@ -37,6 +37,7 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 
 box-util_slave-ubuntu-bionic-x86_64-aws:
 	rm -rf ~/.ansible/tmp
+	./scripts/sh/install_external_java_role.sh
 	packer validate templates/util_slave-ubuntu-bionic-x86_64.json
 	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
