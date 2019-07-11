@@ -26,6 +26,7 @@ box-travis_slave-windows-2016-vbox:
 
 box-docker_slave-ubuntu-bionic-x86_64-aws:
 	rm -rf ~/.ansible/tmp
+	./scripts/sh/install_external_java_role.sh
 	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
 	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
