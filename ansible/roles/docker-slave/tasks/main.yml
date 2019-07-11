@@ -19,8 +19,7 @@
 - name: 'copy login script'
   template:
     src: docker_login.sh
-    dest: "/home/{{ build_user }}/docker_password.txt"
-    content: "{{ secret_dockerhub_user_password }}"
+    dest: "/home/{{ build_user }}/docker_login.sh"
     mode: 0755
     owner: "{{ build_user }}"
     group: "{{ build_user }}"
