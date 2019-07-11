@@ -150,8 +150,8 @@
     },
     {
       "type": "shell",
-      "execute_command": "{{.Vars}} sudo -u jenkins -E bash '{{.Path}}'",
-      "command": "cd $HOME && ./docker_login.sh",
+      "execute_command": "{{.Vars}} sudo -i -u jenkins -E bash '{{.Path}}'",
+      "inline": "cat docker_password.txt | docker login --username jenkinsmaidsafe --password-stdin",
       "only": ["amazon-ebs"]
     },
     {

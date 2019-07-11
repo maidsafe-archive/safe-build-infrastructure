@@ -7,6 +7,11 @@
     owner: "{{ build_user }}"
     group: "{{ build_user }}"
 
+# When this role is being run when using Packer on the util slave, for some unknown reason
+# it isn't allowed to access the Docker daemon. This is why the ignore errors flag is set.
+# The solution was to add the docker login command as a separate shell script step in the Packer
+# template. This still works running it in another context, e.g. a vagrant up, so I'm leaving it
+# in and setting ignore errors, rather than taking it out entirely.
 - name: 'login to dockerhub for pushing images'
   shell: |
     cat docker_password.txt | docker login --username {{ dockerhub_user }} --password-stdin
@@ -15,14 +20,6 @@
   become: yes
   become_user: "{{ build_user }}"
   ignore_errors: yes
-
-- name: 'copy login script'
-  template:
-    src: docker_login.sh
-    dest: "/home/{{ build_user }}/docker_login.sh"
-    mode: 0755
-    owner: "{{ build_user }}"
-    group: "{{ build_user }}"
 
 - name: 'pull docker images for slave'
   docker_image:
