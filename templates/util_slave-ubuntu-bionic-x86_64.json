@@ -75,6 +75,12 @@
         "provisioning_user=jenkins"
       ],
       "only": ["amazon-ebs"]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -i -u jenkins -E bash '{{.Path}}'",
+      "inline": "cat docker_password.txt | docker login --username jenkinsmaidsafe --password-stdin",
+      "only": ["amazon-ebs"]
     }
   ]
 }
