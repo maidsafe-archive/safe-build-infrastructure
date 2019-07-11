@@ -149,6 +149,12 @@
       "only": ["amazon-ebs"]
     },
     {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -u jenkins -E bash '{{.Path}}'",
+      "command": "cd $HOME && ./docker_login.sh",
+      "only": ["amazon-ebs"]
+    },
+    {
       "type": "ansible-local",
       "playbook_file": "ansible/docker-slave.yml",
       "role_paths": "ansible",

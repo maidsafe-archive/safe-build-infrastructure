@@ -14,11 +14,16 @@
     chdir: "/home/{{ build_user }}"
   become: yes
   become_user: "{{ build_user }}"
+  ignore_errors: yes
 
-- name: 'remove password file'
-  file:
-    path: "/home/{{ build_user }}/docker_password.txt"
-    state: absent
+- name: 'copy login script'
+  template:
+    src: docker_login.sh
+    dest: "/home/{{ build_user }}/docker_password.txt"
+    content: "{{ secret_dockerhub_user_password }}"
+    mode: 0755
+    owner: "{{ build_user }}"
+    group: "{{ build_user }}"
 
 - name: 'pull docker images for slave'
   docker_image:
