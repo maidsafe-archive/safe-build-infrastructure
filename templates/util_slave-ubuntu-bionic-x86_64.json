@@ -73,7 +73,9 @@
         "--extra-vars",
         "cloud_environment={{ user `cloud_environment` }}",
         "--extra-vars",
-        "provisioning_user=jenkins"
+        "provisioning_user=jenkins",
+        "--extra-vars",
+        "ansible_vault_password={{ user `ansible_vault_password` }}"
       ],
       "only": ["amazon-ebs"]
     },

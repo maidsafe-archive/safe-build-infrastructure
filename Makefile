@@ -33,6 +33,7 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-util_slave-ubuntu-bionic-x86_64-aws:
