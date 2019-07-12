@@ -157,7 +157,8 @@ vm-util_slave-ubuntu-bionic-x86_64-aws:
 		--private-key=~/.ssh/vagrant \
 		--limit=util_slave \
 		-e "cloud_environment=dev" \
-		-e "provisioning_user=jenkins" \
+		-e "build_user=util" \
+		-e "provisioning_user=util" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-u ubuntu ansible/util-slave.yml
 

@@ -238,15 +238,15 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "util_slave-ubuntu-bionic-x86_64-aws" do |docker_slave_aws|
-    docker_slave_aws.vm.box = "dummy"
-    docker_slave_aws.vm.synced_folder ".", "/vagrant", disabled: true
-    docker_slave_aws.vm.provider :aws do |aws, override|
+  config.vm.define "util_slave-ubuntu-bionic-x86_64-aws" do |util_slave_aws|
+    util_slave_aws.vm.box = "dummy"
+    util_slave_aws.vm.synced_folder ".", "/vagrant", disabled: true
+    util_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
       aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
       aws.region = "eu-west-2"
       aws.ami = "ami-0883141bc92a74917"
-      aws.instance_type = "t2.micro"
+      aws.instance_type = "t2.small"
       aws.security_groups = ["vagrant"]
       aws.keypair_name = "vagrant"
       aws.block_device_mapping = [
