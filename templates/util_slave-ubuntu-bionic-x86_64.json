@@ -75,7 +75,11 @@
         "--extra-vars",
         "provisioning_user=jenkins",
         "--extra-vars",
-        "ansible_vault_password={{ user `ansible_vault_password` }}"
+        "ansible_vault_password={{ user `ansible_vault_password` }}",
+        "--extra-vars",
+        "provisioning_user={{ user `provisioning_user` }}",
+        "--extra-vars",
+        "build_user={{ user `build_user` }}"
       ],
       "only": ["amazon-ebs"]
     },

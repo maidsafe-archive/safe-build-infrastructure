@@ -45,6 +45,8 @@ box-util_slave-ubuntu-bionic-x86_64-aws:
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		-var "provisioning_user=util" \
+		-var "build_user=util" \
 		templates/util_slave-ubuntu-bionic-x86_64.json
 
 box-rust_slave-windows-2016-x86_64-aws:
