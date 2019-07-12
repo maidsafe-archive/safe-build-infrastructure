@@ -270,6 +270,12 @@ credentials:
             id: "jenkins-ec2"
             scope: GLOBAL
             secretKey: "{{ secret_aws_jenkins_ec2_user_secret_access_key }}"
+        - aws:
+            accessKey: "AKIAVVODCRMSAU4B3J4C"
+            description: "User for generating AMIs."
+            id: "packer"
+            scope: GLOBAL
+            secretKey: "{{ secret_aws_packer_user_secret_access_key }}"
         - string:
             id: "github_maidsafe_token_secret_text"
             scope: GLOBAL
