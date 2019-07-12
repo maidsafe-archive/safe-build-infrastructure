@@ -101,7 +101,7 @@ jenkins:
             mode: NORMAL
             monitoring: false
             numExecutors: 1
-            remoteAdmin: "jenkins"
+            remoteAdmin: "util"
             remoteFS: "{{ jenkins_workspace_mount_point }}"
             securityGroups: "{{ util_slaves_security_group_name }}"
             stopOnTerminate: false

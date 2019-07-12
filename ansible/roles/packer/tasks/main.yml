@@ -16,3 +16,11 @@
     mode: 0755
     owner: root
     group: root
+
+- name: 'set some environment variables for use with packer'
+  template:
+    src: packer.sh
+    dest: /etc/profile.d/packer.sh
+    mode: 0755
+    owner: root
+    group: root
