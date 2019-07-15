@@ -51,6 +51,13 @@ box-util_slave-ubuntu-bionic-x86_64-aws:
 		-var "build_user=util" \
 		templates/util_slave-ubuntu-bionic-x86_64.json
 
+box-base_python_install-ubuntu-bionic-x86_64-aws:
+	packer validate templates/base_python_install-ubuntu-bionic-x86_64.json
+	packer build \
+		-only=amazon-ebs \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		templates/base_python_install-ubuntu-bionic-x86_64.json
+
 box-rust_slave-windows-2016-x86_64-aws:
 	packer validate templates/rust_slave-windows-2016-x86_64.json
 	packer build \

@@ -15,7 +15,7 @@
       "ssh_username": "ubuntu",
       "instance_type": "t2.micro",
       "region": "eu-west-2",
-      "source_ami": "ami-0883141bc92a74917",
+      "source_ami": "ami-0028d6dbbf08dbcfd",
       "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "run_tags": {
         "Name": "util_slave_001",
