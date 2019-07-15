@@ -13,6 +13,28 @@ resource "aws_security_group" "util_slaves" {
   }
 }
 
+# The following 2 slightly strange self referential rules are necessary for using Packer
+# on the util slave. The instance that Packer spins up will also be on the util slave
+# security group, but they don't have connectivity without explicitly adding both of
+# these rules.
+resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_util_slaves" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.util_slaves.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
+
+resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_util_slaves" {
+  type = "egress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.util_slaves.id}"
+  security_group_id = "${aws_security_group.util_slaves.id}"
+}
+
 resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_jenkins_master" {
   type = "ingress"
   from_port = 22
