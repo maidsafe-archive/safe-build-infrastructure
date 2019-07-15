@@ -35,6 +35,6 @@ secret_ansible_account_password: !vault |
   3638343661643462666438366665363632613063623938356331
 windows_ansible_user_password_variable: WINDOWS_DEV_ANSIBLE_USER_PASSWORD
 util_slave_full_name: util_slave-ubuntu-bionic-x86_64
-util_slave_ami_id: ami-037b70c65b7d65564
+util_slave_ami_id: ami-0162ea59642fd09ae
 util_slaves_security_group_name: util_slaves-dev
 build_user: jenkins
