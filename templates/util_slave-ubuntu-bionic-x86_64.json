@@ -85,7 +85,7 @@
     },
     {
       "type": "shell",
-      "execute_command": "{{.Vars}} sudo -i -u jenkins -E bash '{{.Path}}'",
+      "execute_command": "{{.Vars}} sudo -i -u {{ user `build_user` }} -E bash '{{.Path}}'",
       "inline": "cat docker_password.txt | docker login --username jenkinsmaidsafe --password-stdin",
       "only": ["amazon-ebs"]
     }
