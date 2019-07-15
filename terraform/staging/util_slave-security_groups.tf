@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_util_slaves" {
   security_group_id = "${aws_security_group.util_slaves.id}"
 }
 
-resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_util_slaves" {
+resource "aws_security_group_rule" "util_slaves_egress_ssh_from_util_slaves" {
   type = "egress"
   from_port = 22
   to_port = 22
