@@ -7,6 +7,10 @@ resource "aws_security_group" "util_slaves" {
   name = "${var.util_slaves_security_group}"
   description = "Connectivity for util slaves."
   vpc_id = "${module.vpc.vpc_id}"
+  tags {
+    Name = "${var.util_slaves_security_group}"
+    environment = "${var.environment_name}"
+  }
 }
 
 resource "aws_security_group_rule" "util_slaves_ingress_ssh_from_jenkins_master" {

@@ -41,6 +41,15 @@ jenkins:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "SAFE_PACKER_SECURITY_GROUP_ID"
+        value: "{{ util_slave_security_group_id }}"
+      - key: "SAFE_PACKER_SUBNET_ID"
+        value: "{{ util_slave_vpc_subnet_id }}"
+      - key: "SAFE_PACKER_VPC_ID"
+        value: "{{ util_slave_vpc_id }}"
   mode: NORMAL
 {% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
   clouds:
