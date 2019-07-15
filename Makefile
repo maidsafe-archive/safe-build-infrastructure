@@ -26,6 +26,14 @@ box-travis_slave-windows-2016-vbox:
 
 .ONESHELL:
 box-docker_slave-ubuntu-bionic-x86_64-aws:
+ifndef SAFE_PROJECT
+	@echo "The SAFE_PROJECT variable must be set."
+	@exit 1
+endif
+ifndef SAFE_IMAGE_TAG
+	@echo "The SAFE_IMAGE_TAG variable must be set."
+	@exit 1
+endif
 	rm -rf ~/.ansible/tmp
 	source ~/.venv/provisioning/bin/activate
 	./scripts/sh/install_external_java_role.sh
@@ -36,6 +44,9 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 		-var='cloud_environment=prod' \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-var "docker_slave_project=${SAFE_PROJECT}" \
+		-var "docker_slave_image_tag=${SAFE_IMAGE_TAG}" \
+		-var "generated_ami_name=${SAFE_PROJECT}_slave-ubuntu-bionic-x86_64" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-util_slave-ubuntu-bionic-x86_64-aws:
@@ -49,6 +60,7 @@ box-util_slave-ubuntu-bionic-x86_64-aws:
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-var "provisioning_user=util" \
 		-var "build_user=util" \
+		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		templates/util_slave-ubuntu-bionic-x86_64.json
 
 box-base_python_install-ubuntu-bionic-x86_64-aws:

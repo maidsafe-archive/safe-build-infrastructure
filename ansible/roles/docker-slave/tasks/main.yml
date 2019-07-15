@@ -21,10 +21,17 @@
   become_user: "{{ build_user }}"
   ignore_errors: yes
 
-- name: 'pull docker images for slave'
+- name: 'pull docker image for safe client libs'
   docker_image:
-    name: "{{ item }}"
-  with_items:
-    - "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
-    - "{{ safe_nd_build_image_name }}:{{ safe_nd_build_image_tag }}"
-    - "{{ safe_cli_build_image_name }}:{{ safe_cli_build_image_tag }}"
+    name: "{{ safe_client_libs_build_image_name }}:{{ docker_slave_image_tag }}"
+  when: docker_slave_project == 'safe_client_libs'
+
+- name: 'pull docker image for safe_nd'
+  docker_image:
+    name: "{{ safe_nd_build_image_name }}:{{ docker_slave_image_tag }}"
+  when: docker_slave_project == 'safe_nd'
+
+- name: 'pull docker image for safe_nd'
+  docker_image:
+    name: "{{ safe_cli_build_image_name }}:{{ docker_slave_image_tag }}"
+  when: docker_slave_project == 'safe_cli'

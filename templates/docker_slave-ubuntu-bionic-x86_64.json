@@ -3,7 +3,6 @@
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "vault_password_path": "{{env `SAFE_BUILD_INFRA_VAULT_PASS_PATH`}}",
-    "generated_ami_name": "docker_slave-ubuntu-bionic-x86_64",
     "ansible_inventory_directory": "environments/prod",
     "ssh_pass": "vagrant",
     "safe_subnet_id": "{{env `SAFE_PACKER_SUBNET_ID`}}",
@@ -145,6 +144,10 @@
       "extra_arguments": [
         "--extra-vars",
         "cloud_environment={{ user `cloud_environment` }}",
+        "--extra-vars",
+        "docker_slave_project={{ user `docker_slave_project` }}",
+        "--extra-vars",
+        "docker_slave_image_tag={{ user `docker_slave_image_tag` }}",
         "--vault-password-file={{ user `vault_password_path` }}"
       ],
       "only": ["amazon-ebs"]
