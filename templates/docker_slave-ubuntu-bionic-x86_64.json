@@ -116,11 +116,6 @@
     {
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/install_python.sh"
-    },
-    {
-      "type": "shell",
-      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
       "script": "./scripts/sh/setup_ansible.sh",
       "only": ["virtualbox-iso"]
     },

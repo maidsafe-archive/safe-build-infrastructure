@@ -59,11 +59,6 @@
   ],
   "provisioners": [
     {
-      "type": "shell",
-      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/install_python.sh"
-    },
-    {
       "type": "ansible",
       "playbook_file": "ansible/util-slave.yml",
       "inventory_directory": "{{ user `ansible_inventory_directory` }}",
