@@ -30,7 +30,7 @@ box-docker_slave-ubuntu-bionic-x86_64-aws:
 	source ~/.venv/provisioning/bin/activate
 	./scripts/sh/install_external_java_role.sh
 	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2.ini \
+	EC2_INI_PATH=environments/prod/ec2-bastion.ini \
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
