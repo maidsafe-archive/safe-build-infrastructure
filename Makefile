@@ -46,7 +46,7 @@ endif
 	EC2_INSTANCE_FILTERS='tag:environment=${SAFE_ENVIRONMENT},tag:project=${SAFE_PROJECT}' \
 		packer build \
 		-only=amazon-ebs \
-		-var='cloud_environment=prod' \
+		-var "cloud_environment=${SAFE_ENVIRONMENT}" \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-var "docker_slave_project=${SAFE_PROJECT}" \
