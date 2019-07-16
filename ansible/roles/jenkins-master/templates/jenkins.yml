@@ -44,6 +44,8 @@ jenkins:
   globalNodeProperties:
   - envVars:
       env:
+      - key: "SAFE_ENVIRONMENT"
+        value: "{{ cloud_environment }}"
       - key: "SAFE_PACKER_SECURITY_GROUP_ID"
         value: "{{ util_slave_security_group_id }}"
       - key: "SAFE_PACKER_SUBNET_ID"

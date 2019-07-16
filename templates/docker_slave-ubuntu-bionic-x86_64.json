@@ -26,7 +26,8 @@
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",
         "group": "linux_slaves",
-        "environment": "prod"
+        "environment": "{{user `cloud_environment`}}",
+        "project": "{{user `docker_slave_project`}}"
       },
       "ami_block_device_mappings": [
         {

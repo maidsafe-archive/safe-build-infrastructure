@@ -26,6 +26,10 @@ box-travis_slave-windows-2016-vbox:
 
 .ONESHELL:
 box-docker_slave-ubuntu-bionic-x86_64-aws:
+ifndef SAFE_ENVIRONMENT
+	@echo "The SAFE_ENVIRONMENT variable must be set."
+	@exit 1
+endif
 ifndef SAFE_PROJECT
 	@echo "The SAFE_PROJECT variable must be set."
 	@exit 1
@@ -38,7 +42,8 @@ endif
 	source ~/.venv/provisioning/bin/activate
 	./scripts/sh/install_external_java_role.sh
 	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2-bastion.ini \
+	EC2_INI_PATH='environments/${SAFE_ENVIRONMENT}/ec2-bastion.ini' \
+	EC2_INSTANCE_FILTERS='tag:environment=${SAFE_ENVIRONMENT},tag:project=${SAFE_PROJECT}' \
 		packer build \
 		-only=amazon-ebs \
 		-var='cloud_environment=prod' \
