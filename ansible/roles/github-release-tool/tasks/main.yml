@@ -1,12 +1,24 @@
 ---
-- name: 'install unzip'
-  package:
-    name: unzip
-    state: present
-
 - name: 'download and extract'
   unarchive:
     src: "{{ github_release_url }}"
     dest: "{{ github_release_path }}"
     extra_opts: ['--strip-components=3']
     remote_src: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'check if release tool is already installed'
+  stat:
+    path: "{{ github_release_path }}/github-release"
+  register: release_tool_result
+  when: ansible_distribution == 'CentOS'
+
+- name: 'download archive'
+  get_url:
+    url: "{{ github_release_url }}"
+    dest: "/tmp/github-release.tar.bz2"
+  when: ansible_distribution == 'CentOS' and release_tool_result.stat.exists == False
+
+- name: 'extract archive'
+  command: gtar xvjf /tmp/github-release.tar.bz2 -C {{ github_release_path }} --strip-components=3
+  when: ansible_distribution == 'CentOS' and release_tool_result.stat.exists == False
