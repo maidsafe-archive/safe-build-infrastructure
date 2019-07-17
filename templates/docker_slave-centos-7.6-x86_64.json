@@ -16,7 +16,7 @@
       "vpc_id": "{{user `safe_vpc_id`}}",
       "subnet_id": "{{user `safe_subnet_id`}}",
       "security_group_id": "{{user `safe_security_group_id`}}",
-      "ssh_username": "ubuntu",
+      "ssh_username": "centos",
       "instance_type": "t2.micro",
       "region": "eu-west-2",
       "source_ami": "ami-0eab3a90fc693af19",
