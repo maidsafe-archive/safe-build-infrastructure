@@ -41,7 +41,7 @@ endif
 	rm -rf ~/.ansible/tmp
 	source ~/.venv/provisioning/bin/activate
 	./scripts/sh/install_external_java_role.sh
-	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
+	packer validate templates/docker_slave-centos-7.6-x86_64.json
 	EC2_INI_PATH='environments/${SAFE_ENVIRONMENT}/ec2-bastion.ini' \
 	EC2_INSTANCE_FILTERS='tag:environment=${SAFE_ENVIRONMENT},tag:project=${SAFE_PROJECT}' \
 		packer build \
@@ -53,7 +53,7 @@ endif
 		-var "docker_slave_project=${SAFE_PROJECT}" \
 		-var "docker_slave_image_tag=${SAFE_IMAGE_TAG}" \
 		-var "generated_ami_name=${SAFE_PROJECT}_slave-centos-7.6-x86_64" \
-		templates/docker_slave-ubuntu-bionic-x86_64.json
+		templates/docker_slave-centos-7.6-x86_64.json
 
 box-util_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
