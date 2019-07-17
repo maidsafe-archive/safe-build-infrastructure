@@ -31,7 +31,7 @@
     name: "{{ safe_nd_build_image_name }}:{{ docker_slave_image_tag }}"
   when: docker_slave_project == 'safe_nd'
 
-- name: 'pull docker image for safe_nd'
+- name: 'pull docker image for safe_cli'
   docker_image:
     name: "{{ safe_cli_build_image_name }}:{{ docker_slave_image_tag }}"
   when: docker_slave_project == 'safe_cli'
