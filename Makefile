@@ -25,7 +25,7 @@ box-travis_slave-windows-2016-vbox:
 	packer build -only=amazon-ebs templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
 .ONESHELL:
-box-docker_slave-ubuntu-bionic-x86_64-aws:
+box-docker_slave-centos-7.6-x86_64-aws:
 ifndef SAFE_ENVIRONMENT
 	@echo "The SAFE_ENVIRONMENT variable must be set."
 	@exit 1
@@ -46,12 +46,13 @@ endif
 	EC2_INSTANCE_FILTERS='tag:environment=${SAFE_ENVIRONMENT},tag:project=${SAFE_PROJECT}' \
 		packer build \
 		-only=amazon-ebs \
+		-var "ansible_inventory_directory=environments/${SAFE_ENVIRONMENT}" \
 		-var "cloud_environment=${SAFE_ENVIRONMENT}" \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-var "docker_slave_project=${SAFE_PROJECT}" \
 		-var "docker_slave_image_tag=${SAFE_IMAGE_TAG}" \
-		-var "generated_ami_name=${SAFE_PROJECT}_slave-ubuntu-bionic-x86_64" \
+		-var "generated_ami_name=${SAFE_PROJECT}_slave-centos-7.6-x86_64" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
 box-util_slave-centos-7.6-x86_64-aws:

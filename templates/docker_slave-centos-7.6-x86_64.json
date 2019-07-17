@@ -3,7 +3,6 @@
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "vault_password_path": "{{env `SAFE_BUILD_INFRA_VAULT_PASS_PATH`}}",
-    "ansible_inventory_directory": "environments/prod",
     "ssh_pass": "vagrant",
     "safe_subnet_id": "{{env `SAFE_PACKER_SUBNET_ID`}}",
     "safe_vpc_id": "{{env `SAFE_PACKER_VPC_ID`}}",
@@ -20,7 +19,7 @@
       "ssh_username": "ubuntu",
       "instance_type": "t2.micro",
       "region": "eu-west-2",
-      "source_ami": "ami-0028d6dbbf08dbcfd",
+      "source_ami": "ami-0eab3a90fc693af19",
       "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "run_tags": {
         "Name": "docker_slave_001",
@@ -151,12 +150,6 @@
         "docker_slave_image_tag={{ user `docker_slave_image_tag` }}",
         "--vault-password-file={{ user `vault_password_path` }}"
       ],
-      "only": ["amazon-ebs"]
-    },
-    {
-      "type": "shell",
-      "execute_command": "{{.Vars}} sudo -i -u jenkins -E bash '{{.Path}}'",
-      "inline": "cat docker_password.txt | docker login --username jenkinsmaidsafe --password-stdin",
       "only": ["amazon-ebs"]
     },
     {

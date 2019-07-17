@@ -5,7 +5,7 @@ jenkins_master_ip_address: 192.168.10.100
 jenkins_master_full_name: jenkins_master-ubuntu-bionic-x86_64
 jenkins_master_host_url: jenkins_master.ubuntu.local
 docker_slave_ip_address: 192.168.10.101
-docker_slave_full_name: docker_slave-ubuntu-bionic-x86_64
+docker_slave_full_name: docker_slave-centos-7.6-x86_64
 docker_slave_host_url: docker-slave.ubuntu.local
 docker_slave_ami_id: ami-060e5d58b7533cfe3
 windows_rust_slave_ip_address: 192.168.10.102
