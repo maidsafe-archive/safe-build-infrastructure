@@ -176,6 +176,8 @@ vm-docker_slave-centos-7.6-x86_64-aws:
 		--private-key=~/.ssh/vagrant \
 		--limit=docker_slave_001 \
 		-e "cloud_environment=dev" \
+		-e "docker_slave_project=safe_nd" \
+		-e "docker_slave_image_tag=0.1.0" \
 		-u centos ansible/docker-slave.yml
 
 vm-util_slave-centos-7.6-x86_64-aws:
