@@ -238,14 +238,14 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "util_slave-ubuntu-bionic-x86_64-aws" do |util_slave_aws|
+  config.vm.define "util_slave-centos-7.6-x86_64-aws" do |util_slave_aws|
     util_slave_aws.vm.box = "dummy"
     util_slave_aws.vm.synced_folder ".", "/vagrant", disabled: true
     util_slave_aws.vm.provider :aws do |aws, override|
       aws.access_key_id = "#{ENV['AWS_ACCESS_KEY_ID']}"
       aws.secret_access_key = "#{ENV['AWS_SECRET_ACCESS_KEY']}"
       aws.region = "eu-west-2"
-      aws.ami = "ami-0883141bc92a74917"
+      aws.ami = "ami-0eab3a90fc693af19"
       aws.instance_type = "t2.small"
       aws.security_groups = ["vagrant"]
       aws.keypair_name = "vagrant"
@@ -269,7 +269,7 @@ Vagrant.configure("2") do |config|
         'group' => 'util_slaves',
         'environment' => 'dev'
       }
-      override.ssh.username = "ubuntu"
+      override.ssh.username = "centos"
       override.ssh.private_key_path = "~/.ssh/vagrant"
     end
   end

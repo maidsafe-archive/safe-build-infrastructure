@@ -54,19 +54,20 @@ endif
 		-var "generated_ami_name=${SAFE_PROJECT}_slave-ubuntu-bionic-x86_64" \
 		templates/docker_slave-ubuntu-bionic-x86_64.json
 
-box-util_slave-ubuntu-bionic-x86_64-aws:
+box-util_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
 	./scripts/sh/install_external_java_role.sh
-	packer validate templates/util_slave-ubuntu-bionic-x86_64.json
+	packer validate templates/util_slave-centos-7.6-x86_64.json
 	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
 		-only=amazon-ebs \
-		-var='cloud_environment=prod' \
+		-var 'cloud_environment=prod' \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
 		-var "provisioning_user=util" \
 		-var "build_user=util" \
 		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
-		templates/util_slave-ubuntu-bionic-x86_64.json
+		-var "docker_slave_project=none" \
+		templates/util_slave-centos-7.6-x86_64.json
 
 box-base_python_install-ubuntu-bionic-x86_64-aws:
 	packer validate templates/base_python_install-ubuntu-bionic-x86_64.json
@@ -176,9 +177,9 @@ vm-docker_slave-centos-7.6-x86_64-aws:
 		-e "cloud_environment=dev" \
 		-u centos ansible/docker-slave.yml
 
-vm-util_slave-ubuntu-bionic-x86_64-aws:
-	vagrant up util_slave-ubuntu-bionic-x86_64-aws --provision --provider=aws
-	vagrant ssh util_slave-ubuntu-bionic-x86_64-aws -c "sudo apt-get install -y python"
+vm-util_slave-centos-7.6-x86_64-aws:
+	vagrant up util_slave-centos-7.6-x86_64-aws --provision --provider=aws
+	vagrant ssh util_slave-centos-7.6-x86_64-aws -c "sudo yum update -y"
 	echo "Running Ansible... (can be 10+ seconds before output)"
 	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
 		--vault-password-file=~/.ansible/vault-pass \
@@ -188,7 +189,8 @@ vm-util_slave-ubuntu-bionic-x86_64-aws:
 		-e "build_user=util" \
 		-e "provisioning_user=util" \
 		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
-		-u ubuntu ansible/util-slave.yml
+		-e "docker_slave_project=none" \
+		-u centos ansible/util-slave.yml
 
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 env-jenkins-dev-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}

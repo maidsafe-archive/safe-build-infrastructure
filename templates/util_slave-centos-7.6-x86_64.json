@@ -3,7 +3,7 @@
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "vault_password_path": "{{env `SAFE_BUILD_INFRA_VAULT_PASS_PATH`}}",
-    "generated_ami_name": "util_slave-ubuntu-bionic-x86_64",
+    "generated_ami_name": "util_slave-centos-7.6-x86_64",
     "ansible_inventory_directory": "environments/prod",
     "ssh_pass": "vagrant"
   },
@@ -12,10 +12,10 @@
       "type": "amazon-ebs",
       "access_key": "{{user `aws_access_key_id`}}",
       "secret_key": "{{user `aws_secret_access_key`}}",
-      "ssh_username": "ubuntu",
+      "ssh_username": "centos",
       "instance_type": "t2.micro",
       "region": "eu-west-2",
-      "source_ami": "ami-0028d6dbbf08dbcfd",
+      "source_ami": "ami-0eab3a90fc693af19",
       "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "run_tags": {
         "Name": "util_slave_001",
@@ -74,13 +74,15 @@
         "--extra-vars",
         "provisioning_user={{ user `provisioning_user` }}",
         "--extra-vars",
-        "build_user={{ user `build_user` }}"
+        "build_user={{ user `build_user` }}",
+        "--extra-vars",
+        "docker_slave_project={{ user `docker_slave_project` }}"
       ],
       "only": ["amazon-ebs"]
     },
     {
       "type": "shell",
-      "execute_command": "{{.Vars}} sudo -i -u {{ user `build_user` }} -E bash '{{.Path}}'",
+      "execute_command": "{{.Vars}} sudo -i -u {{ user `build_user` }} bash '{{.Path}}'",
       "inline": "cat docker_password.txt | docker login --username jenkinsmaidsafe --password-stdin",
       "only": ["amazon-ebs"]
     }
