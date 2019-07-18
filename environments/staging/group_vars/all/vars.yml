@@ -37,7 +37,7 @@ secret_ansible_account_password: !vault |
   3832663462306362373430343234303363646330623165343231
 windows_ansible_user_password_variable: WINDOWS_STAGING_ANSIBLE_USER_PASSWORD
 macos_jenkins_workspace: "/Users/jenkins/jenkins-{{ cloud_environment }}-workspace"
-util_slave_full_name: util_slave-ubuntu-bionic-x86_64
+util_slave_full_name: util_slave-centos-7.6-x86_64
 util_slave_ami_id: ami-05677ae32af6fa884
 util_slaves_security_group_name: util_slaves-staging
 build_user: jenkins

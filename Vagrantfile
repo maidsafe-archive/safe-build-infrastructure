@@ -265,7 +265,7 @@ Vagrant.configure("2") do |config|
       ]
       aws.tags = {
         'Name' => 'util_slave',
-        'full_name' => 'util_slave-ubuntu-bionic-x86_64',
+        'full_name' => 'util_slave-centos-7.6-x86_64',
         'group' => 'util_slaves',
         'environment' => 'dev'
       }
