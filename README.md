@@ -134,7 +134,7 @@ Among other things, the provisioning for the Bastion cloned this repository and 
 
 Now perform the following steps on the Bastion host:
 
-* Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source venv/bin/activate`
+* Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source ~/.venv/provisioning/bin/activate`
 * If working on QA or Staging, you may wish to ensure that you are on the correct fork and branch of the repository.
 * Run the provisioning, use either `initial` or `reprovision` depending on your needs:
   * PRODUCTION = `make provision-jenkins-prod-aws-initial` or `make provision-jenkins-prod-aws-reprovision`

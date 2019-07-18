@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -e
 
 function setup() {
+    # This is to try and subvert the mysterious "Package 'python' has no installation candidate" error.
+    sed -Ei 's/^(.*ubuntu.* main)$/\1 universe/' /etc/apt/sources.list
     # When installing python-pip, there are sometimes prompts for user input.
     # Declaring the DEBIAN_FRONTEND variable will bypass those prompts.
-    sed -Ei 's/^(.*ubuntu.* main)$/\1 universe/' /etc/apt/sources.list
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -y
 }

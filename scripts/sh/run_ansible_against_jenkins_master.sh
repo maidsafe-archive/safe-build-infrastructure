@@ -55,6 +55,24 @@ function get_subnet_id() {
     fi
 }
 
+function get_vpc_id() {
+    vpc_id=$(aws ec2 describe-vpcs \
+        --filters \
+        "Name=tag:Name,Values=jenkins_environment-$cloud_environment" \
+        | jq '.Vpcs | .[0] | .VpcId' \
+        | sed 's/\"//g')
+    echo "Retrieved VPC ID $vpc_id"
+}
+
+function get_security_group_id() {
+    security_group_id=$(aws ec2 describe-security-groups \
+        --filters \
+        "Name=tag:Name,Values=util_slaves-$cloud_environment" \
+        | jq '.SecurityGroups | .[0] | .GroupId' \
+        | sed 's/\"//g')
+    echo "Retrieved security group ID $security_group_id"
+}
+
 function run_ansible() {
     rm -rf ~/.ansible/tmp
     echo "Running Ansible against Jenkins master... (can be 10+ seconds before output)"
@@ -67,11 +85,16 @@ function run_ansible() {
         -e "cloud_environment=$cloud_environment" \
         -e "jenkins_master_url=$jenkins_master_url" \
         -e "slave_vpc_subnet_id=$subnet_id" \
+        -e "util_slave_vpc_subnet_id=$subnet_id" \
+        -e "util_slave_security_group_id=$security_group_id" \
+        -e "util_slave_vpc_id=$vpc_id" \
         -e "wg_server_endpoint=$proxy_dns" \
         -e "wg_run_on_host=False" \
         -u ansible ansible/jenkins-master.yml
 }
 
 get_proxy_dns
+get_vpc_id
 get_subnet_id
+get_security_group_id
 run_ansible

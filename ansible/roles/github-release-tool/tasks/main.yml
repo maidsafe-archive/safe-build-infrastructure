@@ -1,4 +1,9 @@
 ---
+- name: 'install bzip2'
+  package:
+    name: bzip2
+    state: present
+
 - name: 'download and extract'
   unarchive:
     src: "{{ github_release_url }}"

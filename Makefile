@@ -24,25 +24,58 @@ box-travis_slave-windows-2016-vbox:
 	packer validate templates/travis_slave-windows-2016-virtualbox-x86_64.json
 	packer build -only=amazon-ebs templates/travis_slave-windows-2016-virtualbox-x86_64.json
 
-box-docker_slave-ubuntu-bionic-x86_64-aws:
+.ONESHELL:
+box-docker_slave-centos-7.6-x86_64-aws:
+ifndef SAFE_ENVIRONMENT
+	@echo "The SAFE_ENVIRONMENT variable must be set."
+	@exit 1
+endif
+ifndef SAFE_PROJECT
+	@echo "The SAFE_PROJECT variable must be set."
+	@exit 1
+endif
+ifndef SAFE_IMAGE_TAG
+	@echo "The SAFE_IMAGE_TAG variable must be set."
+	@exit 1
+endif
 	rm -rf ~/.ansible/tmp
-	packer validate templates/docker_slave-ubuntu-bionic-x86_64.json
-	EC2_INI_PATH=environments/prod/ec2.ini \
+	source ~/.venv/provisioning/bin/activate
+	./scripts/sh/install_external_java_role.sh
+	packer validate templates/docker_slave-centos-7.6-x86_64.json
+	EC2_INI_PATH='environments/${SAFE_ENVIRONMENT}/ec2-bastion.ini' \
+	EC2_INSTANCE_FILTERS='tag:environment=${SAFE_ENVIRONMENT},tag:project=${SAFE_PROJECT}' \
 		packer build \
 		-only=amazon-ebs \
-		-var='cloud_environment=prod' \
+		-var "ansible_inventory_directory=environments/${SAFE_ENVIRONMENT}" \
+		-var "cloud_environment=${SAFE_ENVIRONMENT}" \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
-		templates/docker_slave-ubuntu-bionic-x86_64.json
+		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-var "docker_slave_project=${SAFE_PROJECT}" \
+		-var "docker_slave_image_tag=${SAFE_IMAGE_TAG}" \
+		-var "generated_ami_name=${SAFE_PROJECT}_slave-centos-7.6-x86_64" \
+		templates/docker_slave-centos-7.6-x86_64.json
 
-box-util_slave-ubuntu-bionic-x86_64-aws:
+box-util_slave-centos-7.6-x86_64-aws:
 	rm -rf ~/.ansible/tmp
-	packer validate templates/util_slave-ubuntu-bionic-x86_64.json
+	./scripts/sh/install_external_java_role.sh
+	packer validate templates/util_slave-centos-7.6-x86_64.json
 	EC2_INI_PATH=environments/prod/ec2.ini \
 		packer build \
 		-only=amazon-ebs \
-		-var='cloud_environment=prod' \
+		-var 'cloud_environment=prod' \
 		-var "commit_hash=$$(git rev-parse --short HEAD)" \
-		templates/util_slave-ubuntu-bionic-x86_64.json
+		-var "provisioning_user=util" \
+		-var "build_user=util" \
+		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-var "docker_slave_project=none" \
+		templates/util_slave-centos-7.6-x86_64.json
+
+box-base_python_install-ubuntu-bionic-x86_64-aws:
+	packer validate templates/base_python_install-ubuntu-bionic-x86_64.json
+	packer build \
+		-only=amazon-ebs \
+		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		templates/base_python_install-ubuntu-bionic-x86_64.json
 
 box-rust_slave-windows-2016-x86_64-aws:
 	packer validate templates/rust_slave-windows-2016-x86_64.json
@@ -143,7 +176,24 @@ vm-docker_slave-centos-7.6-x86_64-aws:
 		--private-key=~/.ssh/vagrant \
 		--limit=docker_slave_001 \
 		-e "cloud_environment=dev" \
+		-e "docker_slave_project=safe_nd" \
+		-e "docker_slave_image_tag=0.1.0" \
 		-u centos ansible/docker-slave.yml
+
+vm-util_slave-centos-7.6-x86_64-aws:
+	vagrant up util_slave-centos-7.6-x86_64-aws --provision --provider=aws
+	vagrant ssh util_slave-centos-7.6-x86_64-aws -c "sudo yum update -y"
+	echo "Running Ansible... (can be 10+ seconds before output)"
+	EC2_INI_PATH=environments/dev/ec2.ini ansible-playbook -i environments/dev \
+		--vault-password-file=~/.ansible/vault-pass \
+		--private-key=~/.ssh/vagrant \
+		--limit=util_slave \
+		-e "cloud_environment=dev" \
+		-e "build_user=util" \
+		-e "provisioning_user=util" \
+		-e "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
+		-e "docker_slave_project=none" \
+		-u centos ansible/util-slave.yml
 
 env-jenkins-dev-vbox: export DOCKER_SLAVE_IP_ADDRESS := ${DOCKER_SLAVE_IP_ADDRESS}
 env-jenkins-dev-vbox: export DOCKER_SLAVE_URL := ${DOCKER_SLAVE_URL}

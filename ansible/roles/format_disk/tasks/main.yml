@@ -7,22 +7,23 @@
     msg: "a mount_info dictionary must be supplied"
   when: mount_info is not defined
 
-- name: 'copy partitioning script'
+- name: 'copy partitioning script (ubuntu)'
   copy:
     src: create_disk_partition.sh
     dest: /tmp/create_disk_partition.sh
     mode: 0744
     owner: root
     group: root
+  when: ansible_distribution == 'Ubuntu'
 
-# To format a disk without user input, you run this command:
-# echo -e "n\np\n1\n\n\nw\n" | fdisk /dev/sdb
-# For some reason, on Ubuntu, this doesn't work using the
-# Ansible shell module. I couldn't figure out why, so I changed
-# to using a script, but also put the file system creation in there too
-# just because it was easier to do it in there.
-- name: 'run partitioning script'
-  command: /tmp/create_disk_partition.sh "{{ block_device }}"
+- name: 'copy partitioning script (centos)'
+  copy:
+    src: create_disk_partition-centos.sh
+    dest: /tmp/create_disk_partition.sh
+    mode: 0744
+    owner: root
+    group: root
+  when: ansible_distribution == 'CentOS'
 
 - name: 'create mount point'
   file:
@@ -31,6 +32,14 @@
     group: root
     mode: 0755
     state: directory
+
+- name: 'run partitioning script (ubuntu)'
+  command: /tmp/create_disk_partition.sh "{{ block_device }}"
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'run mount script (centos)'
+  command: /tmp/create_disk_partition.sh "{{ block_device }}" "{{ mount_info.name }}"
+  when: ansible_distribution == 'CentOS'
 
 - name: 'get uuid for {{ block_device }}1'
   shell: blkid -o export {{ block_device }}1 | grep "^UUID=.*" | sed 's/UUID=//g'

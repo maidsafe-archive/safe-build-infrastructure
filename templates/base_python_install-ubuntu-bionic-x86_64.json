@@ -1,0 +1,26 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "generated_ami_name": "base_python_install-ubuntu-bionic-x86_64"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key_id`}}",
+      "secret_key": "{{user `aws_secret_access_key`}}",
+      "ssh_username": "ubuntu",
+      "instance_type": "t2.micro",
+      "region": "eu-west-2",
+      "source_ami": "ami-0883141bc92a74917",
+      "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "./scripts/sh/install_python.sh"
+    }
+  ]
+}

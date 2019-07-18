@@ -2,25 +2,31 @@
   "variables": {
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "generated_ami_name": "docker_slave-ubuntu-bionic-x86_64",
-    "ansible_inventory_directory": "environments/prod",
-    "ssh_pass": "vagrant"
+    "vault_password_path": "{{env `SAFE_BUILD_INFRA_VAULT_PASS_PATH`}}",
+    "ssh_pass": "vagrant",
+    "safe_subnet_id": "{{env `SAFE_PACKER_SUBNET_ID`}}",
+    "safe_vpc_id": "{{env `SAFE_PACKER_VPC_ID`}}",
+    "safe_security_group_id": "{{env `SAFE_PACKER_SECURITY_GROUP_ID`}}"
   },
   "builders": [
     {
       "type": "amazon-ebs",
       "access_key": "{{user `aws_access_key_id`}}",
       "secret_key": "{{user `aws_secret_access_key`}}",
-      "ssh_username": "ubuntu",
+      "vpc_id": "{{user `safe_vpc_id`}}",
+      "subnet_id": "{{user `safe_subnet_id`}}",
+      "security_group_id": "{{user `safe_security_group_id`}}",
+      "ssh_username": "centos",
       "instance_type": "t2.micro",
       "region": "eu-west-2",
-      "source_ami": "ami-0883141bc92a74917",
+      "source_ami": "ami-0eab3a90fc693af19",
       "ami_name": "{{user `generated_ami_name`}}-{{user `commit_hash`}}",
       "run_tags": {
         "Name": "docker_slave_001",
         "full_name": "{{user `generated_ami_name`}}",
         "group": "linux_slaves",
-        "environment": "prod"
+        "environment": "{{user `cloud_environment`}}",
+        "project": "{{user `docker_slave_project`}}"
       },
       "ami_block_device_mappings": [
         {
@@ -109,11 +115,6 @@
     {
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "script": "./scripts/sh/install_python.sh"
-    },
-    {
-      "type": "shell",
-      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
       "script": "./scripts/sh/setup_ansible.sh",
       "only": ["virtualbox-iso"]
     },
@@ -140,7 +141,15 @@
       "playbook_file": "ansible/docker-slave.yml",
       "inventory_directory": "{{user `ansible_inventory_directory`}}",
       "groups": "linux_slaves",
-      "extra_arguments": ["--extra-vars", "cloud_environment={{ user `cloud_environment` }}"],
+      "extra_arguments": [
+        "--extra-vars",
+        "cloud_environment={{ user `cloud_environment` }}",
+        "--extra-vars",
+        "docker_slave_project={{ user `docker_slave_project` }}",
+        "--extra-vars",
+        "docker_slave_image_tag={{ user `docker_slave_image_tag` }}",
+        "--vault-password-file={{ user `vault_password_path` }}"
+      ],
       "only": ["amazon-ebs"]
     },
     {

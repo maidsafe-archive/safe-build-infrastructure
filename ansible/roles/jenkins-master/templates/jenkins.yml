@@ -41,6 +41,17 @@ jenkins:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "SAFE_ENVIRONMENT"
+        value: "{{ cloud_environment }}"
+      - key: "SAFE_PACKER_SECURITY_GROUP_ID"
+        value: "{{ util_slave_security_group_id }}"
+      - key: "SAFE_PACKER_SUBNET_ID"
+        value: "{{ util_slave_vpc_subnet_id }}"
+      - key: "SAFE_PACKER_VPC_ID"
+        value: "{{ util_slave_vpc_id }}"
   mode: NORMAL
 {% if cloud_environment == "prod" or cloud_environment == "staging" or cloud_environment == "qa" %}
   clouds:
@@ -101,7 +112,7 @@ jenkins:
             mode: NORMAL
             monitoring: false
             numExecutors: 1
-            remoteAdmin: "jenkins"
+            remoteAdmin: "util"
             remoteFS: "{{ jenkins_workspace_mount_point }}"
             securityGroups: "{{ util_slaves_security_group_name }}"
             stopOnTerminate: false
@@ -270,6 +281,12 @@ credentials:
             id: "jenkins-ec2"
             scope: GLOBAL
             secretKey: "{{ secret_aws_jenkins_ec2_user_secret_access_key }}"
+        - aws:
+            accessKey: "AKIAVVODCRMSAU4B3J4C"
+            description: "User for generating AMIs."
+            id: "packer"
+            scope: GLOBAL
+            secretKey: "{{ secret_aws_packer_user_secret_access_key }}"
         - string:
             id: "github_maidsafe_token_secret_text"
             scope: GLOBAL

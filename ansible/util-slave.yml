@@ -5,6 +5,7 @@
     - hardening
     - pip
     - java
+    - packer
     - {
         role: format_disk,
         block_device: "{{ docker_storage_block_device }}",
@@ -13,8 +14,7 @@
           owner: "root",
           group: "root",
           mode: 0755
-        },
-        when: cloud_environment != "dev"
+        }
       }
     - docker
     - jenkins-slave
@@ -23,10 +23,10 @@
         block_device: "{{ jenkins_workspace_block_device }}",
         mount_info: {
           name: "{{ jenkins_workspace_mount_point }}",
-          owner: "jenkins",
-          group: "jenkins",
+          owner: "{{ build_user }}",
+          group: "{{ build_user }}",
           mode: 0755
-        },
-        when: cloud_environment != "dev"
+        }
       }
+    - ansible-provisioner
     - docker-slave
