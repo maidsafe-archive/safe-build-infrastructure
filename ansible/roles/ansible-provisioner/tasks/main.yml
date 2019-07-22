@@ -76,13 +76,13 @@
 
 # You are supposed to be able to use the 'virtualenv' parameter of the pip module to
 # install packages into a virtualenv, but it wasn't working correctly.
-- name: 'install ansible, boto and pypsrp in virtualenv'
+- name: 'install ansible dependencies'
   shell: |
     . {{ provisioning_virtualenv_path }}/bin/activate
     pip install {{ item }}
   with_items:
     - awscli
-    - git+https://github.com/ansible/ansible.git@devel
+    - "ansible=={{ ansible_provisioner_version }}"
     - boto
     - boto3
     - pypsrp

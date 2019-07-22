@@ -5,3 +5,4 @@ virtualenv_path: "/home/{{ provisioning_user }}/.venv"
 provisioning_virtualenv_path: "{{ virtualenv_path }}/{{ virtualenv_name }}"
 jq_url: "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
 jq_install_path: "/usr/local/bin/jq"
+ansible_provisioner_version: 2.8.2
