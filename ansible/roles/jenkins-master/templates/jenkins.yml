@@ -88,6 +88,81 @@ jenkins:
             useDedicatedTenancy: false
             useEphemeralDevices: false
             usePrivateDnsName: false
+          - ami: "{{ safe_client_libs_docker_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ safe_client_libs_docker_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "safe_client_libs"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
+            securityGroups: "{{ linux_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Medium
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
+          - ami: "{{ safe_cli_docker_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ safe_cli_docker_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "safe_cli"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
+            securityGroups: "{{ linux_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Medium
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
+          - ami: "{{ safe_nd_docker_slave_ami_id }}"
+            amiType:
+              unixData:
+                sshPort: "22"
+            associatePublicIp: false
+            connectBySSHProcess: false
+            connectUsingPublicIp: false
+            deleteRootOnTermination: false
+            description: "{{ safe_nd_docker_slave_full_name }}"
+            ebsOptimized: false
+            idleTerminationMinutes: "30"
+            labelString: "safe_nd"
+            mode: NORMAL
+            monitoring: false
+            numExecutors: 1
+            remoteAdmin: "jenkins"
+            remoteFS: "{{ jenkins_workspace_mount_point }}"
+            securityGroups: "{{ linux_slaves_security_group_name }}"
+            stopOnTerminate: false
+            subnetId: "{{ slave_vpc_subnet_id }}"
+            t2Unlimited: false
+            type: T2Medium
+            useDedicatedTenancy: false
+            useEphemeralDevices: false
+            usePrivateDnsName: false
         useInstanceProfileForCredentials: false
     - amazonEC2:
         cloudName: "util_slaves"
