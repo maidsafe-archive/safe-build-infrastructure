@@ -109,7 +109,7 @@ variable "windows_ami" {
 }
 
 variable "windows_slave_count" {
-  default = 2
+  default = 3
   description = "Determines the number of Windows slaves"
 }
 
