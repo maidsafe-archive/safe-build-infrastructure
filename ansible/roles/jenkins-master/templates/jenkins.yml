@@ -366,6 +366,10 @@ credentials:
             id: "github_maidsafe_token_secret_text"
             scope: GLOBAL
             secret: ${secret_github_access_token}
+        - string:
+            id: "crates_io_token"
+            scope: GLOBAL
+            secret: ${secret_crates_io_token}
 unclassified:
   githubpluginconfig:
     configs:
