@@ -35,3 +35,8 @@
   docker_image:
     name: "{{ safe_cli_build_image_name }}:{{ docker_slave_image_tag }}"
   when: docker_slave_project == 'safe_cli'
+
+- name: 'pull docker image for safe_vault'
+  docker_image:
+    name: "{{ safe_vault_build_image_name }}:{{ docker_slave_image_tag }}"
+  when: docker_slave_project == 'safe_vault'
