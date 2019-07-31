@@ -48,6 +48,11 @@ resource "aws_s3_bucket" "safe_cli_deploy" {
   acl = "public-read"
 }
 
+resource "aws_s3_bucket" "safe_vault_deploy" {
+  bucket = "${var.safe_vault_deploy_bucket_name}"
+  acl = "public-read"
+}
+
 resource "aws_iam_user_policy" "jenkins_deploy_artifacts" {
     name = "jenkins_deploy_artifacts_user_policy"
     user = "${data.aws_iam_user.jenkins_deploy_artifacts.user_name}"
@@ -61,6 +66,8 @@ resource "aws_iam_user_policy" "jenkins_deploy_artifacts" {
             "Resource": [
                 "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}",
                 "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}/*"
+                "arn:aws:s3:::${aws_s3_bucket.safe_vault_deploy.bucket}",
+                "arn:aws:s3:::${aws_s3_bucket.safe_vault_deploy.bucket}/*"
             ]
         }
    ]
