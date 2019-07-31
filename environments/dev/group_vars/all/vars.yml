@@ -8,7 +8,7 @@ docker_slave_host_url: docker-slave.ubuntu.local
 docker_slave_ami_id: ami-09213939f60112dee
 safe_client_libs_docker_slave_ami_id: ami-0aee5541c54518b16
 safe_cli_docker_slave_ami_id: ami-02d3ef05bfbe67ddc
-safe_nd_docker_slave_ami_id: ami-0f254244728490a0a
+safe_nd_docker_slave_ami_id: ami-071993883a595d7dc
 safe_vault_docker_slave_ami_id: <replace>
 safe_client_libs_docker_slave_full_name: safe_client_libs_slave-centos-7.6-x86_64
 safe_cli_docker_slave_full_name: safe_cli_slave-centos-7.6-x86_64
