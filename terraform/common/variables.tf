@@ -27,3 +27,8 @@ variable "packer_username" {
   default = "packer"
   description = "Username of the IAM user for running Packer to generate AMIs."
 }
+
+variable "safe_vault_deploy_bucket_name" {
+  default = "safe-vault"
+  description = "Name for bucket to deploy safe-vault binaries to."
+}
