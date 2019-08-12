@@ -38,6 +38,11 @@ ifndef SAFE_IMAGE_TAG
 	@echo "The SAFE_IMAGE_TAG variable must be set."
 	@exit 1
 endif
+ifndef SAFE_COMMIT_HASH
+	@echo "The SAFE_COMMIT_HASH variable must be set."
+	@echo "Set this to the most recent commit hash of the repo where the Dockerfile resides."
+	@exit 1
+endif
 	rm -rf ~/.ansible/tmp
 	source ~/.venv/provisioning/bin/activate
 	./scripts/sh/install_external_java_role.sh
@@ -48,7 +53,7 @@ endif
 		-only=amazon-ebs \
 		-var "ansible_inventory_directory=environments/${SAFE_ENVIRONMENT}" \
 		-var "cloud_environment=${SAFE_ENVIRONMENT}" \
-		-var "commit_hash=$$(git rev-parse --short HEAD)" \
+		-var "commit_hash=${SAFE_COMMIT_HASH}" \
 		-var "ansible_vault_password=$$(cat ~/.ansible/vault-pass)" \
 		-var "docker_slave_project=${SAFE_PROJECT}" \
 		-var "docker_slave_image_tag=${SAFE_IMAGE_TAG}" \
