@@ -7,6 +7,8 @@ safe_cli_build_image_name: maidsafe/safe-cli-build
 safe_cli_build_image_tag: build
 safe_vault_build_image_name: maidsafe/safe-vault-build
 safe_vault_build_image_tag: build
+safe_auth_build_image_name: maidsafe/safe-authenticator-cli-build
+safe_auth_build_image_tag: build
 dockerhub_user: jenkinsmaidsafe
 secret_dockerhub_user_password: !vault |       
   $ANSIBLE_VAULT;1.1;AES256

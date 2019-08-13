@@ -23,20 +23,25 @@
 
 - name: 'pull docker image for safe client libs'
   docker_image:
-    name: "{{ safe_client_libs_build_image_name }}:{{ docker_slave_image_tag }}"
+    name: "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
   when: docker_slave_project == 'safe_client_libs'
 
 - name: 'pull docker image for safe_nd'
   docker_image:
-    name: "{{ safe_nd_build_image_name }}:{{ docker_slave_image_tag }}"
+    name: "{{ safe_nd_build_image_name }}:{{ safe_nd_build_image_tag }}"
   when: docker_slave_project == 'safe_nd'
 
 - name: 'pull docker image for safe_cli'
   docker_image:
-    name: "{{ safe_cli_build_image_name }}:{{ docker_slave_image_tag }}"
+    name: "{{ safe_cli_build_image_name }}:{{ safe_cli_build_image_tag }}"
   when: docker_slave_project == 'safe_cli'
 
 - name: 'pull docker image for safe_vault'
   docker_image:
-    name: "{{ safe_vault_build_image_name }}:{{ docker_slave_image_tag }}"
+    name: "{{ safe_vault_build_image_name }}:{{ safe_vault_build_image_tag }}"
   when: docker_slave_project == 'safe_vault'
+
+- name: 'pull docker image for safe_auth_cli'
+  docker_image:
+    name: "{{ safe_auth_build_image_name }}:{{ safe_auth_build_image_tag }}"
+  when: docker_slave_project == 'safe_authenticator_cli'
