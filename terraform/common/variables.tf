@@ -32,3 +32,8 @@ variable "safe_vault_deploy_bucket_name" {
   default = "safe-vault"
   description = "Name for bucket to deploy safe-vault binaries to."
 }
+
+variable "safe_auth_cli_deploy_bucket_name" {
+  default = "safe-authenticator-cli"
+  description = "Name for bucket to deploy safe-authenticator-cli binaries to."
+}
