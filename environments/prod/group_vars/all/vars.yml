@@ -12,10 +12,12 @@ safe_client_libs_docker_slave_ami_id: ami-0aee5541c54518b16
 safe_cli_docker_slave_ami_id: ami-02d3ef05bfbe67ddc
 safe_nd_docker_slave_ami_id: ami-071993883a595d7dc
 safe_vault_docker_slave_ami_id: ami-0a201972df96780a4
+safe_auth_cli_docker_slave_ami_id: ami-062f92043d0b277b5
 safe_client_libs_docker_slave_full_name: safe_client_libs_slave-centos-7.6-x86_64
 safe_cli_docker_slave_full_name: safe_cli_slave-centos-7.6-x86_64
 safe_nd_docker_slave_full_name: safe_nd_slave-centos-7.6-x86_64
 safe_vault_docker_slave_full_name: safe_vault_slave-centos-7.6-x86_64
+safe_auth_cli_docker_slave_full_name: safe_auth_slave-centos-7.6-x86_64
 windows_rust_slave_ip_address: 192.168.10.102
 windows_rust_slave_full_name: rust_slave-windows-2016-x86_64
 windows_rust_slave_host_url: rust_slave.ubuntu.local
