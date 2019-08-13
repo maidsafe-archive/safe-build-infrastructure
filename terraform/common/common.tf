@@ -70,9 +70,9 @@ resource "aws_iam_user_policy" "jenkins_deploy_artifacts" {
             "Action": "s3:*",
             "Resource": [
                 "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}",
-                "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}/*"
+                "arn:aws:s3:::${aws_s3_bucket.safe_cli_deploy.bucket}/*",
                 "arn:aws:s3:::${aws_s3_bucket.safe_vault_deploy.bucket}",
-                "arn:aws:s3:::${aws_s3_bucket.safe_vault_deploy.bucket}/*"
+                "arn:aws:s3:::${aws_s3_bucket.safe_vault_deploy.bucket}/*",
                 "arn:aws:s3:::${aws_s3_bucket.safe_auth_cli_deploy.bucket}",
                 "arn:aws:s3:::${aws_s3_bucket.safe_auth_cli_deploy.bucket}/*"
             ]
