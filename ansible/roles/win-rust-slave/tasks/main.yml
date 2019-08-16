@@ -87,6 +87,13 @@
     username: "{{ jenkins_service_account_user }}"
     password: "{{ jenkins_service_account_password }}"
 
+- name: 'update to the latest stable version'
+  win_psexec:
+    command: "{{ rustup_path }} update {{ rust_version }}"
+    elevated: yes
+    username: "{{ jenkins_service_account_user }}"
+    password: "{{ jenkins_service_account_password }}"
+
 - name: 'install clippy'
   win_psexec:
     command: "{{ rustup_path }} component add clippy"
