@@ -31,17 +31,23 @@
     name: "{{ safe_nd_build_image_name }}:{{ safe_nd_build_image_tag }}"
   when: docker_slave_project == 'safe_nd'
 
-- name: 'pull docker image for safe_cli'
+- name: 'pull docker images for safe_cli'
   docker_image:
-    name: "{{ safe_cli_build_image_name }}:{{ safe_cli_build_image_tag }}"
+    name: "{{ safe_cli_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_cli'
+  with_items:
+    - build
+    - build-dev
 
 - name: 'pull docker image for safe_vault'
   docker_image:
     name: "{{ safe_vault_build_image_name }}:{{ safe_vault_build_image_tag }}"
   when: docker_slave_project == 'safe_vault'
 
-- name: 'pull docker image for safe_auth_cli'
+- name: 'pull docker images for safe_auth_cli'
   docker_image:
-    name: "{{ safe_auth_build_image_name }}:{{ safe_auth_build_image_tag }}"
+    name: "{{ safe_auth_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_authenticator_cli'
+  with_items:
+    - build
+    - build-dev
