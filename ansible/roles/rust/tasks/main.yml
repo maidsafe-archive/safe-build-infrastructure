@@ -56,6 +56,11 @@
   become_user: "{{ build_user }}"
   when: rust_path_result.stat.exists == False
 
+- name: 'update to the latest stable version'
+  command: "{{ rustup_path }} update {{ rust_version }}"
+  become: yes
+  become_user: "{{ build_user }}"
+
 - name: 'add musl target'
   command: "{{ rustup_path }} target add x86_64-unknown-linux-musl"
   become: yes
