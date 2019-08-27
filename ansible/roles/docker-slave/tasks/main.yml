@@ -27,7 +27,7 @@
   when: docker_slave_project == 'safe_client_libs'
   with_items:
     - build
-    - build-dev
+    - build-mock
 
 - name: 'pull docker image for safe_nd'
   docker_image:
