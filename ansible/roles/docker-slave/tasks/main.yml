@@ -23,8 +23,11 @@
 
 - name: 'pull docker image for safe client libs'
   docker_image:
-    name: "{{ safe_client_libs_build_image_name }}:{{ safe_client_libs_build_image_tag }}"
+    name: "{{ safe_client_libs_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_client_libs'
+  with_items:
+    - build
+    - build-dev
 
 - name: 'pull docker image for safe_nd'
   docker_image:
