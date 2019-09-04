@@ -1,4 +1,9 @@
 ---
+- name: 'install zip package for artifact distribution'
+  package:
+    name: "zip"
+    state: present
+
 - name: 'copy dockerhub password'
   copy:
     dest: "/home/{{ build_user }}/docker_password.txt"
