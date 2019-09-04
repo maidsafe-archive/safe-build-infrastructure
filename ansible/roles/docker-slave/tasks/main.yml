@@ -49,8 +49,11 @@
 
 - name: 'pull docker image for safe_vault'
   docker_image:
-    name: "{{ safe_vault_build_image_name }}:{{ safe_vault_build_image_tag }}"
+    name: "{{ safe_vault_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_vault'
+  with_items:
+    - build
+    - build-mock
 
 - name: 'pull docker images for safe_auth_cli'
   docker_image:
