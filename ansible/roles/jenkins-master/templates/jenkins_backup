@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export AWS_DEFAULT_REGION=eu-west-2
+export AWS_ACCESS_KEY_ID={{ backup_user_aws_access_key_id }}
+export AWS_SECRET_ACCESS_KEY={{ secret_backup_user_aws_secret_access_key }}
+
+backup_file="jenkins_backup-$(date +%Y_%m_%d).tar.gz"
+systemctl stop jenkins
+tar -C "{{ jenkins_home_path }}" -zcvf "$backup_file" .
+systemctl start jenkins
+aws s3 cp "$backup_file" s3://{{ s3_backup_bucket }}/

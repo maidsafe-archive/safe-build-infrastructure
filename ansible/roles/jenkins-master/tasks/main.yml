@@ -182,6 +182,34 @@
   command: systemctl daemon-reload
   when: service_file_result.changed
 
+- name: 'copy backup script'
+  template:
+    src: jenkins_backup
+    dest: "{{ backup_script_path }}"
+    owner: root
+    group: root
+    mode: 0744
+
+- name: 'copy backup user key'
+  copy:
+    content: "{{ secret_backup_user_ssh_key }}"
+    dest: "{{ backup_user_key_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: 'cron job for backup'
+  cron:
+    name: backup_jenkins
+    day: "*"
+    hour: 2
+    minute: 0
+    job: "{{ backup_script_path }}"
+
+- name: 'install aws cli for backups'
+  pip:
+    name: 'awscli'
+
 - name: 'restart {{ jenkins_service_name }} service'
   service:
     name: "{{ jenkins_service_name }}"

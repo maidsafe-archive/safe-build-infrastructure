@@ -9,11 +9,12 @@ services:
       - "net.ipv4.conf.all.rp_filter=2"
       - "net.ipv4.ip_forward=1"
     cap_add:
-      - net_admin 
-      - sys_module 
+      - net_admin
+      - sys_module
     ports:
       - {{ jenkins_web_port }}:8080
       - {{ jenkins_slave_port }}:50000
+      - {{ jenkins_ssh_service_port }}:{{ jenkins_ssh_service_port }}
     volumes:
       - /etc/wireguard:/etc/wireguard
       - /lib/modules:/lib/modules
