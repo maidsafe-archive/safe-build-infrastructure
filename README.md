@@ -156,6 +156,20 @@ After you've provisioned the environment either locally or on AWS, it needs a li
 
 To perform this configuration you need to login with the initial admin user. The login details for this are in the QA Keepass database.
 
+#### SSH Service
+
+The Jenkins SSH service is used during our process for backing up Jenkins. Unfortunately CASC does not cover this setup, so it's a one-time manual step:
+```
+Manage Jenkins -> Configure Global Security -> SSH Server -> Fixed Port -> use 53801 as port number
+```
+
+Then you need to add the public key for the SSH user, also unfortunately not covered by CASC as of yet:
+```
+People -> qa -> Configure -> SSH Public Keys -> Enter qa user public key for this environment
+```
+
+The key is under the entry `qa_jenkins_cli_staging` in the Keepass database, where there's also a copy of the public key for convenience.
+
 #### GitHub
 
 We are using the [GitHub OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+OAuth+Plugin) for authentication with Jenkins on both the production and staging environments. This needs to be configured manually after first login. Go to Manage Jenkins -> Configure Global Security -> Security Realm. Change this to 'GitHub Authentication Plugin', then provide the client ID and secret; they can both be found in the QA Keypass database, under the section for the environment you are working in. After this, click on the Save button. You should now be able to log out of Jenkins, and when you log back in you should be able to authenticate using OAuth through your GitHub account. Note that if this is the first time you have logged into Jenkins via GitHub then GitHub will ask you to authorise Jenkins.

@@ -196,7 +196,7 @@
     dest: "{{ backup_user_key_path }}"
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
 
 - name: 'cron job for backup'
   cron:
