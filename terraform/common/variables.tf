@@ -3,6 +3,16 @@ variable "region" {
   description = "The AWS region to use"
 }
 
+variable "jenkins_backups_username" {
+  default = "jenkins-backups"
+  description = "Username of the IAM user for uploading Jenkins backups to S3."
+}
+
+variable "jenkins_backups_bucket_name" {
+  default = "safe-jenkins-backups"
+  description = "Name for the bucket that Jenkins backups are uploaded to."
+}
+
 variable "jenkins_build_artifacts_username" {
   default = "jenkins-build_artifacts"
   description = "Username of the IAM user for uploading build artifacts to S3."

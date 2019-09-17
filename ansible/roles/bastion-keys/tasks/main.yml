@@ -26,11 +26,23 @@
     state: present
     line: "export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
 
+- name: 'activate the virtualenv for the ansible user'
+  lineinfile:
+    path: /home/ansible/.bashrc
+    state: present
+    line: "source ~/.venv/provisioning/bin/activate"
+
 - name: 'set the ansible windows user password in ansible user ~/.bashrc'
   lineinfile:
     path: /home/ansible/.bashrc
     state: present
     line: "export {{ windows_ansible_user_password_variable }}={{ secret_ansible_account_password }}"
+
+- name: 'set the aws default region in ansible user ~/.bashrc'
+  lineinfile:
+    path: /home/ansible/.bashrc
+    state: present
+    line: export AWS_DEFAULT_REGION=eu-west-2
 
 - name: 'set the aws default region in ansible user ~/.bashrc'
   lineinfile:

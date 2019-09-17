@@ -130,11 +130,10 @@ After the infrastructure is created with Terraform, the Bastion host will be pro
 
 ##### Provisioning the Infrastructure on Production, Staging and QA
 
-Among other things, the provisioning for the Bastion cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines.
+The provisioning for the Bastion cloned this repository and changed the branch for convenience. It also created a virtualenv with Ansible and other Python libraries that are necessary for provisioning our machines. This virtualenv will be activated when you login.
 
 Now perform the following steps on the Bastion host:
 
-* Activate the virtualenv for necessary Python apps/libs: `cd ~/safe-build-infrastructure && source ~/.venv/provisioning/bin/activate`
 * If working on QA or Staging, you may wish to ensure that you are on the correct fork and branch of the repository.
 * Run the provisioning, use either `initial` or `reprovision` depending on your needs:
   * PRODUCTION = `make provision-jenkins-prod-aws-initial` or `make provision-jenkins-prod-aws-reprovision`
@@ -156,6 +155,20 @@ After you've provisioned the environment either locally or on AWS, it needs a li
 *Important note*: wait for any provisioning to completely finish before configuring Jenkins. The Windows slave has to call a URL to get a key to register itself as an agent, and this uses the basic authentication admin user. This means the basic authentication security realm needs to be in use at this time until it is changed to GitHub OAuth.
 
 To perform this configuration you need to login with the initial admin user. The login details for this are in the QA Keepass database.
+
+#### SSH Service
+
+The Jenkins SSH service is used during our process for backing up Jenkins. Unfortunately CASC does not cover this setup, so it's a one-time manual step:
+```
+Manage Jenkins -> Configure Global Security -> SSH Server -> Fixed Port -> use 53801 as port number
+```
+
+Then you need to add the public key for the SSH user, also unfortunately not covered by CASC as of yet:
+```
+Manage Jenkins -> Manage Users -> qa -> Configure -> SSH Public Keys -> Enter qa user public key for this environment
+```
+
+The key is under the entry `qa_jenkins_cli_staging` in the Keepass database, where there's also a copy of the private key for convenience.
 
 #### GitHub
 

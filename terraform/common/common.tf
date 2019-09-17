@@ -10,6 +10,35 @@ provider "aws" {
   region = "${var.region}"
 }
 
+data "aws_iam_user" "jenkins_backups" {
+  user_name = "${var.jenkins_backups_username}"
+}
+
+resource "aws_s3_bucket" "jenkins_backups" {
+  bucket = "${var.jenkins_backups_bucket_name}"
+  acl = "private"
+}
+
+resource "aws_iam_user_policy" "jenkins_backups" {
+    name = "jenkins_build_artifacts_user_policy"
+    user = "${data.aws_iam_user.jenkins_backups.user_name}"
+    policy= <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${aws_s3_bucket.jenkins_backups.bucket}",
+                "arn:aws:s3:::${aws_s3_bucket.jenkins_backups.bucket}/*"
+            ]
+        }
+   ]
+}
+EOF
+}
+
 data "aws_iam_user" "jenkins_build_artifacts" {
   user_name = "${var.jenkins_build_artifacts_username}"
 }

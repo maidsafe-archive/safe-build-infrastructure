@@ -6,5 +6,6 @@
     - osx-java
     - { role: wireguard, when: cloud_environment != "none" }
     - { role: wireguard-client, when: cloud_environment != "none" }
+    - { role: wireguard-keepalive, when: cloud_environment != "none" }
     - jenkins-slave
     - rust

@@ -1,0 +1,31 @@
+---
+- name: 'load os specific variables'
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+
+- name: 'copy keep alive script'
+  template:
+    src: "keep_alive.sh"
+    dest: "/usr/local/bin/keep_alive-{{ cloud_environment }}.sh"
+    mode: 0755
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+
+- name: 'clear out previous cron logs'
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /tmp/keep_alive.log
+    - /tmp/keep_alive-stderr.log
+
+- name: 'cron job for keep alive script'
+  cron:
+    name: "keep_alive_{{ cloud_environment }}"
+    month: "*"
+    day: "*"
+    hour: "*"
+    minute: "*"
+    job: "/usr/local/bin/keep_alive-{{ cloud_environment }}.sh >/tmp/keep_alive.log 2>/tmp/keep_alive-stderr.log"
+    user: "{{ ansible_user }}"

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+export AWS_DEFAULT_REGION=eu-west-2
+export AWS_ACCESS_KEY_ID={{ backup_user_aws_access_key_id }}
+export AWS_SECRET_ACCESS_KEY={{ secret_backup_user_aws_secret_access_key }}
+
+function wait_for_jenkins_to_start() {
+    curl localhost
+    exit_code=$?
+    while [[ $exit_code -ne 0 ]]; do
+        echo "Waiting for initial availability. Trying again in 5 seconds..."
+        sleep 5
+        curl localhost
+        exit_code=$?
+    done
+
+    while curl localhost | grep "Please wait while Jenkins is getting ready to work"; do
+        echo "Jenkins is still starting up. Wait for 5 more seconds..."
+        sleep 5
+    done
+}
+
+backup_file="jenkins_backup-{{ cloud_environment }}-$(date +%Y_%m_%d-%I%M).tar.gz"
+systemctl stop jenkins
+tar -C "{{ jenkins_home_path }}" -zcvf "$backup_file" .
+/usr/local/bin/aws s3 cp "$backup_file" s3://{{ s3_backup_bucket }}/
+rm "$backup_file"
+systemctl start jenkins
+wait_for_jenkins_to_start
+ssh -l qa localhost \
+    -p {{ jenkins_ssh_service_port }} \
+    -o "StrictHostKeyChecking=no" \
+    connect-node {{ osx_rust_slave_full_name }}
