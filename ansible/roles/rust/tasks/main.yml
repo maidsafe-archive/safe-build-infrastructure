@@ -67,6 +67,15 @@
   become_user: "{{ build_user }}"
   when: ansible_distribution != 'MacOSX'
 
+- name: 'add iOS targets'
+  command: "{{ rustup_path }} target add {{ item }}"
+  become: yes
+  become_user: "{{ build_user }}"
+  with_items:
+    - aarch64-apple-ios
+    - x86_64-apple-ios
+  when: ansible_distribution == 'MacOSX'
+
 - name: 'install rustfmt'
   command: "{{ rustup_path }} component add rustfmt"
   become: yes
