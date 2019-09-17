@@ -165,10 +165,10 @@ Manage Jenkins -> Configure Global Security -> SSH Server -> Fixed Port -> use 5
 
 Then you need to add the public key for the SSH user, also unfortunately not covered by CASC as of yet:
 ```
-People -> qa -> Configure -> SSH Public Keys -> Enter qa user public key for this environment
+Manage Jenkins -> Manage Users -> qa -> Configure -> SSH Public Keys -> Enter qa user public key for this environment
 ```
 
-The key is under the entry `qa_jenkins_cli_staging` in the Keepass database, where there's also a copy of the public key for convenience.
+The key is under the entry `qa_jenkins_cli_staging` in the Keepass database, where there's also a copy of the private key for convenience.
 
 #### GitHub
 
