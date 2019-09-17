@@ -23,7 +23,7 @@ function wait_for_jenkins_to_start() {
 backup_file="jenkins_backup-{{ cloud_environment }}-$(date +%Y_%m_%d-%I%M).tar.gz"
 systemctl stop jenkins
 tar -C "{{ jenkins_home_path }}" -zcvf "$backup_file" .
-aws s3 cp "$backup_file" s3://{{ s3_backup_bucket }}/
+/usr/local/bin/aws s3 cp "$backup_file" s3://{{ s3_backup_bucket }}/
 rm "$backup_file"
 systemctl start jenkins
 wait_for_jenkins_to_start
