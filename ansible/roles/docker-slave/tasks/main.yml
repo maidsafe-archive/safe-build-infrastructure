@@ -31,8 +31,12 @@
     name: "{{ safe_client_libs_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_client_libs'
   with_items:
-    - build
-    - build-mock
+    - x86_64
+    - x86_64-mock
+    - android-x86_64
+    - android-x86_64-mock
+    - armv7-x86_64
+    - armv7-x86_64-mock
 
 - name: 'pull docker image for safe_nd'
   docker_image:
