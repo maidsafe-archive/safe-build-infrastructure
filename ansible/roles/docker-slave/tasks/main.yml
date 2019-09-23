@@ -35,8 +35,8 @@
     - x86_64-mock
     - android-x86_64
     - android-x86_64-mock
-    - armv7-x86_64
-    - armv7-x86_64-mock
+    - android-armv7
+    - android-armv7-mock
 
 - name: 'pull docker image for safe_nd'
   docker_image:
