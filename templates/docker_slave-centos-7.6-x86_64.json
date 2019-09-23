@@ -38,7 +38,7 @@
         },
         {
           "device_name": "/dev/sdc",
-          "volume_size": 50,
+          "volume_size": 100,
           "volume_type": "gp2",
           "encrypted": false,
           "delete_on_termination": true
