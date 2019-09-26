@@ -202,7 +202,7 @@
   cron:
     name: backup_jenkins
     day: "*"
-    hour: 2
+    hour: 1
     minute: 0
     job: "{{ backup_script_path }}"
 

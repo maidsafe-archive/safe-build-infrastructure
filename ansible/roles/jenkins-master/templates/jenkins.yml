@@ -294,7 +294,7 @@ jenkins:
             retryWaitTime: 15
         name: "{{ osx_rust_slave_full_name }}"
         labelString: "osx"
-        numExecutors: 2
+        numExecutors: 3
         remoteFS: "{{ macos_jenkins_workspace }}"
 {% endif %}
 {% else %}
