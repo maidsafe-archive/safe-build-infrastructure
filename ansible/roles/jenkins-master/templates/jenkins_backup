@@ -30,4 +30,8 @@ wait_for_jenkins_to_start
 ssh -l qa localhost \
     -p {{ jenkins_ssh_service_port }} \
     -o "StrictHostKeyChecking=no" \
-    connect-node {{ osx_rust_slave_full_name }}
+    connect-node {{ osx_rust_slave_001_full_name }}
+ssh -l qa localhost \
+    -p {{ jenkins_ssh_service_port }} \
+    -o "StrictHostKeyChecking=no" \
+    connect-node {{ osx_rust_slave_002_full_name }}

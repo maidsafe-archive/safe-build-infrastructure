@@ -12,9 +12,10 @@ secret_wg_server_private_key: !vault |
 wg_server_listen_port: 51820
 wg_server_ip_address: 10.191.126.1
 wg_server_ip_address_with_mask: "{{ wg_server_ip_address }}/24"
-wg_server_allowed_ip_range: "{{ wg_macos_rust_slave_ip_address }}/32"
 wg_server_jenkins_master_allowed_ip_range: "{{ wg_jenkins_master_ip_address }}/32"
-wg_server_macos_rust_slave_allowed_ip_range: "{{ wg_macos_rust_slave_ip_address }}/32"
+wg_server_macos_rust_slave_001_allowed_ip_range: "{{ wg_macos_rust_slave_001_ip_address }}/32"
+wg_server_macos_rust_slave_002_allowed_ip_range: "{{ wg_macos_rust_slave_002_ip_address }}/32"
+
 wg_jenkins_master_public_key: Uby1QkrkSpLrHWq+Eh5KESXOg8i7ZC0O+aVkmxiDZUc=
 secret_wg_jenkins_master_private_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
@@ -27,8 +28,9 @@ secret_wg_jenkins_master_private_key: !vault |
 wg_jenkins_master_ip_address: 10.191.126.2
 wg_jenkins_master_ip_address_with_mask: "{{ wg_jenkins_master_ip_address }}/32"
 wg_jenkins_master_allowed_ip_range: "{{ wg_server_ip_address }}/24"
-wg_macos_rust_slave_public_key: HfdCpjkFgjFSzn1cwwfOZQf3osnvnsPRWtdBxTfgAUU=
-secret_wg_macos_rust_slave_private_key: !vault |
+
+wg_macos_rust_slave_001_public_key: HfdCpjkFgjFSzn1cwwfOZQf3osnvnsPRWtdBxTfgAUU=
+secret_wg_macos_rust_slave_001_private_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   34313236303763666637343335376662623639613338373332616133336163396234353862363034
   6263343339653136303634646638386538323666643830630a633337633664663762363038326166
@@ -36,7 +38,21 @@ secret_wg_macos_rust_slave_private_key: !vault |
   3364353466383137640a643131313639656666656434353733383264346635643038656663623161
   30616539643438353164376365393661623932373638653666396265333731316438303261636565
   6336353262636162626362373762623635653936363537393838
-wg_macos_rust_slave_ip_address: 10.191.126.3
-wg_macos_rust_slave_ip_address_with_mask: "{{ wg_macos_rust_slave_ip_address }}/32"
-wg_macos_rust_slave_allowed_ip_range: "{{ wg_server_ip_address }}/24"
-osx_rust_slave_ip_address: "{{ wg_macos_rust_slave_ip_address }}"
+wg_macos_rust_slave_001_ip_address: 10.191.126.3
+wg_macos_rust_slave_001_ip_address_with_mask: "{{ wg_macos_rust_slave_001_ip_address }}/32"
+wg_macos_rust_slave_001_allowed_ip_range: "{{ wg_server_ip_address }}/24"
+osx_rust_slave_001_ip_address: "{{ wg_macos_rust_slave_001_ip_address }}"
+
+wg_macos_rust_slave_002_public_key: C4bey7uU6CKf5MiN+L1rgLkQrsjtcXrx69sNHKvdhF4=
+secret_wg_macos_rust_slave_002_private_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  63366233656530303130613135643036663837396634303238663138643735616235653566373139
+  3461663335626135643836303162623533613865633331310a366338633633383537303339663031
+  35343566643863366364643331393864376165626261653233313266373539383236326566313237
+  3432633966663433370a653838353339346564393335323439313930383537373633373531663930
+  33356437643862666561363232353962316364643833366562616566653931613731663537353165
+  3163366661613932376234356534633931623533373035383064
+wg_macos_rust_slave_002_ip_address: 10.191.126.4
+wg_macos_rust_slave_002_ip_address_with_mask: "{{ wg_macos_rust_slave_002_ip_address }}/32"
+wg_macos_rust_slave_002_allowed_ip_range: "{{ wg_server_ip_address }}/24"
+osx_rust_slave_002_ip_address: "{{ wg_macos_rust_slave_002_ip_address }}"

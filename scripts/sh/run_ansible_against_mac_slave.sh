@@ -6,15 +6,10 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
-ssh_hostname=$2
-if [[ -z "$ssh_hostname" ]]; then
-    echo "A value must be supplied for the hostname. For running in the office use the internal IP, for running externally, use the external address."
+mode=$2
+if [[ -z "$mode" ]]; then
+    echo "A value must be supplied for mode. Valid values are 'internal' or 'external'."
     exit 1
-fi
-
-ssh_port=$3
-if [[ -z "$ssh_port" ]]; then
-    ssh_port="22"
 fi
 
 function get_proxy_dns() {
@@ -39,12 +34,10 @@ function get_proxy_dns() {
 function run_ansible() {
     echo "Jenkins master is at $proxy_dns"
     echo "Attempting Ansible run against macOS slave... (can be 10+ seconds before output)"
-    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "environments/$cloud_environment/hosts" \
-        --limit=macos_rust_slave \
+    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "environments/$cloud_environment/hosts-macos-$mode" \
+        --limit=osx_slaves \
         --vault-password-file=~/.ansible/vault-pass \
         --private-key=~/.ssh/id_rsa \
-        -e "macos_slave_ssh_hostname=$ssh_hostname" \
-        -e "macos_slave_ssh_port=$ssh_port" \
         -e "wg_server_endpoint=$proxy_dns" \
         -e "cloud_environment=$cloud_environment" \
         -e "wg_run_on_host=True" \

@@ -4,4 +4,4 @@ cert_path: "/etc/ssl/{{ jenkins_url }}/full.pem"
 
 # This is the production server. For development work, override this variable to work with
 # the staging environment. The staging server is at https://acme-staging.api.letsencrypt.org/directory.
-letsencrypt_server: https://acme-v01.api.letsencrypt.org/directory
+letsencrypt_server: https://acme-v02.api.letsencrypt.org/directory
