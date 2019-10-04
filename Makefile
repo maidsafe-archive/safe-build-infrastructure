@@ -457,22 +457,13 @@ provision-rust_slave-macos-high_sierra-x86_64-vagrant-vbox:
 		ansible/osx-rust-slave.yml
 
 provision-rust_slave-macos-high_sierra-x86_64-qa-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "qa" "internal"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-qa-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "qa" "external"
+	./scripts/sh/run_ansible_against_mac_slave.sh "qa"
 
 provision-rust_slave-macos-high_sierra-x86_64-staging-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "staging" "internal"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-staging-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "staging" "external"
+	./scripts/sh/run_ansible_against_mac_slave.sh "staging"
 
 provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "prod" "internal"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "prod" "external"
+	./scripts/sh/run_ansible_against_mac_slave.sh "prod"
 
 clean-rust_slave-macos-high_sierra-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml

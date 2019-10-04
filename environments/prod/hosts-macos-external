@@ -1,7 +1,0 @@
-[osx_slaves]
-macos_rust_slave_001 ansible_host=213.123.220.167 ansible_user=qamaidsafe ansible_port=8003
-macos_rust_slave_002 ansible_host=213.123.220.167 ansible_user=qamaidsafe ansible_port=8006
-
-[wireguard]
-macos_rust_slave_001 ansible_host=213.123.220.167 ansible_user=qamaidsafe ansible_port=8003
-macos_rust_slave_002 ansible_host=213.123.220.167 ansible_user=qamaidsafe ansible_port=8006

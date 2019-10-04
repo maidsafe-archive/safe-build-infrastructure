@@ -1,7 +1,0 @@
-[osx_slaves]
-macos_rust_slave_001 ansible_host=192.168.1.189 ansible_user=qamaidsafe
-macos_rust_slave_002 ansible_host=192.168.1.201 ansible_user=qamaidsafe
-
-[wireguard]
-macos_rust_slave_001 ansible_host=192.168.1.189 ansible_user=qamaidsafe
-macos_rust_slave_002 ansible_host=192.168.1.201 ansible_user=qamaidsafe

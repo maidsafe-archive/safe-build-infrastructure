@@ -6,12 +6,6 @@ if [[ -z "$cloud_environment" ]]; then
     exit 1
 fi
 
-mode=$2
-if [[ -z "$mode" ]]; then
-    echo "A value must be supplied for mode. Valid values are 'internal' or 'external'."
-    exit 1
-fi
-
 function get_proxy_dns() {
     if [[ "$cloud_environment" == "prod" ]]; then
         proxy_dns="jenkins.maidsafe.net"
@@ -34,7 +28,7 @@ function get_proxy_dns() {
 function run_ansible() {
     echo "Jenkins master is at $proxy_dns"
     echo "Attempting Ansible run against macOS slave... (can be 10+ seconds before output)"
-    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "environments/$cloud_environment/hosts-macos-$mode" \
+    ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "environments/$cloud_environment" \
         --limit=osx_slaves \
         --vault-password-file=~/.ansible/vault-pass \
         --private-key=~/.ssh/id_rsa \
