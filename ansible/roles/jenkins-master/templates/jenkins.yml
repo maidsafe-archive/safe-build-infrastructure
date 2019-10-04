@@ -287,12 +287,25 @@ jenkins:
         launcher:
           sSHLauncher:
             credentialsId: "docker_slave_jenkins_user_ssh_key"
-            host: "{{ osx_rust_slave_ip_address }}"
+            host: "{{ osx_rust_slave_001_ip_address }}"
             launchTimeoutSeconds: 210
             maxNumRetries: 10
             port: 22
             retryWaitTime: 15
-        name: "{{ osx_rust_slave_full_name }}"
+        name: "{{ osx_rust_slave_001_full_name }}"
+        labelString: "osx"
+        numExecutors: 3
+        remoteFS: "{{ macos_jenkins_workspace }}"
+    - permanent:
+        launcher:
+          sSHLauncher:
+            credentialsId: "docker_slave_jenkins_user_ssh_key"
+            host: "{{ osx_rust_slave_002_ip_address }}"
+            launchTimeoutSeconds: 210
+            maxNumRetries: 10
+            port: 22
+            retryWaitTime: 15
+        name: "{{ osx_rust_slave_002_full_name }}"
         labelString: "osx"
         numExecutors: 3
         remoteFS: "{{ macos_jenkins_workspace }}"
@@ -327,12 +340,12 @@ jenkins:
         launcher:
           sSHLauncher:
             credentialsId: "docker_slave_jenkins_user_ssh_key"
-            host: "{{ osx_rust_slave_ip_address }}"
+            host: "{{ osx_rust_slave_001_ip_address }}"
             launchTimeoutSeconds: 210
             maxNumRetries: 10
             port: 22
             retryWaitTime: 15
-        name: "{{ osx_rust_slave_full_name }}"
+        name: "{{ osx_rust_slave_001_full_name }}"
         labelString: "osx"
         numExecutors: 2
         remoteFS: "{{ macos_jenkins_workspace }}"

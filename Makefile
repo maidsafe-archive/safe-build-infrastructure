@@ -457,49 +457,13 @@ provision-rust_slave-macos-high_sierra-x86_64-vagrant-vbox:
 		ansible/osx-rust-slave.yml
 
 provision-rust_slave-macos-high_sierra-x86_64-qa-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "qa" "192.168.1.190"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-qa-aws:
-ifndef MACOS_SLAVE_SSH_IP_ADDRESS
-	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
-	@exit 1
-endif
-ifndef MACOS_SLAVE_SSH_PORT
-	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
-	@exit 1
-endif
-	./scripts/sh/run_ansible_against_mac_slave.sh \
-		"qa" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
+	./scripts/sh/run_ansible_against_mac_slave.sh "qa"
 
 provision-rust_slave-macos-high_sierra-x86_64-staging-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "staging" "192.168.1.190"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-staging-aws:
-ifndef MACOS_SLAVE_SSH_IP_ADDRESS
-	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
-	@exit 1
-endif
-ifndef MACOS_SLAVE_SSH_PORT
-	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
-	@exit 1
-endif
-	./scripts/sh/run_ansible_against_mac_slave.sh \
-		"staging" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
+	./scripts/sh/run_ansible_against_mac_slave.sh "staging"
 
 provision-rust_slave-macos-high_sierra-x86_64-prod-aws:
-	./scripts/sh/run_ansible_against_mac_slave.sh "prod" "192.168.1.190"
-
-provision-from_external-rust_slave-macos-high_sierra-x86_64-prod-aws:
-ifndef MACOS_SLAVE_SSH_IP_ADDRESS
-	@echo "The MACOS_SLAVE_SSH_IP_ADDRESS environment variable must be set."
-	@exit 1
-endif
-ifndef MACOS_SLAVE_SSH_PORT
-	@echo "The MACOS_SLAVE_SSH_PORT environment variable must be set."
-	@exit 1
-endif
-	./scripts/sh/run_ansible_against_mac_slave.sh \
-		"prod" "${MACOS_SLAVE_SSH_IP_ADDRESS}" "${MACOS_SLAVE_SSH_PORT}"
+	./scripts/sh/run_ansible_against_mac_slave.sh "prod"
 
 clean-rust_slave-macos-high_sierra-x86_64:
 	ANSIBLE_PIPELINING=True ansible-playbook -i environments/vagrant/hosts ansible/osx-teardown.yml
