@@ -14,6 +14,7 @@ wg_server_ip_address: 10.192.122.1
 wg_server_ip_address_with_mask: "{{ wg_server_ip_address }}/24"
 wg_server_jenkins_master_allowed_ip_range: "{{ wg_jenkins_master_ip_address }}/32"
 wg_server_macos_rust_slave_001_allowed_ip_range: "{{ wg_macos_rust_slave_001_ip_address }}/32"
+wg_server_macos_rust_slave_002_allowed_ip_range: "{{ wg_macos_rust_slave_002_ip_address }}/32"
 
 wg_jenkins_master_public_key: U8XlgU77cLgcUWQahWP9Nwm+b9AdeYLaasPzgsv17U8=
 secret_wg_jenkins_master_private_key: !vault |
