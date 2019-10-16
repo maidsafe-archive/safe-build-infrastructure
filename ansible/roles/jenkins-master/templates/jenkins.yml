@@ -73,7 +73,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "docker"
             mode: NORMAL
             monitoring: false
@@ -98,7 +98,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ safe_client_libs_docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "safe_client_libs"
             mode: NORMAL
             monitoring: false
@@ -123,7 +123,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ safe_cli_docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "safe_cli"
             mode: NORMAL
             monitoring: false
@@ -148,7 +148,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ safe_nd_docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "safe_nd"
             mode: NORMAL
             monitoring: false
@@ -173,7 +173,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ safe_vault_docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "safe_vault"
             mode: NORMAL
             monitoring: false
@@ -198,7 +198,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ safe_auth_cli_docker_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "safe_auth"
             mode: NORMAL
             monitoring: false
@@ -232,7 +232,7 @@ jenkins:
             deleteRootOnTermination: true
             description: "{{ util_slave_full_name }}"
             ebsOptimized: false
-            idleTerminationMinutes: "30"
+            idleTerminationMinutes: "10"
             labelString: "util"
             mode: NORMAL
             monitoring: false
