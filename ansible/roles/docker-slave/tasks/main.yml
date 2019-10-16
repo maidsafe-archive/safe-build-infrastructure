@@ -48,8 +48,15 @@
     name: "{{ safe_cli_build_image_name }}:{{ item }}"
   when: docker_slave_project == 'safe_cli'
   with_items:
-    - build
-    - build-dev
+    - api-x86_64-unknown-linux-gnu-dev
+    - cli-x86_64-unknown-linux-gnu
+    - cli-x86_64-unknown-linux-gnu-dev
+    - ffi-armv7-linux-androideabi
+    - ffi-armv7-linux-androideabi-dev
+    - ffi-x86_64-unknown-linux-gnu
+    - ffi-x86_64-unknown-linux-gnu-dev
+    - ffi-x86_64-linux-android
+    - ffi-x86_64-linux-android-dev
 
 - name: 'pull docker image for safe_vault'
   docker_image:
