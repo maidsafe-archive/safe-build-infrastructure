@@ -31,7 +31,7 @@
       "ami_block_device_mappings": [
         {
           "device_name": "/dev/sdb",
-          "volume_size": 50,
+          "volume_size": 100,
           "volume_type": "gp2",
           "encrypted": false,
           "delete_on_termination": true
@@ -54,7 +54,7 @@
         },
         {
           "device_name": "/dev/sdc",
-          "volume_size": 50,
+          "volume_size": 100,
           "volume_type": "gp2",
           "encrypted": false,
           "delete_on_termination": true
