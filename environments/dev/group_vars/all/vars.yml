@@ -6,10 +6,10 @@ docker_slave_ip_address: 192.168.10.101
 docker_slave_full_name: docker_slave-centos-7.6-x86_64
 docker_slave_host_url: docker-slave.ubuntu.local
 docker_slave_ami_id: ami-09213939f60112dee
-safe_client_libs_docker_slave_ami_id: ami-068112355a55b3ded
-safe_cli_docker_slave_ami_id: ami-08ffbc2a17c835ff7
+safe_client_libs_docker_slave_ami_id: ami-030a9364a511d80aa
+safe_cli_docker_slave_ami_id: ami-0298eb813185b20b4
 safe_nd_docker_slave_ami_id: ami-071993883a595d7dc
-safe_vault_docker_slave_ami_id: ami-0586f5cbd9a4e9e18
+safe_vault_docker_slave_ami_id: ami-0fd635f1f90c2f1fe
 safe_auth_cli_docker_slave_ami_id: ami-091cbb94040861165
 safe_client_libs_docker_slave_full_name: safe_client_libs_slave-centos-7.6-x86_64
 safe_cli_docker_slave_full_name: safe_cli_slave-centos-7.6-x86_64
