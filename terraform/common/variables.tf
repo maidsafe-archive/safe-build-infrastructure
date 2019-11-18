@@ -47,3 +47,8 @@ variable "safe_auth_cli_deploy_bucket_name" {
   default = "safe-authenticator-cli"
   description = "Name for bucket to deploy safe-authenticator-cli binaries to."
 }
+
+variable "safe_client_libs_deploy_bucket_name" {
+  default = "safe-client-libs"
+  description = "Name for bucket to deploy safe_client_libs binaries to."
+}
